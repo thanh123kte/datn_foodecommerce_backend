@@ -1,0 +1,1022 @@
+2025.10.09 09:32:47 INFO  Started: Metals version 1.6.2 in folders 'D:\qtifood' for client Visual Studio Code 1.104.3.
+2025.10.09 09:32:48 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:38:49 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:38:56 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:40:30 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:40:30 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:40:30 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:40:31 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:40:32 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\UserRequestDto.java
+2025.10.09 09:40:32 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:40:32 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:40:39 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserResponseDtos.java. Using fallback presentation compiler.
+2025.10.09 09:40:39 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserResponseDtos.java. Using fallback presentation compiler.
+2025.10.09 09:40:39 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserResponseDtos.java. Using fallback presentation compiler.
+2025.10.09 09:40:40 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\UserResponseDtos.java
+2025.10.09 09:40:40 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserResponseDtos.java. Using fallback presentation compiler.
+2025.10.09 09:43:13 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\UserRequestDto.java
+2025.10.09 09:43:13 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:43:13 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:43:13 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:43:18 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:43:18 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:43:18 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:43:18 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:43:18 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:43:19 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\UserResponseDtos.java
+2025.10.09 09:43:18 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserResponseDtos.java. Using fallback presentation compiler.
+2025.10.09 09:43:19 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserResponseDtos.java. Using fallback presentation compiler.
+2025.10.09 09:43:19 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserRequestDto.java
+2025.10.09 09:43:19 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserResponseDtos.java. Using fallback presentation compiler.
+2025.10.09 09:43:23 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\UserResponseDtos.java. Using fallback presentation compiler.
+2025.10.09 09:43:23 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserResponseDtos.java. Using fallback presentation compiler.
+2025.10.09 09:43:23 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\UserResponseDtos.java. Using fallback presentation compiler.
+2025.10.09 09:43:23 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserResponseDtos.java. Using fallback presentation compiler.
+2025.10.09 09:43:24 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserResponseDtos.java
+2025.10.09 09:43:24 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserResponseDtos.java. Using fallback presentation compiler.
+2025.10.09 09:48:43 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\repositories\UserRepository.java
+2025.10.09 09:48:43 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserRepository.java. Using fallback presentation compiler.
+2025.10.09 09:48:43 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserRepository.java. Using fallback presentation compiler.
+2025.10.09 09:48:54 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\repositories\UserRepository.java. Using fallback presentation compiler.
+2025.10.09 09:48:54 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:48:54 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\repositories\UserRepository.java. Using fallback presentation compiler.
+2025.10.09 09:48:54 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 09:48:54 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 09:48:55 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java
+2025.10.09 09:48:55 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 09:48:55 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java
+2025.10.09 09:48:55 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 09:49:43 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserRequestDto.java
+2025.10.09 09:49:43 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:49:44 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:49:43 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:49:53 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:49:53 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:49:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:49:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:49:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:49:54 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\CreateUserRequestDto.java
+2025.10.09 09:49:54 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:49:54 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:50:17 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:50:17 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:50:17 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:50:17 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:50:18 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UpdateUserRequestDto.java
+2025.10.09 09:50:18 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:50:18 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:50:19 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserResponseDtos.java
+2025.10.09 09:50:19 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserResponseDtos.java. Using fallback presentation compiler.
+2025.10.09 09:50:20 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserResponseDtos.java. Using fallback presentation compiler.
+2025.10.09 09:51:24 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserResponseDtos.java. Using fallback presentation compiler.
+2025.10.09 09:51:24 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserResponseDtos.java. Using fallback presentation compiler.
+2025.10.09 09:51:24 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 09:51:25 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 09:51:26 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserResponseDto.java
+2025.10.09 09:51:26 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 09:51:57 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:51:57 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:51:57 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 09:51:57 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:51:57 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 09:51:57 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 09:51:57 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\UserDto\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:51:57 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 09:51:58 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\user\CreateUserRequestDto.java
+2025.10.09 09:51:58 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UpdateUserRequestDto.java
+2025.10.09 09:51:58 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java
+2025.10.09 09:51:58 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 09:51:58 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 09:54:56 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 09:54:56 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\entities\User.java
+2025.10.09 09:54:56 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 09:54:57 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 09:54:59 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 09:55:00 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 09:56:39 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 09:56:39 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java
+2025.10.09 09:56:40 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 09:56:40 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 09:56:42 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 09:56:42 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 09:56:42 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java
+2025.10.09 09:56:42 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 09:56:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:56:53 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\user\CreateUserRequestDto.java
+2025.10.09 09:56:54 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:56:55 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:56:55 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:56:55 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:56:56 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\user\CreateUserRequestDto.java
+2025.10.09 09:56:56 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:57:04 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UpdateUserRequestDto.java
+2025.10.09 09:57:04 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:57:04 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:57:05 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:57:05 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:57:06 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:57:07 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UpdateUserRequestDto.java
+2025.10.09 09:57:07 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 09:57:14 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java
+2025.10.09 09:57:14 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 09:57:14 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 09:57:15 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 09:57:15 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 09:57:16 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 09:57:17 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java
+2025.10.09 09:57:17 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 09:57:32 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 09:57:32 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:57:33 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:57:32 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:57:34 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:57:34 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:57:35 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:57:35 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 09:57:35 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:57:35 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:57:35 WARN  Running javac-semanticdb failed for file:///D:/qtifood/src/main/java/com/example/qtifood/controllers/UserController.java. Output:
+
+2025.10.09 09:57:35 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:35 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:35 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:36 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:36 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:44 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\controllers\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:44 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:57:45 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:57:44 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:57:45 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:57:46 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:57:48 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java
+2025.10.09 09:57:48 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:48 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:51 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:51 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:52 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:52 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java
+2025.10.09 09:57:52 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:58 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:58 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:58 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:59 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:59 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:59 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java
+2025.10.09 09:57:59 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:59 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:57:59 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:58:01 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:58:01 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:58:10 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:58:10 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:58:10 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:58:10 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:58:16 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 09:58:16 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:58:16 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:58:16 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:58:18 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:58:18 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:58:18 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:58:19 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 09:58:19 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 09:59:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:59:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:59:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:59:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:59:54 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java
+2025.10.09 09:59:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 09:59:54 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:00:00 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:00:00 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:00:01 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java
+2025.10.09 10:00:01 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:00:05 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserService.java
+2025.10.09 10:00:05 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:00:05 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:00:05 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:00:11 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:00:11 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\services\impl\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:00:11 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\services\impl\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:00:11 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:00:11 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:00:11 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:00:12 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:00:12 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:00:12 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java
+2025.10.09 10:00:12 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:00:12 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:00:15 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:00:15 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:00:15 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:00:16 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:00:17 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java
+2025.10.09 10:00:17 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:00:26 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:00:27 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:00:27 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:00:28 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:00:28 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:00:28 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:00:56 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java
+2025.10.09 10:00:56 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:00:56 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:00:57 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:00:57 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:00:58 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:00:59 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:00:59 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:00:59 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:01:01 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:01:01 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:01:02 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:01:08 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:01:08 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:01:09 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:01:10 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java
+2025.10.09 10:01:10 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:01:12 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java
+2025.10.09 10:01:12 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:01:18 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:01:18 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:01:18 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:01:19 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java
+2025.10.09 10:01:19 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:01:19 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:01:20 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:01:20 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:01:21 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java
+2025.10.09 10:01:21 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:01:21 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java
+2025.10.09 10:01:21 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:01:26 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java
+2025.10.09 10:01:26 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:01:26 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:01:26 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:01:26 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:01:27 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:01:27 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:01:27 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:01:28 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:01:29 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:01:29 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java
+2025.10.09 10:01:29 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:01:29 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:01:36 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:01:36 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:01:36 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:01:37 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:01:37 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:01:38 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:01:38 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:01:38 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:01:39 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:05 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java
+2025.10.09 10:02:05 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:02:05 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:02:05 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:02:06 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java
+2025.10.09 10:02:06 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:02:07 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:02:10 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:02:10 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:02:11 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:02:11 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:02:13 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:02:13 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:02:13 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:02:14 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:02:23 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:02:23 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:23 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:23 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:24 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:27 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:27 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:27 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:28 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:29 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:29 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:30 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:32 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:32 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:33 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:02:33 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:35 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:36 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:36 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:36 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:38 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:38 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:38 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:38 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:38 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:39 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:39 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+Oct 09, 2025 10:02:39 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 581
+2025.10.09 10:02:39 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+Oct 09, 2025 10:02:39 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 583
+2025.10.09 10:02:39 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:39 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:39 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:40 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:40 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:02:40 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:41 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:41 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:41 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:42 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:42 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:02:42 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:43 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:44 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:44 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:44 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:44 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:45 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:45 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:45 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:45 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:45 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:46 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:02:46 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:46 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:46 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:46 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:47 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:48 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:02:48 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:48 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:48 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:49 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:49 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:51 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:51 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:51 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:51 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:52 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:51 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:52 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:52 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:52 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:52 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:53 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:02:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:54 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:54 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:02:55 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:55 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:55 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:56 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:56 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:56 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:57 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:57 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:58 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:58 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:02:58 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:58 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:58 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:59 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:02:59 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:02:59 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:03:00 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:03:01 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\user\CreateUserRequestDto.java
+2025.10.09 10:03:01 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 10:03:01 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 10:03:02 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UpdateUserRequestDto.java
+2025.10.09 10:03:02 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 10:03:03 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 10:03:04 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java
+2025.10.09 10:03:04 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 10:03:04 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 10:03:08 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\entities\User.java
+2025.10.09 10:03:08 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:08 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:09 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:09 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:11 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:11 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:11 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:11 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:11 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:12 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:12 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:12 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:12 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:12 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:12 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:13 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\entities\User.java
+2025.10.09 10:03:13 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:13 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:13 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:14 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:13 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:14 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:13 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:13 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:15 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:15 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:15 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:15 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\entities\User.java
+2025.10.09 10:03:15 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:15 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:16 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:16 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:16 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:16 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:16 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:16 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:16 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:16 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:17 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:17 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:17 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:17 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:17 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\entities\User.java
+2025.10.09 10:03:17 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:18 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:19 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:19 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:03:29 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:29 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java
+2025.10.09 10:03:29 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:36 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:36 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:36 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:41 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:03:41 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:03:41 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:03:41 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:03:43 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:03:46 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java
+2025.10.09 10:03:46 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:46 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:46 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:48 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:48 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:49 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:49 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:49 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:49 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:50 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java
+2025.10.09 10:03:50 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:50 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:50 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:52 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:52 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:52 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:53 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java
+2025.10.09 10:03:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:54 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:57 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:57 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:03:57 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:04:01 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:04:04 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:04:04 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:05:09 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:05:09 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:05:10 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:05:14 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:05:14 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:05:14 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:05:18 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:05:20 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:05:22 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:27 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:27 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:29 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:29 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:31 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:32 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:34 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:36 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:37 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:37 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:39 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:39 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:40 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:42 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:42 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:43 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:43 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:43 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:43 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:43 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:44 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:43 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:43 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:44 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:45 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+Oct 09, 2025 10:09:45 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 919
+2025.10.09 10:09:45 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:09:45 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:45 WARN  Running javac-semanticdb failed for file:///D:/qtifood/src/main/java/com/example/qtifood/controllers/UserController.java. Output:
+
+2025.10.09 10:09:45 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:45 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:45 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:45 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:45 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:46 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:46 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:46 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:47 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:09:47 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:47 WARN  Running javac-semanticdb failed for file:///D:/qtifood/src/main/java/com/example/qtifood/controllers/UserController.java. Output:
+
+2025.10.09 10:09:49 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:49 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:49 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:49 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:49 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:49 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:49 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:49 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:49 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:49 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:50 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:50 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:09:50 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:50 WARN  Running javac-semanticdb failed for file:///D:/qtifood/src/main/java/com/example/qtifood/controllers/UserController.java. Output:
+
+2025.10.09 10:09:50 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:50 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:50 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:50 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:51 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:51 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:09:51 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:51 WARN  Running javac-semanticdb failed for file:///D:/qtifood/src/main/java/com/example/qtifood/controllers/UserController.java. Output:
+
+2025.10.09 10:09:51 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:52 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:52 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:52 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:52 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:52 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:52 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:53 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:09:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:53 WARN  Running javac-semanticdb failed for file:///D:/qtifood/src/main/java/com/example/qtifood/controllers/UserController.java. Output:
+
+2025.10.09 10:09:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:53 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:54 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:55 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:54 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:54 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:54 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:54 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:56 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:56 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:56 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:56 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:09:56 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:56 WARN  Running javac-semanticdb failed for file:///D:/qtifood/src/main/java/com/example/qtifood/controllers/UserController.java. Output:
+
+2025.10.09 10:09:57 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:57 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:58 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:58 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:58 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:58 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:59 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:09:59 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:59 WARN  Running javac-semanticdb failed for file:///D:/qtifood/src/main/java/com/example/qtifood/controllers/UserController.java. Output:
+
+2025.10.09 10:09:59 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:59 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:59 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:59 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:09:59 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:00 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:00 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:01 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:10:01 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:00 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:00 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:01 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:02 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:02 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:10:01 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:02 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:05 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:05 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:05 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:05 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:05 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:05 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:06 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:06 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:10:06 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:06 WARN  Running javac-semanticdb failed for file:///D:/qtifood/src/main/java/com/example/qtifood/controllers/UserController.java. Output:
+
+2025.10.09 10:10:06 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:07 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:07 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:07 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:08 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:08 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:09 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:10:09 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:08 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:11 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:11 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:12 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:12 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:12 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:13 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:13 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:14 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:16 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:16 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:17 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:17 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:17 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:17 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:18 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:19 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:10:19 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:20 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:20 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:20 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:21 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:21 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:22 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:10:22 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:21 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:21 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:21 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:23 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:23 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:23 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:24 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:24 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:25 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:25 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:25 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:26 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:27 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:10:27 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:27 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:27 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+Oct 09, 2025 10:10:27 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleCancellation
+WARNING: Unmatched cancel notification for request id 1137
+2025.10.09 10:10:27 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:27 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:27 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:28 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:10:28 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:29 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:34 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:34 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:35 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:35 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:10:35 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:36 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:10:37 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:23:09 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:24:20 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:24:21 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:24:21 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:24:21 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:24:23 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:24:23 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:24:23 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:24:23 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:24:24 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:24:23 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:24:24 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:24:24 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:24:25 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:24:25 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:24:28 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java
+2025.10.09 10:24:28 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:24:28 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:24:30 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:24:30 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:24:31 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:24:31 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java
+2025.10.09 10:24:31 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:24:32 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:24:34 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:24:34 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:24:35 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:24:35 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:24:35 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:24:36 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java
+2025.10.09 10:24:36 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:24:37 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java
+2025.10.09 10:24:36 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:29:40 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\QtifoodApplication.java. Using fallback presentation compiler.
+2025.10.09 10:35:51 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:35:51 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:35:51 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:35:51 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:35:51 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:35:51 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 10:35:51 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 10:35:51 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 10:39:27 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:39:27 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+Oct 09, 2025 10:50:02 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleNotification
+WARNING: Notification threw an exception: {
+  "jsonrpc": "2.0",
+  "method": "textDocument/didOpen",
+  "params": {
+    "textDocument": {
+      "uri": "file:///d%3A/qtifood/src/main/java/com/example/qtifood/dtos/user/UserResponseDto.java",
+      "languageId": "java",
+      "version": 2,
+      "text": "package com.example.qtifood.dtos.user;\r\n\r\nimport lombok.Builder;\r\nimport lombok.Data;\r\n\r\n@Data\r\n@Builder\r\npublic class UserResponseDto {\r\n    private Long id;\r\n    private String username;\r\n    private String email;\r\n    private String role;\r\n    private Boolean active;\r\n}\r\n"
+    }
+  }
+}
+java.lang.IllegalStateException: An unexpected exception occurred while executing jsonrpc method public abstract java.util.concurrent.CompletableFuture scala.meta.metals.lsp.TextDocumentService.didOpen(org.eclipse.lsp4j.DidOpenTextDocumentParams)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:73)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.notify(GenericEndpoint.java:160)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleNotification(RemoteEndpoint.java:231)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:198)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:185)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:97)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:114)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.nio.file.NoSuchFileException: d:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java
+	at java.base/sun.nio.fs.WindowsException.translateToIOException(WindowsException.java:85)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:103)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:108)
+	at java.base/sun.nio.fs.WindowsFileSystemProvider.newByteChannel(WindowsFileSystemProvider.java:234)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:379)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:431)
+	at java.base/java.nio.file.Files.readAllBytes(Files.java:3268)
+	at scala.meta.internal.io.PlatformFileIO$.slurp(PlatformFileIO.scala:42)
+	at scala.meta.internal.io.FileIO$.slurp(FileIO.scala:18)
+	at scala.meta.internal.metals.MetalsLspService.didOpen(MetalsLspService.scala:743)
+	at scala.meta.internal.metals.WorkspaceLspService.didOpen(WorkspaceLspService.scala:469)
+	at scala.meta.metals.lsp.DelegatingScalaService.didOpen(DelegatingScalaService.scala:38)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:65)
+	... 11 more
+
+Oct 09, 2025 10:50:02 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleNotification
+WARNING: Notification threw an exception: {
+  "jsonrpc": "2.0",
+  "method": "textDocument/didOpen",
+  "params": {
+    "textDocument": {
+      "uri": "file:///d%3A/qtifood/src/main/java/com/example/qtifood/dtos/user/CreateUserRequestDto.java",
+      "languageId": "java",
+      "version": 2,
+      "text": "package com.example.qtifood.dtos.user;\r\n\r\nimport lombok.Data;\r\n\r\n@Data\r\npublic class CreateUserRequestDto {\r\n    private String username;\r\n    private String email;\r\n    private String password;\r\n    private String role;\r\n}\r\n"
+    }
+  }
+}
+java.lang.IllegalStateException: An unexpected exception occurred while executing jsonrpc method public abstract java.util.concurrent.CompletableFuture scala.meta.metals.lsp.TextDocumentService.didOpen(org.eclipse.lsp4j.DidOpenTextDocumentParams)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:73)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.notify(GenericEndpoint.java:160)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleNotification(RemoteEndpoint.java:231)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:198)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:185)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:97)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:114)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.nio.file.NoSuchFileException: d:\qtifood\src\main\java\com\example\qtifood\dtos\user\CreateUserRequestDto.java
+	at java.base/sun.nio.fs.WindowsException.translateToIOException(WindowsException.java:85)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:103)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:108)
+	at java.base/sun.nio.fs.WindowsFileSystemProvider.newByteChannel(WindowsFileSystemProvider.java:234)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:379)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:431)
+	at java.base/java.nio.file.Files.readAllBytes(Files.java:3268)
+	at scala.meta.internal.io.PlatformFileIO$.slurp(PlatformFileIO.scala:42)
+	at scala.meta.internal.io.FileIO$.slurp(FileIO.scala:18)
+	at scala.meta.internal.metals.MetalsLspService.didOpen(MetalsLspService.scala:743)
+	at scala.meta.internal.metals.WorkspaceLspService.didOpen(WorkspaceLspService.scala:469)
+	at scala.meta.metals.lsp.DelegatingScalaService.didOpen(DelegatingScalaService.scala:38)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:65)
+	... 11 more
+
+Oct 09, 2025 10:50:02 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleNotification
+WARNING: Notification threw an exception: {
+  "jsonrpc": "2.0",
+  "method": "textDocument/didOpen",
+  "params": {
+    "textDocument": {
+      "uri": "file:///d%3A/qtifood/src/main/java/com/example/qtifood/controllers/UserController.java",
+      "languageId": "java",
+      "version": 60,
+      "text": "package com.example.qtifood.controllers;\r\n\r\nimport com.example.qtifood.dtos.user.CreateUserRequestDto;\r\nimport com.example.qtifood.dtos.user.UpdateUserRequestDto;\r\nimport com.example.qtifood.dtos.user.UserResponseDto;\r\nimport com.example.qtifood.services.UserService;\r\nimport lombok.RequiredArgsConstructor;\r\nimport org.springframework.web.bind.annotation.*;\r\n\r\nimport java.util.List;\r\n\r\n@RestController\r\n@RequestMapping(\"/api/users\")\r\n@RequiredArgsConstructor\r\npublic class UserController {\r\n\r\n    \r\n    private final UserService userService;\r\n\r\n    // Get All users\r\n    @GetMapping\r\n    public List\u003cUserResponseDto\u003e getAllUsers() {\r\n        return userService.getAllUsers();\r\n    }\r\n\r\n    // Create user\r\n    @PostMapping\r\n    public UserResponseDto createUser(@RequestBody CreateUserRequestDto dto) {\r\n        return userService.createUser(dto);\r\n    }\r\n\r\n    // Update user\r\n    @PutMapping(\"/{id}\")\r\n    public UserResponseDto updateUser(\r\n            @PathVariable Long id,\r\n            @RequestBody UpdateUserRequestDto dto\r\n    ) {\r\n        return userService.updateUser(id, dto);\r\n    }\r\n\r\n    // Delete user\r\n    @DeleteMapping(\"/{id}\")\r\n    public String deleteUser(@PathVariable Long id) {\r\n        userService.deleteUser(id);\r\n        return \"User \" + id + \" deleted successfully.\";\r\n        \r\n    }\r\n}\r\n"
+    }
+  }
+}
+java.lang.IllegalStateException: An unexpected exception occurred while executing jsonrpc method public abstract java.util.concurrent.CompletableFuture scala.meta.metals.lsp.TextDocumentService.didOpen(org.eclipse.lsp4j.DidOpenTextDocumentParams)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:73)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.notify(GenericEndpoint.java:160)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleNotification(RemoteEndpoint.java:231)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:198)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:185)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:97)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:114)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.nio.file.NoSuchFileException: d:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+	at java.base/sun.nio.fs.WindowsException.translateToIOException(WindowsException.java:85)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:103)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:108)
+	at java.base/sun.nio.fs.WindowsFileSystemProvider.newByteChannel(WindowsFileSystemProvider.java:234)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:379)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:431)
+	at java.base/java.nio.file.Files.readAllBytes(Files.java:3268)
+	at scala.meta.internal.io.PlatformFileIO$.slurp(PlatformFileIO.scala:42)
+	at scala.meta.internal.io.FileIO$.slurp(FileIO.scala:18)
+	at scala.meta.internal.metals.MetalsLspService.didOpen(MetalsLspService.scala:743)
+	at scala.meta.internal.metals.WorkspaceLspService.didOpen(WorkspaceLspService.scala:469)
+	at scala.meta.metals.lsp.DelegatingScalaService.didOpen(DelegatingScalaService.scala:38)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:65)
+	... 11 more
+
+Oct 09, 2025 10:50:02 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleNotification
+WARNING: Notification threw an exception: {
+  "jsonrpc": "2.0",
+  "method": "textDocument/didOpen",
+  "params": {
+    "textDocument": {
+      "uri": "file:///d%3A/qtifood/src/main/java/com/example/qtifood/services/impl/UserServiceImpl.java",
+      "languageId": "java",
+      "version": 3,
+      "text": "package com.example.qtifood.services.impl;\r\n\r\nimport com.example.qtifood.dtos.user.CreateUserRequestDto;\r\nimport com.example.qtifood.dtos.user.UpdateUserRequestDto;\r\nimport com.example.qtifood.dtos.user.UserResponseDto;\r\nimport com.example.qtifood.entities.User;\r\nimport com.example.qtifood.repositories.UserJpaRepository;\r\nimport com.example.qtifood.services.UserService;\r\nimport lombok.RequiredArgsConstructor;\r\nimport org.springframework.stereotype.Service;\r\n\r\nimport java.util.List;\r\nimport java.util.stream.Collectors;\r\n\r\n@Service\r\n@RequiredArgsConstructor\r\npublic class UserServiceImpl implements UserService {\r\n\r\n    private final UserJpaRepository userRepository;\r\n\r\n    @Override\r\n    public List\u003cUserResponseDto\u003e getAllUsers() {\r\n        return userRepository.findAll()\r\n                .stream()\r\n                .map(this::mapToResponse)\r\n                .collect(Collectors.toList());\r\n    }\r\n\r\n    @Override\r\n    public UserResponseDto createUser(CreateUserRequestDto dto) {\r\n        User user \u003d User.builder()\r\n                .username(dto.getUsername())\r\n                .email(dto.getEmail())\r\n                .password(dto.getPassword())\r\n                .role(dto.getRole())\r\n                .active(true)\r\n                .build();\r\n        return mapToResponse(userRepository.save(user));\r\n    }\r\n\r\n    @Override\r\n    public UserResponseDto updateUser(Long id, UpdateUserRequestDto dto) {\r\n        User user \u003d userRepository.findById(id)\r\n                .orElseThrow(() -\u003e new RuntimeException(\"User not found with id: \" + id));\r\n\r\n        if (dto.getEmail() !\u003d null) user.setEmail(dto.getEmail());\r\n        if (dto.getPassword() !\u003d null) user.setPassword(dto.getPassword());\r\n        if (dto.getRole() !\u003d null) user.setRole(dto.getRole());\r\n        if (dto.getActive() !\u003d null) user.setActive(dto.getActive());\r\n\r\n        return mapToResponse(userRepository.save(user));\r\n    }\r\n\r\n    @Override\r\n    public void deleteUser(Long id) {\r\n        userRepository.deleteById(id);\r\n    }\r\n\r\n    private UserResponseDto mapToResponse(User user) {\r\n        return UserResponseDto.builder()\r\n                .id(user.getId())\r\n                .username(user.getUsername())\r\n                .email(user.getEmail())\r\n                .role(user.getRole())\r\n                .active(user.getActive())\r\n                .build();\r\n    }\r\n}\r\n"
+    }
+  }
+}
+java.lang.IllegalStateException: An unexpected exception occurred while executing jsonrpc method public abstract java.util.concurrent.CompletableFuture scala.meta.metals.lsp.TextDocumentService.didOpen(org.eclipse.lsp4j.DidOpenTextDocumentParams)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:73)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.notify(GenericEndpoint.java:160)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleNotification(RemoteEndpoint.java:231)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:198)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:185)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:97)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:114)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.nio.file.NoSuchFileException: d:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java
+	at java.base/sun.nio.fs.WindowsException.translateToIOException(WindowsException.java:85)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:103)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:108)
+	at java.base/sun.nio.fs.WindowsFileSystemProvider.newByteChannel(WindowsFileSystemProvider.java:234)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:379)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:431)
+	at java.base/java.nio.file.Files.readAllBytes(Files.java:3268)
+	at scala.meta.internal.io.PlatformFileIO$.slurp(PlatformFileIO.scala:42)
+	at scala.meta.internal.io.FileIO$.slurp(FileIO.scala:18)
+	at scala.meta.internal.metals.MetalsLspService.didOpen(MetalsLspService.scala:743)
+	at scala.meta.internal.metals.WorkspaceLspService.didOpen(WorkspaceLspService.scala:469)
+	at scala.meta.metals.lsp.DelegatingScalaService.didOpen(DelegatingScalaService.scala:38)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:65)
+	... 11 more
+
+Oct 09, 2025 10:50:02 AM org.eclipse.lsp4j.jsonrpc.RemoteEndpoint handleNotification
+WARNING: Notification threw an exception: {
+  "jsonrpc": "2.0",
+  "method": "textDocument/didOpen",
+  "params": {
+    "textDocument": {
+      "uri": "file:///d%3A/qtifood/src/main/java/com/example/qtifood/entities/User.java",
+      "languageId": "java",
+      "version": 19,
+      "text": "package com.example.qtifood.entities;\r\n\r\nimport jakarta.persistence.*;\r\nimport lombok.*;\r\n\r\n@Entity\r\n@Table(name \u003d \"users\")\r\n@Getter\r\n@Setter\r\n@NoArgsConstructor\r\n@AllArgsConstructor\r\n@Builder\r\npublic class User {\r\n\r\n    @Id\r\n    @GeneratedValue(strategy \u003d GenerationType.IDENTITY)\r\n    private Long id;\r\n\r\n    @Column(nullable \u003d false, unique \u003d true, length \u003d 100)\r\n    private String username;\r\n\r\n    @Column(nullable \u003d false, unique \u003d true, length \u003d 150)\r\n    private String email;\r\n\r\n    @Column(nullable \u003d false)\r\n    private String password;\r\n\r\n    @Column(length \u003d 20)\r\n    private String role; // example: ADMIN, CUSTOMER, SELLER\r\n\r\n    @Column(nullable \u003d false)\r\n    private Boolean active \u003d true;\r\n}\r\n"
+    }
+  }
+}
+java.lang.IllegalStateException: An unexpected exception occurred while executing jsonrpc method public abstract java.util.concurrent.CompletableFuture scala.meta.metals.lsp.TextDocumentService.didOpen(org.eclipse.lsp4j.DidOpenTextDocumentParams)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:73)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.notify(GenericEndpoint.java:160)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleNotification(RemoteEndpoint.java:231)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:198)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:185)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:97)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:114)
+	at java.base/java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.base/java.lang.Thread.run(Thread.java:1583)
+Caused by: java.nio.file.NoSuchFileException: d:\qtifood\src\main\java\com\example\qtifood\entities\User.java
+	at java.base/sun.nio.fs.WindowsException.translateToIOException(WindowsException.java:85)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:103)
+	at java.base/sun.nio.fs.WindowsException.rethrowAsIOException(WindowsException.java:108)
+	at java.base/sun.nio.fs.WindowsFileSystemProvider.newByteChannel(WindowsFileSystemProvider.java:234)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:379)
+	at java.base/java.nio.file.Files.newByteChannel(Files.java:431)
+	at java.base/java.nio.file.Files.readAllBytes(Files.java:3268)
+	at scala.meta.internal.io.PlatformFileIO$.slurp(PlatformFileIO.scala:42)
+	at scala.meta.internal.io.FileIO$.slurp(FileIO.scala:18)
+	at scala.meta.internal.metals.MetalsLspService.didOpen(MetalsLspService.scala:743)
+	at scala.meta.internal.metals.WorkspaceLspService.didOpen(WorkspaceLspService.scala:469)
+	at scala.meta.metals.lsp.DelegatingScalaService.didOpen(DelegatingScalaService.scala:38)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(DirectMethodHandleAccessor.java:103)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint.lambda$recursiveFindRpcMethods$0(GenericEndpoint.java:65)
+	... 11 more
+
+2025.10.09 10:50:02 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\QtifoodApplication.java. Using fallback presentation compiler.
+2025.10.09 10:50:02 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:50:02 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\user\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 10:50:02 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:50:02 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 10:50:02 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\user\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 10:50:02 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:50:02 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:50:02 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:50:02 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:50:02 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:50:02 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:50:02 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:50:02 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\QtifoodApplication.java. Using fallback presentation compiler.
+2025.10.09 10:50:02 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\user\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 10:50:02 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 10:50:02 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\dtos\user\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 10:50:02 INFO  no build target found for d:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:50:03 WARN  no build target for: D:\qtifood\src\main\java\com\example\foodecommerce\controllers\UserController.java
+2025.10.09 10:50:03 WARN  no build target for: D:\qtifood\src\main\java\com\example\foodecommerce\services\UserService.java
+2025.10.09 10:50:03 WARN  no build target for: D:\qtifood\src\main\java\com\example\foodecommerce\repositories\UserJpaRepository.java
+2025.10.09 10:50:03 WARN  no build target for: D:\qtifood\src\main\java\com\example\foodecommerce\services\impl\UserServiceImpl.java
+2025.10.09 10:50:03 WARN  no build target for: D:\qtifood\src\main\java\com\example\foodecommerce\QtifoodApplication.java
+2025.10.09 10:50:03 WARN  no build target for: D:\qtifood\src\main\java\com\example\foodecommerce\entities\User.java
+2025.10.09 10:50:03 WARN  no build target for: D:\qtifood\src\main\java\com\example\foodecommerce\dtos\user\CreateUserRequestDto.java
+2025.10.09 10:50:03 WARN  no build target for: D:\qtifood\src\main\java\com\example\foodecommerce\dtos\user\UserResponseDto.java
+2025.10.09 10:50:03 WARN  no build target for: D:\qtifood\src\main\java\com\example\foodecommerce\dtos\user\UpdateUserRequestDto.java
+2025.10.09 10:50:08 WARN  no build target for: D:\qtifood\src\main\java\com\example\foodecommerce\QtifoodApplication.java
+2025.10.09 10:50:08 INFO  no build target found for D:\qtifood\src\main\java\com\example\foodecommerce\QtifoodApplication.java. Using fallback presentation compiler.
+2025.10.09 10:50:09 INFO  no build target found for D:\qtifood\src\main\java\com\example\foodecommerce\QtifoodApplication.java. Using fallback presentation compiler.
+2025.10.09 10:50:08 INFO  no build target found for D:\qtifood\src\main\java\com\example\foodecommerce\QtifoodApplication.java. Using fallback presentation compiler.
+2025.10.09 10:50:31 INFO  no build target found for d:\qtifood\src\main\java\com\example\foodecommerce\QtifoodApplication.java. Using fallback presentation compiler.
+2025.10.09 10:50:31 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\QtifoodApplication.java. Using fallback presentation compiler.
+2025.10.09 10:50:31 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\QtifoodApplication.java. Using fallback presentation compiler.
+2025.10.09 10:50:31 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java. Using fallback presentation compiler.
+2025.10.09 10:50:31 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UpdateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 10:50:31 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java. Using fallback presentation compiler.
+2025.10.09 10:50:31 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java. Using fallback presentation compiler.
+2025.10.09 10:50:31 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\dtos\user\CreateUserRequestDto.java. Using fallback presentation compiler.
+2025.10.09 10:50:31 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java. Using fallback presentation compiler.
+2025.10.09 10:50:31 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java. Using fallback presentation compiler.
+2025.10.09 10:50:31 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\entities\User.java. Using fallback presentation compiler.
+2025.10.09 10:50:31 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\QtifoodApplication.java. Using fallback presentation compiler.
+2025.10.09 10:50:31 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\QtifoodApplication.java. Using fallback presentation compiler.
+2025.10.09 10:50:32 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UpdateUserRequestDto.java
+2025.10.09 10:50:32 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\QtifoodApplication.java
+2025.10.09 10:50:32 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\user\UserResponseDto.java
+2025.10.09 10:50:32 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\UserService.java
+2025.10.09 10:50:32 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\controllers\UserController.java
+2025.10.09 10:50:32 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\repositories\UserJpaRepository.java
+2025.10.09 10:50:32 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\services\impl\UserServiceImpl.java
+2025.10.09 10:50:32 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\dtos\user\CreateUserRequestDto.java
+2025.10.09 10:50:32 WARN  no build target for: D:\qtifood\src\main\java\com\example\qtifood\entities\User.java
+2025.10.09 10:50:32 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\QtifoodApplication.java. Using fallback presentation compiler.
+2025.10.09 10:50:33 INFO  no build target found for D:\qtifood\src\main\java\com\example\qtifood\QtifoodApplication.java. Using fallback presentation compiler.
+2025.10.09 10:51:14 INFO  Shutting down server
+2025.10.09 10:51:14 INFO  shutting down Metals
+2025.10.09 10:51:14 INFO  Exiting server
+2025.10.09 10:51:14 ERROR Unexpected error initializing server: 
+org.eclipse.lsp4j.jsonrpc.ResponseErrorException: Request window/showMessageRequest failed with message: Canceled
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.handleResponse(RemoteEndpoint.java:220)
+	at org.eclipse.lsp4j.jsonrpc.RemoteEndpoint.consume(RemoteEndpoint.java:204)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.handleMessage(StreamMessageProducer.java:185)
+	at org.eclipse.lsp4j.jsonrpc.json.StreamMessageProducer.listen(StreamMessageProducer.java:97)
+	at org.eclipse.lsp4j.jsonrpc.json.ConcurrentMessageProcessor.run(ConcurrentMessageProcessor.java:114)
+	at java.util.concurrent.Executors$RunnableAdapter.call(Executors.java:572)
+	at java.util.concurrent.FutureTask.run(FutureTask.java:317)
+	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144)
+	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642)
+	at java.lang.Thread.run(Thread.java:1583)
+
