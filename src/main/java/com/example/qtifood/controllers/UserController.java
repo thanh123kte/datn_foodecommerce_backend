@@ -1,48 +1,57 @@
+// src/main/java/com/example/qtifood/controllers/UserController.java
 package com.example.qtifood.controllers;
 
-import com.example.qtifood.dtos.user.CreateUserRequestDto;
-import com.example.qtifood.dtos.user.UpdateUserRequestDto;
-import com.example.qtifood.dtos.user.UserResponseDto;
+import com.example.qtifood.dtos.user.*;
+import com.example.qtifood.entities.RoleType;
 import com.example.qtifood.services.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
 
-    
     private final UserService userService;
 
-    // Get All users
     @GetMapping
-    public List<UserResponseDto> getAllUsers() {
-        return userService.getAllUsers();
+    public Page<UserResponseDto> list(Pageable pageable) {
+        return userService.getUsers(pageable);
     }
 
-    // Create user
+    @GetMapping("/{id}")
+    public UserResponseDto get(@PathVariable Long id) {
+        return userService.getUser(id);
+    }
+
     @PostMapping
-    public UserResponseDto createUser(@RequestBody CreateUserRequestDto dto) {
-        return userService.createUser(dto);
+    public ResponseEntity<UserResponseDto> create(@RequestBody @Valid CreateUserRequestDto dto) {
+        return ResponseEntity.ok(userService.createUser(dto));
     }
 
-    // Update user
     @PutMapping("/{id}")
-    public UserResponseDto updateUser(
-            @PathVariable Long id,
-            @RequestBody UpdateUserRequestDto dto
-    ) {
+    public UserResponseDto update(@PathVariable Long id, @RequestBody @Valid UpdateUserRequestDto dto) {
         return userService.updateUser(id, dto);
     }
 
-    // Delete user
     @DeleteMapping("/{id}")
-    public String deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
         userService.deleteUser(id);
-        return "User " + id + " deleted successfully.";
-        
+        return ResponseEntity.noContent().build();
+    }
+
+    /* ====== Add/Remove role ====== */
+    @PostMapping("/{id}/roles/{role}")
+    public UserResponseDto addRole(@PathVariable Long id, @PathVariable RoleType role) {
+        return ((com.example.qtifood.services.impl.UserServiceImpl) userService).addRole(id, role);
+    }
+
+    @DeleteMapping("/{id}/roles/{role}")
+    public UserResponseDto removeRole(@PathVariable Long id, @PathVariable RoleType role) {
+        return ((com.example.qtifood.services.impl.UserServiceImpl) userService).removeRole(id, role);
     }
 }
