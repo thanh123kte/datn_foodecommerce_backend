@@ -11,11 +11,13 @@ import com.example.qtifood.dtos.Products.UpdateProductDto;
 import com.example.qtifood.dtos.Products.ProductResponseDto;
 import com.example.qtifood.entities.Product;
 import com.example.qtifood.entities.Store;
+import com.example.qtifood.entities.StoreCategory;
 import com.example.qtifood.enums.ProductStatus;
 import com.example.qtifood.entities.Categories;
 import com.example.qtifood.repositories.ProductRepository;
 import com.example.qtifood.repositories.StoreRepository;
 import com.example.qtifood.repositories.CategoriesRepository;
+import com.example.qtifood.repositories.StoreCategoryRepository;
 import com.example.qtifood.services.ProductService;
 
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,7 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
     private final StoreRepository storeRepository;
     private final CategoriesRepository categoriesRepository;
+    private final StoreCategoryRepository storeCategoryRepository;
 
     @Override
     public ProductResponseDto createProduct(CreateProductDto dto) {
@@ -37,9 +40,16 @@ public class ProductServiceImpl implements ProductService {
         Categories category = categoriesRepository.findById(dto.categoryId())
                 .orElseThrow(() -> new IllegalArgumentException("Category not found: " + dto.categoryId()));
 
+        StoreCategory storeCategory = null;
+        if (dto.storeCategoryId() != null) {
+            storeCategory = storeCategoryRepository.findById(dto.storeCategoryId())
+                    .orElseThrow(() -> new IllegalArgumentException("Store category not found: " + dto.storeCategoryId()));
+        }
+
         Product product = Product.builder()
                 .store(store)
                 .category(category)
+                .storeCategory(storeCategory)
                 .name(dto.name())
                 .description(dto.description())
                 .price(dto.price())
@@ -76,6 +86,12 @@ public class ProductServiceImpl implements ProductService {
             Categories category = categoriesRepository.findById(dto.categoryId())
                     .orElseThrow(() -> new IllegalArgumentException("Category not found: " + dto.categoryId()));
             product.setCategory(category);
+        }
+
+        if (dto.storeCategoryId() != null) {
+            StoreCategory storeCategory = storeCategoryRepository.findById(dto.storeCategoryId())
+                    .orElseThrow(() -> new IllegalArgumentException("Store category not found: " + dto.storeCategoryId()));
+            product.setStoreCategory(storeCategory);
         }
 
         if (dto.name() != null) {
@@ -169,6 +185,8 @@ public class ProductServiceImpl implements ProductService {
                 .storeName(product.getStore().getName())
                 .categoryId(product.getCategory().getId())
                 .categoryName(product.getCategory().getName())
+                .storeCategoryId(product.getStoreCategory() != null ? product.getStoreCategory().getId() : null)
+                .storeCategoryName(product.getStoreCategory() != null ? product.getStoreCategory().getName() : null)
                 .name(product.getName())
                 .description(product.getDescription())
                 .price(product.getPrice())

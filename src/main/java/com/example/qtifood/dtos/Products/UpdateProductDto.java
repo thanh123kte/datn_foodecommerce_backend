@@ -10,6 +10,8 @@ import jakarta.validation.constraints.Size;
 public record UpdateProductDto(
         Long categoryId,
 
+        Long storeCategoryId,
+
         @Size(max = 150, message = "Product name must not exceed 150 characters")
         String name,
 

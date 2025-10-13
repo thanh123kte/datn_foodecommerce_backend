@@ -16,6 +16,8 @@ public class ProductResponseDto {
     private String storeName;
     private Long categoryId;
     private String categoryName;
+    private Long storeCategoryId;
+    private String storeCategoryName;
     private String name;
     private String description;
     private BigDecimal price;

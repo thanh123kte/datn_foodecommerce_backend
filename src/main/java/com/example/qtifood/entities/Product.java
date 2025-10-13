@@ -38,6 +38,11 @@ public class Product {
         foreignKey = @ForeignKey(name = "fk_product_category"))
     private Categories category;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "store_category_id",
+        foreignKey = @ForeignKey(name = "fk_product_store_category"))
+    private StoreCategory storeCategory;
+
     @Column(length = 150, nullable = false)
     private String name;
 

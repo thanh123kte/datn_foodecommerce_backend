@@ -16,6 +16,8 @@ public record CreateProductDto(
         @NotNull(message = "Category ID is required")
         Long categoryId,
 
+        Long storeCategoryId,
+
         @NotBlank(message = "Product name is required")
         @Size(max = 150, message = "Product name must not exceed 150 characters")
         String name,
