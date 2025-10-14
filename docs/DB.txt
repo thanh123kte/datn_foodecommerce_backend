@@ -1,0 +1,441 @@
+////////////////////////////////////////////////////
+// ENUM DEFINITIONS
+////////////////////////////////////////////////////
+
+Enum RoleType {
+  ADMIN
+  SELLER
+  CUSTOMER
+}
+
+// Status duyệt bởi admin
+Enum StoreStatus {
+  PENDING      
+  ACTIVE       
+  INACTIVE     
+  BANNED
+  MAINTENANCE  
+}
+
+// Trạng thái mở đóng cửa hàng
+Enum OpenStatus {
+  OPEN
+  CLOSED
+}
+
+
+
+Enum ProductStatus {
+  AVAILABLE
+  UNAVAILABLE
+}
+
+
+Enum OrderStatus {
+  PENDING
+  CONFIRMED
+  PREPARING
+  SHIPPING
+  DELIVERED
+  CANCELLED
+}
+
+Enum PaymentStatus {
+  PENDING
+  SUCCESS
+  FAILED
+}
+
+Enum PaymentMethod {
+  COD
+  QTIWALLET
+}
+
+Enum VerificationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+Enum DeliveryStatus {
+  ASSIGNED
+  PICKED_UP
+  DELIVERING
+  COMPLETED
+  RETURNED
+}
+
+Enum TransactionType {
+  DEPOSIT
+  WITHDRAW
+  EARN
+  REFUND
+  PAYMENT
+}
+
+Enum DiscountType {
+  PERCENT
+  FIXED
+}
+
+Enum DiscountStatus {
+  ACTIVE
+  EXPIRED
+  DISABLED
+}
+
+Enum NotificationType {
+  ORDER
+  MESSAGE
+  PROMOTION
+  SYSTEM
+}
+
+Enum BannerStatus {
+  ACTIVE
+  INACTIVE
+  EXPIRED
+}
+
+////////////////////////////////////////////////////
+// USER MODULE
+////////////////////////////////////////////////////
+
+Table roles {
+  id int [pk, increment]
+  name RoleType [not null, unique]
+  description varchar(255)
+}
+
+Table users {
+  id int [pk, increment]
+  email varchar(100) [unique]
+  full_name varchar(100) [not null]
+  phone varchar(20)
+  gender varchar(10)
+  date_of_birth date
+  avatar_url text
+  is_active boolean [default: true]
+  password varchar(255)
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table user_roles {
+  user_id int [ref: > users.id]
+  role_id int [ref: > roles.id]
+  indexes { (user_id, role_id) [pk] }
+}
+
+Table addresses {
+  id int [pk, increment]
+  user_id int [ref: > users.id]
+  receiver varchar(100)
+  phone varchar(20)
+  address text
+  latitude double
+  longitude double
+  is_default boolean [default: false]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+////////////////////////////////////////////////////
+// STORE MODULE
+////////////////////////////////////////////////////
+
+Table stores {
+  id int [pk, increment]
+  owner_id int [ref: > users.id]
+  name varchar(100) [not null]
+  description text
+  address varchar(255)
+  phone varchar(20)
+  image_url text
+  store_status StoreStatus [default: 'PENDING'] // quản lý bởi admin
+  open_status OpenStatus [default: 'CLOSED'] // tự động tính hoặc cập nhật
+  open_time time
+  close_time time
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+
+Table categories {
+  id int [pk, increment]
+  name varchar(100)
+  description text
+  image_url text
+  is_active boolean [default: true]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+// Store-specific categories
+Table store_categories {
+  id int [pk, increment]
+  store_id int [ref: > stores.id]
+  name varchar(100)
+  description text
+  parent_id int [ref: > store_categories.id]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+////////////////////////////////////////////////////
+// PRODUCT MODULE
+////////////////////////////////////////////////////
+
+Table products {
+  id int [pk, increment]
+  store_id int [ref: > stores.id]
+  category_id int [ref: > categories.id]
+  store_category_id int [ref: > store_categories.id]
+  name varchar(150)
+  description text
+  price decimal(12,2)
+  discount_price decimal(12,2)
+  status ProductStatus [default: 'AVAILABLE']
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table product_images {
+  id int [pk, increment]
+  product_id int [ref: > products.id]
+  image_url text
+  is_primary boolean [default: false]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+////////////////////////////////////////////////////
+// DRIVER MODULE
+////////////////////////////////////////////////////
+
+Table drivers {
+  id int [pk, increment]
+  full_name varchar(100)
+  phone varchar(20) [unique]
+  password varchar(255)
+  avatar_url text
+  vehicle_type varchar(50)
+  vehicle_plate varchar(20)
+  cccd_number varchar(20)
+  license_number varchar(50)
+  verified boolean [default: false]
+  verification_status VerificationStatus [default: 'PENDING']
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table deliveries {
+  id int [pk, increment]
+  order_id int [ref: > orders.id]
+  driver_id int [ref: > drivers.id]
+  pickup_lat double
+  pickup_lng double
+  dropoff_lat double
+  dropoff_lng double
+  distance_km decimal(6,2)
+  status DeliveryStatus [default: 'ASSIGNED']
+  started_at timestamp
+  completed_at timestamp
+}
+
+////////////////////////////////////////////////////
+// ORDER MODULE
+////////////////////////////////////////////////////
+
+Table orders {
+  id int [pk, increment]
+  customer_id int [ref: > users.id]
+  store_id int [ref: > stores.id]
+  driver_id int [ref: > drivers.id]
+  shipping_address_id int [ref: > addresses.id]
+  total_amount decimal(12,2)
+  shipping_fee decimal(12,2)
+  admin_voucher_id int [ref: > vouchers.id]
+  seller_voucher_id int [ref: > vouchers.id]
+  payment_method PaymentMethod [not null] // COD | QTIWALLET 
+  payment_status PaymentStatus [default: 'PENDING']
+  paid_at timestamp
+  order_status OrderStatus [default: 'PENDING']
+  note text
+  cancel_reason text
+  expected_delivery_time timestamp
+  rating_status boolean [default: false]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+
+Table order_items {
+  id int [pk, increment]
+  order_id int [ref: > orders.id]
+  product_id int [ref: > products.id]
+  quantity int
+  price decimal(12,2)
+}
+
+////////////////////////////////////////////////////
+// WALLET & PAYMENT
+////////////////////////////////////////////////////
+
+Table wallets {
+  id int [pk, increment]
+  user_id int [ref: > users.id]
+  balance decimal(14,2) [default: 0]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table wallet_transactions {
+  id int [pk, increment]
+  wallet_id int [ref: > wallets.id]
+  amount decimal(12,2)
+  transaction_type TransactionType
+  description text
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+
+////////////////////////////////////////////////////
+// PROMOTION MODULE
+////////////////////////////////////////////////////
+
+Table vouchers {
+  id int [pk, increment]
+  code varchar(50)
+  title varchar(150)
+  discount_type DiscountType
+  discount_value decimal(10,2)
+  min_order_value decimal(10,2)
+  max_discount decimal(10,2)
+  start_date timestamp
+  end_date timestamp
+  usage_limit int
+  used_count int [default: 0]
+  seller_id int [ref: > stores.id]
+  status DiscountStatus [default: 'ACTIVE']
+  is_created_by_admin boolean [default: false]
+}
+
+Table banners {
+  id int [pk, increment]
+  title varchar(150)
+  image_url text
+  description text
+  status BannerStatus [default: 'ACTIVE']
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+////////////////////////////////////////////////////
+// INTERACTIONS MODULE
+////////////////////////////////////////////////////
+
+Table store_reviews {
+  id int [pk, increment]
+  order_id int [ref: > orders.id] 
+  store_id int [ref: > stores.id]
+  customer_id int [ref: > users.id]
+  rating int 
+  comment text
+  image_url text
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table search_history {
+  id int [pk, increment]
+  user_id int [ref: > users.id]
+  keyword varchar(255) [not null]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+
+
+Table cart_items {
+  id int [pk, increment]
+  customer_id int [ref: > users.id]
+  store_id int [ref: > stores.id]
+  product_id int [ref: > products.id]
+  quantity int [default: 1]
+  note text
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  updated_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table wishlists {
+  id int [pk, increment]
+  customer_id int [ref: > users.id]
+  product_id int [ref: > products.id]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+////////////////////////////////////////////////////
+// CHAT & NOTIFICATION
+////////////////////////////////////////////////////
+
+Table conversations {
+  id int [pk, increment]
+  customer_id int [ref: > users.id]
+  seller_id int [ref: > users.id]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table messages {
+  id int [pk, increment]
+  conversation_id int [ref: > conversations.id]
+  sender_id int [ref: > users.id]
+  content text
+  message_type varchar(20)
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table notifications {
+  id int [pk, increment]
+  user_id int [ref: > users.id]
+  title varchar(100)
+  message text
+  type NotificationType
+  is_read boolean [default: false]
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+////////////////////////////////////////////////////
+// ADMIN & REPORT MODULE
+////////////////////////////////////////////////////
+
+Table revenue_reports {
+  id int [pk, increment]
+  store_id int [ref: > stores.id]
+  total_orders int
+  total_revenue decimal(14,2)
+  total_discount decimal(14,2)
+  total_shipping_fee decimal(14,2)
+  report_date date
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table platform_revenue_reports {
+  id int [pk, increment]
+  store_id int [ref: > stores.id]
+  seller_id int [ref: > users.id]
+  total_orders int
+  total_revenue decimal(14,2)
+  total_discount decimal(14,2)
+  total_shipping_fee decimal(14,2)
+  total_commission decimal(14,2)
+  report_type varchar(20) [default: 'DAILY']
+  report_date date
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}
+
+Table admin_logs {
+  id int [pk, increment]
+  admin_id int [ref: > users.id]
+  action varchar(255)
+  entity varchar(100)
+  entity_id int
+  created_at timestamp [default: `CURRENT_TIMESTAMP`]
+}

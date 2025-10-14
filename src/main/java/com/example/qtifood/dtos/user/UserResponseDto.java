@@ -1,14 +1,22 @@
+// src/main/java/com/example/qtifood/dtos/user/UserResponseDto.java
 package com.example.qtifood.dtos.user;
 
-import lombok.Builder;
-import lombok.Data;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Set;
 
-@Data
-@Builder
-public class UserResponseDto {
-    private Long id;
-    private String username;
-    private String email;
-    private String role;
-    private Boolean active;
-}
+import com.example.qtifood.entities.RoleType;
+
+public record UserResponseDto(
+        Long id,
+        String fullName,
+        String email,
+        String phone,
+        String avatarUrl,
+        LocalDate dateOfBirth,
+        String gender,
+        Boolean isActive,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt,
+        Set<RoleType> roles
+) {}
