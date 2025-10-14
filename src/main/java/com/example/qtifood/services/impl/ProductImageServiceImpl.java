@@ -11,6 +11,7 @@ import com.example.qtifood.dtos.ProductImages.UpdateProductImageDto;
 import com.example.qtifood.dtos.ProductImages.ProductImageResponseDto;
 import com.example.qtifood.entities.Product;
 import com.example.qtifood.entities.ProductImage;
+import com.example.qtifood.exceptions.ResourceNotFoundException;
 import com.example.qtifood.repositories.ProductImageRepository;
 import com.example.qtifood.repositories.ProductRepository;
 import com.example.qtifood.services.ProductImageService;
@@ -28,7 +29,7 @@ public class ProductImageServiceImpl implements ProductImageService {
     @Override
     public ProductImageResponseDto createProductImage(CreateProductImageDto dto) {
         Product product = productRepository.findById(dto.productId())
-                .orElseThrow(() -> new IllegalArgumentException("Product not found: " + dto.productId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + dto.productId()));
 
         // If this image is set as primary, reset other primary images for this product
         if (Boolean.TRUE.equals(dto.isPrimary())) {
@@ -60,7 +61,7 @@ public class ProductImageServiceImpl implements ProductImageService {
     @Transactional(readOnly = true)
     public ProductImageResponseDto getProductImageById(Long id) {
         ProductImage productImage = productImageRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Product image not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product image not found with id: " + id));
         return toDto(productImage);
     }
 
@@ -77,14 +78,14 @@ public class ProductImageServiceImpl implements ProductImageService {
     @Transactional(readOnly = true)
     public ProductImageResponseDto getPrimaryImageByProductId(Long productId) {
         ProductImage productImage = productImageRepository.findByProductIdAndIsPrimaryTrue(productId)
-                .orElseThrow(() -> new IllegalArgumentException("Primary image not found for product: " + productId));
+                .orElseThrow(() -> new ResourceNotFoundException("Primary image not found for product with id: " + productId));
         return toDto(productImage);
     }
 
     @Override
     public ProductImageResponseDto updateProductImage(Long id, UpdateProductImageDto dto) {
         ProductImage productImage = productImageRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Product image not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product image not found with id: " + id));
 
         // If setting as primary, reset other primary images for this product
         if (Boolean.TRUE.equals(dto.isPrimary())) {
@@ -102,7 +103,7 @@ public class ProductImageServiceImpl implements ProductImageService {
     @Override
     public void deleteProductImage(Long id) {
         ProductImage productImage = productImageRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Product image not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product image not found with id: " + id));
         
         Long productId = productImage.getProduct().getId();
         boolean wasPrimary = Boolean.TRUE.equals(productImage.getIsPrimary());
@@ -128,7 +129,7 @@ public class ProductImageServiceImpl implements ProductImageService {
     @Override
     public ProductImageResponseDto setPrimaryImage(Long imageId) {
         ProductImage productImage = productImageRepository.findById(imageId)
-                .orElseThrow(() -> new IllegalArgumentException("Product image not found: " + imageId));
+                .orElseThrow(() -> new ResourceNotFoundException("Product image not found with id: " + imageId));
 
         // Reset all primary images for this product
         productImageRepository.resetPrimaryImageForProduct(productImage.getProduct().getId());

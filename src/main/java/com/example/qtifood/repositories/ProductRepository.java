@@ -21,6 +21,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     
     List<Product> findByStoreIdAndStatus(Long storeId, ProductStatus status);
     
+    boolean existsByStoreIdAndNameIgnoreCase(Long storeId, String name);
+    
+    boolean existsByStoreIdAndNameIgnoreCaseAndIdNot(Long storeId, String name, Long id);
+    
     @Query("SELECT p FROM Product p WHERE p.store.id = :storeId AND p.name LIKE %:name%")
     List<Product> findByStoreIdAndNameContaining(@Param("storeId") Long storeId, 
                                                @Param("name") String name);

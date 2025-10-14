@@ -14,6 +14,8 @@ import com.example.qtifood.entities.Store;
 import com.example.qtifood.entities.StoreCategory;
 import com.example.qtifood.enums.ProductStatus;
 import com.example.qtifood.entities.Categories;
+import com.example.qtifood.exceptions.ResourceNotFoundException;
+import com.example.qtifood.exceptions.EntityDuplicateException;
 import com.example.qtifood.repositories.ProductRepository;
 import com.example.qtifood.repositories.StoreRepository;
 import com.example.qtifood.repositories.CategoriesRepository;
@@ -34,16 +36,21 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductResponseDto createProduct(CreateProductDto dto) {
+        // Check if product name already exists in the same store
+        if (productRepository.existsByStoreIdAndNameIgnoreCase(dto.storeId(), dto.name())) {
+            throw new EntityDuplicateException("Product with name '" + dto.name() + "' already exists in this store");
+        }
+
         Store store = storeRepository.findById(dto.storeId())
-                .orElseThrow(() -> new IllegalArgumentException("Store not found: " + dto.storeId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Store not found with id: " + dto.storeId()));
 
         Categories category = categoriesRepository.findById(dto.categoryId())
-                .orElseThrow(() -> new IllegalArgumentException("Category not found: " + dto.categoryId()));
+                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + dto.categoryId()));
 
         StoreCategory storeCategory = null;
         if (dto.storeCategoryId() != null) {
             storeCategory = storeCategoryRepository.findById(dto.storeCategoryId())
-                    .orElseThrow(() -> new IllegalArgumentException("Store category not found: " + dto.storeCategoryId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Store category not found with id: " + dto.storeCategoryId()));
         }
 
         Product product = Product.builder()
@@ -73,28 +80,33 @@ public class ProductServiceImpl implements ProductService {
     @Transactional(readOnly = true)
     public ProductResponseDto getProductById(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
         return toDto(product);
     }
 
     @Override
     public ProductResponseDto updateProduct(Long id, UpdateProductDto dto) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
 
         if (dto.categoryId() != null) {
             Categories category = categoriesRepository.findById(dto.categoryId())
-                    .orElseThrow(() -> new IllegalArgumentException("Category not found: " + dto.categoryId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + dto.categoryId()));
             product.setCategory(category);
         }
 
         if (dto.storeCategoryId() != null) {
             StoreCategory storeCategory = storeCategoryRepository.findById(dto.storeCategoryId())
-                    .orElseThrow(() -> new IllegalArgumentException("Store category not found: " + dto.storeCategoryId()));
+                    .orElseThrow(() -> new ResourceNotFoundException("Store category not found with id: " + dto.storeCategoryId()));
             product.setStoreCategory(storeCategory);
         }
 
         if (dto.name() != null) {
+            // Check if new name already exists in the same store (excluding current product)
+            if (productRepository.existsByStoreIdAndNameIgnoreCaseAndIdNot(
+                    product.getStore().getId(), dto.name(), id)) {
+                throw new EntityDuplicateException("Product with name '" + dto.name() + "' already exists in this store");
+            }
             product.setName(dto.name());
         }
 
@@ -120,7 +132,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
         productRepository.delete(product);
     }
 
@@ -172,7 +184,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public ProductResponseDto updateProductStatus(Long id, ProductStatus status) {
         Product product = productRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Product not found: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
         
         product.setStatus(status);
         return toDto(productRepository.save(product));
