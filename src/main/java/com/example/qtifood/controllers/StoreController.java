@@ -7,7 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.qtifood.dtos.Stores.*;
-import com.example.qtifood.entities.StoreStatus;
+import com.example.qtifood.enums.StoreStatus;
 import com.example.qtifood.services.StoreService;
 
 import jakarta.validation.Valid;
@@ -44,7 +44,7 @@ public class StoreController {
     }
 
     @GetMapping("/owner/{ownerId}")
-    public ResponseEntity<List<StoreResponseDto>> byOwner(@PathVariable Long ownerId) {
+    public ResponseEntity<List<StoreResponseDto>> byOwner(@PathVariable String ownerId) {
         return ResponseEntity.ok(storeService.getStoresByOwner(ownerId));
     }
 

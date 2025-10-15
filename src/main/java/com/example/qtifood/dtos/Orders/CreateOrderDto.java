@@ -7,7 +7,7 @@ import com.example.qtifood.enums.PaymentMethod;
 
 @Data
 public class CreateOrderDto {
-    private Long customerId;
+    private String customerId;
     private Long storeId;
     private Long driverId;
     private Long shippingAddressId;

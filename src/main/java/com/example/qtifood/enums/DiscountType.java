@@ -1,4 +1,4 @@
-package com.example.qtifood.entities;
+package com.example.qtifood.enums;
 
 public enum DiscountType {
     PERCENTAGE,

@@ -1,9 +1,11 @@
 package com.example.qtifood.dtos.Voucher;
 
-import com.example.qtifood.entities.DiscountType;
-import com.example.qtifood.entities.DiscountStatus;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+
+import com.example.qtifood.enums.DiscountStatus;
+import com.example.qtifood.enums.DiscountType;
 
 public record UpdateVoucherDto(
         String title,

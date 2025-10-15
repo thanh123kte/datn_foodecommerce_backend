@@ -18,8 +18,8 @@ import java.util.Set;
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "firebase_user_id", length = 128, nullable = false, unique = true)
+    private String id;
 
     @Column(name = "full_name", length = 100, nullable = false)
     private String fullName;

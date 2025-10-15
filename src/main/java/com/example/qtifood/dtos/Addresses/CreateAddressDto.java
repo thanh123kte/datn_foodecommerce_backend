@@ -16,7 +16,7 @@ public class CreateAddressDto {
     private String address;
 
     @NotNull
-    private Long userId;
+    private String userId;
 
     private Double latitude;
     private Double longitude;

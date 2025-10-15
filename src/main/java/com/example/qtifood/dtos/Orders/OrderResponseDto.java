@@ -10,7 +10,7 @@ import com.example.qtifood.enums.PaymentStatus;
 @Data
 public class OrderResponseDto {
     private Long id;
-    private Long customerId;
+    private String customerId;
     private Long storeId;
     private Long driverId;
     private Long shippingAddressId;

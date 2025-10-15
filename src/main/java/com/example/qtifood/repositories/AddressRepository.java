@@ -9,9 +9,9 @@ import org.springframework.data.repository.query.Param;
 import com.example.qtifood.entities.Address;
 
 public interface AddressRepository extends JpaRepository<Address, Long> {
-    List<Address> findByUserId(Long userId);
+    List<Address> findByUserId(String userId);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("update Address a set a.isDefault = false where a.user.id = :userId and a.id <> :keepId")
-    void unsetOthersDefault(@Param("userId") Long userId, @Param("keepId") Long keepId);
+    void unsetOthersDefault(@Param("userId") String userId, @Param("keepId") Long keepId);
 }
