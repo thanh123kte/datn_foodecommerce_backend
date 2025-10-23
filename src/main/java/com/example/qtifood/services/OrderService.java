@@ -14,4 +14,5 @@ public interface OrderService {
     List<OrderResponseDto> getOrdersByCustomer(Long customerId);
     List<OrderResponseDto> getOrdersByStore(Long storeId);
     List<OrderResponseDto> getOrdersByDriver(Long driverId);
+    OrderResponseDto updateOrderStatus(Long id, String status);
 }

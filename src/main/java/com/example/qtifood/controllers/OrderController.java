@@ -4,6 +4,7 @@ import com.example.qtifood.dtos.Orders.CreateOrderDto;
 import com.example.qtifood.dtos.Orders.UpdateOrderDto;
 import com.example.qtifood.dtos.Orders.OrderResponseDto;
 import com.example.qtifood.services.OrderService;
+import com.example.qtifood.enums.OrderStatus;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,5 +55,10 @@ public class OrderController {
     @GetMapping("/driver/{driverId}")
     public ResponseEntity<List<OrderResponseDto>> getOrdersByDriver(@PathVariable Long driverId) {
         return ResponseEntity.ok(orderService.getOrdersByDriver(driverId));
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<OrderResponseDto> updateOrderStatus(@PathVariable Long id, @RequestParam OrderStatus status) {
+        return ResponseEntity.ok(orderService.updateOrderStatus(id, status.name()));
     }
 }

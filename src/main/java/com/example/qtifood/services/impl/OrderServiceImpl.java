@@ -119,4 +119,27 @@ public class OrderServiceImpl implements OrderService {
             .map(orderMapper::toDto)
             .collect(Collectors.toList());
     }
+
+    @Override
+    @Transactional
+    public OrderResponseDto updateOrderStatus(Long id, String status) {
+        Order order = orderRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        
+        try {
+            OrderStatus orderStatus = OrderStatus.valueOf(status.toUpperCase());
+            order.setOrderStatus(orderStatus);
+            
+            // Auto-update payment status based on order status
+            if (orderStatus == OrderStatus.DELIVERED) {
+                order.setPaymentStatus(PaymentStatus.SUCCESS);
+            } else if (orderStatus == OrderStatus.CANCELLED) {
+                order.setPaymentStatus(PaymentStatus.FAILED);
+            }
+            
+            return orderMapper.toDto(orderRepository.save(order));
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Invalid order status: " + status);
+        }
+    }
 }
