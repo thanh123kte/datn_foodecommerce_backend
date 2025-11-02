@@ -368,9 +368,13 @@ Table cart_items {
 Table wishlists {
   id int [pk, increment]
   customer_id int [ref: > users.id]
-  product_id int [ref: > products.id]
+  store_id int [ref: > stores.id]
   created_at timestamp [default: `CURRENT_TIMESTAMP`]
+  indexes {
+    (customer_id, store_id) [unique]  // tránh trùng quán yêu thích
+  }
 }
+
 
 ////////////////////////////////////////////////////
 // CHAT & NOTIFICATION
