@@ -45,7 +45,7 @@ public class AddressController {
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<AddressResponseDto>> getByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<AddressResponseDto>> getByUserId(@PathVariable String userId) {
         return ResponseEntity.ok(addressService.getAddressesByUserId(userId));
     }
 

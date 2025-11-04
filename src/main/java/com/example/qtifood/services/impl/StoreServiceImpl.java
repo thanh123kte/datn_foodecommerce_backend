@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.qtifood.dtos.Stores.*;
 import com.example.qtifood.entities.Store;
 import com.example.qtifood.entities.User;
-import com.example.qtifood.entities.StoreStatus;
+import com.example.qtifood.enums.StoreStatus;
 import com.example.qtifood.mappers.StoreMapper;
 import com.example.qtifood.repositories.StoreRepository;
 import com.example.qtifood.repositories.UserRepository;
@@ -81,7 +81,7 @@ public class StoreServiceImpl implements StoreService {
     }
 
     @Override @Transactional(readOnly = true)
-    public List<StoreResponseDto> getStoresByOwner(Long ownerId) {
+    public List<StoreResponseDto> getStoresByOwner(String ownerId) {
         return storeRepository.findByOwnerId(ownerId).stream().map(StoreMapper::toDto).toList();
     }
 

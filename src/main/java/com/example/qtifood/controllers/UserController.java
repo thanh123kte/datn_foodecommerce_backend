@@ -2,7 +2,7 @@
 package com.example.qtifood.controllers;
 
 import com.example.qtifood.dtos.user.*;
-import com.example.qtifood.entities.RoleType;
+import com.example.qtifood.enums.RoleType;
 import com.example.qtifood.services.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public UserResponseDto get(@PathVariable Long id) {
+    public UserResponseDto get(@PathVariable String id) {
         return userService.getUser(id);
     }
 
@@ -34,24 +34,24 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public UserResponseDto update(@PathVariable Long id, @RequestBody @Valid UpdateUserRequestDto dto) {
+    public UserResponseDto update(@PathVariable String id, @RequestBody @Valid UpdateUserRequestDto dto) {
         return userService.updateUser(id, dto);
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Void> delete(@PathVariable String id) {
         userService.deleteUser(id);
         return ResponseEntity.noContent().build();
     }
 
     /* ====== Add/Remove role ====== */
     @PostMapping("/{id}/roles/{role}")
-    public UserResponseDto addRole(@PathVariable Long id, @PathVariable RoleType role) {
+    public UserResponseDto addRole(@PathVariable String id, @PathVariable RoleType role) {
         return ((com.example.qtifood.services.impl.UserServiceImpl) userService).addRole(id, role);
     }
 
     @DeleteMapping("/{id}/roles/{role}")
-    public UserResponseDto removeRole(@PathVariable Long id, @PathVariable RoleType role) {
+    public UserResponseDto removeRole(@PathVariable String id, @PathVariable RoleType role) {
         return ((com.example.qtifood.services.impl.UserServiceImpl) userService).removeRole(id, role);
     }
 }

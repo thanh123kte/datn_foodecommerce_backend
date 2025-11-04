@@ -11,7 +11,7 @@ public interface OrderService {
     void deleteOrder(Long id);
     OrderResponseDto getOrderById(Long id);
     List<OrderResponseDto> getAllOrders();
-    List<OrderResponseDto> getOrdersByCustomer(Long customerId);
+    List<OrderResponseDto> getOrdersByCustomer(String customerId);
     List<OrderResponseDto> getOrdersByStore(Long storeId);
     List<OrderResponseDto> getOrdersByDriver(Long driverId);
     OrderResponseDto updateOrderStatus(Long id, String status);

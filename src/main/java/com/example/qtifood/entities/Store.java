@@ -7,6 +7,8 @@ import java.time.LocalTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.example.qtifood.enums.OpenStatus;
+import com.example.qtifood.enums.StoreStatus;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -31,7 +33,7 @@ public class Store {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "owner_id", nullable = false,
         foreignKey = @ForeignKey(name = "fk_store_owner"))
-    private User owner;
+        private User owner; // Change from Long id to String id for firebase_user_id
 
     @Column(length = 100, nullable = false)
     private String name;
@@ -61,6 +63,11 @@ public class Store {
     @Column(nullable = false)
     @Builder.Default
     private StoreStatus status = StoreStatus.PENDING;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    @Builder.Default
+    private OpenStatus opStatus = OpenStatus.OPEN;
 
     @Column(name = "open_time")
     private LocalTime openTime;

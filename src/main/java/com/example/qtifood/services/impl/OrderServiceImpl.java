@@ -4,10 +4,6 @@ import com.example.qtifood.dtos.Orders.CreateOrderDto;
 import com.example.qtifood.dtos.Orders.UpdateOrderDto;
 import com.example.qtifood.dtos.Orders.OrderResponseDto;
 import com.example.qtifood.entities.Order;
-import com.example.qtifood.entities.User;
-import com.example.qtifood.entities.Store;
-import com.example.qtifood.entities.Driver;
-import com.example.qtifood.entities.Address;
 import com.example.qtifood.enums.OrderStatus;
 import com.example.qtifood.enums.PaymentStatus;
 import com.example.qtifood.exceptions.ResourceNotFoundException;
@@ -98,7 +94,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<OrderResponseDto> getOrdersByCustomer(Long customerId) {
+    public List<OrderResponseDto> getOrdersByCustomer(String customerId) {
         return orderRepository.findByCustomerId(customerId).stream()
             .map(orderMapper::toDto)
             .collect(Collectors.toList());

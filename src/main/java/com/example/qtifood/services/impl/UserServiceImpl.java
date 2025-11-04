@@ -3,6 +3,7 @@ package com.example.qtifood.services.impl;
 
 import com.example.qtifood.dtos.user.*;
 import com.example.qtifood.entities.*;
+import com.example.qtifood.enums.RoleType;
 import com.example.qtifood.repositories.RoleRepository;
 import com.example.qtifood.repositories.UserRepository;
 import com.example.qtifood.services.UserService;
@@ -26,15 +27,15 @@ public class UserServiceImpl implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     private UserResponseDto toDto(User u) {
-        Set<RoleType> roleNames = u.getRoles().stream()
-                .map(Role::getName)
-                .collect(Collectors.toSet());
-        return new UserResponseDto(
-                u.getId(), u.getFullName(), u.getEmail(), u.getPhone(),
-                u.getAvatarUrl(), u.getDateOfBirth(), u.getGender(),
-                u.getIsActive(), u.getCreatedAt(), u.getUpdatedAt(),
-                roleNames
-        );
+    Set<RoleType> roleNames = u.getRoles().stream()
+        .map(Role::getName)
+        .collect(Collectors.toSet());
+    return new UserResponseDto(
+        u.getId(), u.getFullName(), u.getEmail(), u.getPhone(),
+        u.getAvatarUrl(), u.getDateOfBirth(), u.getGender(),
+        u.getIsActive(), u.getCreatedAt(), u.getUpdatedAt(),
+        roleNames
+    );
     }
 
     @Override @Transactional(readOnly = true)
@@ -43,7 +44,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override @Transactional(readOnly = true)
-    public UserResponseDto getUser(Long id) {
+    public UserResponseDto getUser(String id) {
         User u = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + id));
         return toDto(u);
@@ -69,6 +70,7 @@ public class UserServiceImpl implements UserService {
         }
 
         User u = User.builder()
+                .id(dto.id())
                 .fullName(dto.fullName())
                 .email(dto.email())
                 .phone(dto.phone())
@@ -84,7 +86,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto updateUser(Long id, UpdateUserRequestDto dto) {
+    public UserResponseDto updateUser(String id, UpdateUserRequestDto dto) {
         User u = userRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("User not found: " + id));
 
@@ -118,25 +120,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void deleteUser(Long id) {
+    public void deleteUser(String id) {
         if (!userRepository.existsById(id)) throw new IllegalArgumentException("User not found: " + id);
         userRepository.deleteById(id);
     }
 
     /* ========= tiện ích gán/bỏ role riêng lẻ ========= */
-    public UserResponseDto addRole(Long userId, RoleType roleType) {
-        User u = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
-        Role r = roleRepository.findByName(roleType)
-                .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleType));
-        u.getRoles().add(r);
-        return toDto(userRepository.save(u));
+    public UserResponseDto addRole(String userId, RoleType roleType) {
+    User u = userRepository.findById(userId)
+        .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
+    Role r = roleRepository.findByName(roleType)
+        .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleType));
+    u.getRoles().add(r);
+    return toDto(userRepository.save(u));
     }
 
-    public UserResponseDto removeRole(Long userId, RoleType roleType) {
-        User u = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
-        u.getRoles().removeIf(role -> role.getName() == roleType);
-        return toDto(userRepository.save(u));
+    public UserResponseDto removeRole(String userId, RoleType roleType) {
+    User u = userRepository.findById(userId)
+        .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
+    u.getRoles().removeIf(role -> role.getName() == roleType);
+    return toDto(userRepository.save(u));
     }
 }

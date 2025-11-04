@@ -5,6 +5,9 @@ import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.example.qtifood.enums.DiscountStatus;
+import com.example.qtifood.enums.DiscountType;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
