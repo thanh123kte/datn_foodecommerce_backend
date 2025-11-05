@@ -9,25 +9,25 @@ import java.util.List;
 
 public interface CartItemService {
     
-    CartItemResponseDto addToCart(Long customerId, CreateCartItemDto dto);
+    CartItemResponseDto addToCart(String customerId, CreateCartItemDto dto);
     
-    CartItemResponseDto updateCartItem(Long customerId, Long cartItemId, UpdateCartItemDto dto);
+    CartItemResponseDto updateCartItem(String customerId, Long cartItemId, UpdateCartItemDto dto);
     
-    void removeFromCart(Long customerId, Long cartItemId);
+    void removeFromCart(String customerId, Long cartItemId);
     
-    void clearCart(Long customerId);
+    void clearCart(String customerId);
     
-    void clearCartByStore(Long customerId, Long storeId);
+    void clearCartByStore(String customerId, Long storeId);
     
-    List<CartItemResponseDto> getCartItems(Long customerId);
+    List<CartItemResponseDto> getCartItems(String customerId);
     
-    List<CartItemResponseDto> getCartItemsByStore(Long customerId, Long storeId);
+    List<CartItemResponseDto> getCartItemsByStore(String customerId, Long storeId);
     
-    List<CartSummaryDto> getCartSummary(Long customerId);
+    List<CartSummaryDto> getCartSummary(String customerId);
     
-    CartItemResponseDto getCartItem(Long customerId, Long cartItemId);
+    CartItemResponseDto getCartItem(String customerId, Long cartItemId);
     
-    Long getCartItemsCount(Long customerId);
+    Long getCartItemsCount(String customerId);
     
-    boolean isProductInCart(Long customerId, Long productId);
+    boolean isProductInCart(String customerId, Long productId);
 }

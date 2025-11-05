@@ -2,7 +2,7 @@ package com.example.qtifood.mappers;
 
 import com.example.qtifood.dtos.user.UserResponseDto;
 import com.example.qtifood.entities.User;
-import com.example.qtifood.entities.RoleType;
+import com.example.qtifood.enums.RoleType;
 
 import java.util.Set;
 import java.util.stream.Collectors;

@@ -7,17 +7,17 @@ import java.util.List;
 
 public interface WishlistService {
     
-    WishlistResponseDto addToWishlist(Long customerId, CreateWishlistDto dto);
+    WishlistResponseDto addToWishlist(String customerId, CreateWishlistDto dto);
     
-    void removeFromWishlist(Long customerId, Long storeId);
+    void removeFromWishlist(String customerId, Long storeId);
     
-    void clearWishlist(Long customerId);
+    void clearWishlist(String customerId);
     
-    List<WishlistResponseDto> getWishlist(Long customerId);
+    List<WishlistResponseDto> getWishlist(String customerId);
     
-    Long getWishlistCount(Long customerId);
+    Long getWishlistCount(String customerId);
     
-    boolean isStoreInWishlist(Long customerId, Long storeId);
+    boolean isStoreInWishlist(String customerId, Long storeId);
     
-    List<Long> getCustomersByStore(Long storeId);
+    List<String> getCustomersByStore(Long storeId);
 }

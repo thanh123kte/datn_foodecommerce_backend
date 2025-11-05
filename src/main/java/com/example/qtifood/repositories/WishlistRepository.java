@@ -18,33 +18,33 @@ public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
            "LEFT JOIN FETCH w.store s " +
            "WHERE w.customer.id = :customerId " +
            "ORDER BY w.createdAt DESC")
-    List<Wishlist> findByCustomerIdWithStoreDetails(@Param("customerId") Long customerId);
+    List<Wishlist> findByCustomerIdWithStoreDetails(@Param("customerId") String customerId);
     
     // Tìm wishlist specific của customer và store
     @Query("SELECT w FROM Wishlist w " +
            "WHERE w.customer.id = :customerId AND w.store.id = :storeId")
-    Optional<Wishlist> findByCustomerIdAndStoreId(@Param("customerId") Long customerId, 
+    Optional<Wishlist> findByCustomerIdAndStoreId(@Param("customerId") String customerId, 
                                                  @Param("storeId") Long storeId);
     
     // Đếm số lượng stores trong wishlist của customer
     @Query("SELECT COUNT(w) FROM Wishlist w WHERE w.customer.id = :customerId")
-    Long countByCustomerId(@Param("customerId") Long customerId);
+    Long countByCustomerId(@Param("customerId") String customerId);
     
     // Xóa tất cả wishlist của customer
     @Modifying
     @Query("DELETE FROM Wishlist w WHERE w.customer.id = :customerId")
-    void deleteByCustomerId(@Param("customerId") Long customerId);
+    void deleteByCustomerId(@Param("customerId") String customerId);
     
     // Kiểm tra xem store có trong wishlist của customer không
-    boolean existsByCustomerIdAndStoreId(Long customerId, Long storeId);
+    boolean existsByCustomerIdAndStoreId(String customerId, Long storeId);
     
     // Lấy danh sách customer ids đã thêm store vào wishlist
     @Query("SELECT DISTINCT w.customer.id FROM Wishlist w WHERE w.store.id = :storeId")
-    List<Long> findCustomerIdsByStoreId(@Param("storeId") Long storeId);
+    List<String> findCustomerIdsByStoreId(@Param("storeId") Long storeId);
     
     // Xóa wishlist theo customer và store
     @Modifying
     @Query("DELETE FROM Wishlist w WHERE w.customer.id = :customerId AND w.store.id = :storeId")
-    void deleteByCustomerIdAndStoreId(@Param("customerId") Long customerId, 
+    void deleteByCustomerIdAndStoreId(@Param("customerId") String customerId, 
                                      @Param("storeId") Long storeId);
 }

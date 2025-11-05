@@ -32,7 +32,7 @@ public class CartItemServiceImpl implements CartItemService {
     private final StoreRepository storeRepository;
 
     @Override
-    public CartItemResponseDto addToCart(Long customerId, CreateCartItemDto dto) {
+    public CartItemResponseDto addToCart(String customerId, CreateCartItemDto dto) {
         // Validate customer exists
         User customer = userRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + customerId));
@@ -67,7 +67,7 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public CartItemResponseDto updateCartItem(Long customerId, Long cartItemId, UpdateCartItemDto dto) {
+    public CartItemResponseDto updateCartItem(String customerId, Long cartItemId, UpdateCartItemDto dto) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart item not found with id: " + cartItemId));
 
@@ -84,7 +84,7 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public void removeFromCart(Long customerId, Long cartItemId) {
+    public void removeFromCart(String customerId, Long cartItemId) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart item not found with id: " + cartItemId));
 
@@ -97,7 +97,7 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public void clearCart(Long customerId) {
+    public void clearCart(String customerId) {
         // Validate customer exists
         if (!userRepository.existsById(customerId)) {
             throw new ResourceNotFoundException("Customer not found with id: " + customerId);
@@ -107,7 +107,7 @@ public class CartItemServiceImpl implements CartItemService {
     }
 
     @Override
-    public void clearCartByStore(Long customerId, Long storeId) {
+    public void clearCartByStore(String customerId, Long storeId) {
         // Validate customer exists
         if (!userRepository.existsById(customerId)) {
             throw new ResourceNotFoundException("Customer not found with id: " + customerId);
@@ -123,7 +123,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CartItemResponseDto> getCartItems(Long customerId) {
+    public List<CartItemResponseDto> getCartItems(String customerId) {
         // Validate customer exists
         if (!userRepository.existsById(customerId)) {
             throw new ResourceNotFoundException("Customer not found with id: " + customerId);
@@ -135,7 +135,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CartItemResponseDto> getCartItemsByStore(Long customerId, Long storeId) {
+    public List<CartItemResponseDto> getCartItemsByStore(String customerId, Long storeId) {
         // Validate customer exists
         if (!userRepository.existsById(customerId)) {
             throw new ResourceNotFoundException("Customer not found with id: " + customerId);
@@ -152,7 +152,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<CartSummaryDto> getCartSummary(Long customerId) {
+    public List<CartSummaryDto> getCartSummary(String customerId) {
         // Validate customer exists
         if (!userRepository.existsById(customerId)) {
             throw new ResourceNotFoundException("Customer not found with id: " + customerId);
@@ -164,7 +164,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public CartItemResponseDto getCartItem(Long customerId, Long cartItemId) {
+    public CartItemResponseDto getCartItem(String customerId, Long cartItemId) {
         CartItem cartItem = cartItemRepository.findById(cartItemId)
                 .orElseThrow(() -> new ResourceNotFoundException("Cart item not found with id: " + cartItemId));
 
@@ -178,7 +178,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public Long getCartItemsCount(Long customerId) {
+    public Long getCartItemsCount(String customerId) {
         // Validate customer exists
         if (!userRepository.existsById(customerId)) {
             throw new ResourceNotFoundException("Customer not found with id: " + customerId);
@@ -189,7 +189,7 @@ public class CartItemServiceImpl implements CartItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isProductInCart(Long customerId, Long productId) {
+    public boolean isProductInCart(String customerId, Long productId) {
         // Validate customer exists
         if (!userRepository.existsById(customerId)) {
             throw new ResourceNotFoundException("Customer not found with id: " + customerId);

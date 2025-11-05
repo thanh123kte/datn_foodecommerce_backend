@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class CartItemResponseDto {
     
     private Long id;
-    private Long customerId;
+    private String customerId;
     private ProductResponseDto product;
     private StoreResponseDto store;
     private Integer quantity;

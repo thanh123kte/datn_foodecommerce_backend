@@ -1,12 +1,9 @@
 package com.example.qtifood.controllers;
 
-import com.example.qtifood.dtos.Conversations.CreateConversationDto;
 import com.example.qtifood.dtos.Conversations.ConversationResponseDto;
 import com.example.qtifood.dtos.Conversations.ConversationDetailDto;
 import com.example.qtifood.services.ConversationService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -25,15 +22,15 @@ public class ConversationController {
 
     @PostMapping("/get-or-create")
     public ResponseEntity<ConversationResponseDto> getOrCreateConversation(
-            @RequestParam Long customerId,
-            @RequestParam Long sellerId) {
+            @RequestParam String customerId,
+            @RequestParam String sellerId) {
         ConversationResponseDto conversation = conversationService.getOrCreateConversation(customerId, sellerId);
         return ResponseEntity.ok(conversation);
     }
 
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<ConversationResponseDto>> getConversationsByUser(
-            @PathVariable Long userId) {
+            @PathVariable String userId) {
         List<ConversationResponseDto> conversations = conversationService.getConversationsByUser(userId);
         return ResponseEntity.ok(conversations);
     }
@@ -41,7 +38,7 @@ public class ConversationController {
     @GetMapping("/{conversationId}/user/{userId}")
     public ResponseEntity<ConversationDetailDto> getConversationDetail(
             @PathVariable Long conversationId,
-            @PathVariable Long userId) {
+            @PathVariable String userId) {
         ConversationDetailDto conversation = conversationService.getConversationDetail(conversationId, userId);
         return ResponseEntity.ok(conversation);
     }
@@ -49,7 +46,7 @@ public class ConversationController {
     @DeleteMapping("/{conversationId}/user/{userId}")
     public ResponseEntity<Map<String, String>> deleteConversation(
             @PathVariable Long conversationId,
-            @PathVariable Long userId) {
+            @PathVariable String userId) {
         conversationService.deleteConversation(conversationId, userId);
         
         Map<String, String> response = new HashMap<>();

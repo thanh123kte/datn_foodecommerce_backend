@@ -30,7 +30,7 @@ public class MessageServiceImpl implements MessageService {
     private final UserRepository userRepository;
 
     @Override
-    public MessageResponseDto sendMessage(Long senderId, CreateMessageDto dto) {
+    public MessageResponseDto sendMessage(String senderId, CreateMessageDto dto) {
         // Validate sender exists
         User sender = userRepository.findById(senderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Sender not found with id: " + senderId));
@@ -59,7 +59,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<MessageResponseDto> getMessages(Long conversationId, Long userId, Pageable pageable) {
+    public Page<MessageResponseDto> getMessages(Long conversationId, String userId, Pageable pageable) {
         // Validate conversation exists and user is part of it
         validateUserInConversation(conversationId, userId);
 
@@ -69,7 +69,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<MessageResponseDto> getMessages(Long conversationId, Long userId) {
+    public List<MessageResponseDto> getMessages(Long conversationId, String userId) {
         // Validate conversation exists and user is part of it
         validateUserInConversation(conversationId, userId);
 
@@ -98,7 +98,7 @@ public class MessageServiceImpl implements MessageService {
 
     @Override
     @Transactional(readOnly = true)
-    public Long getUnreadMessagesCount(Long conversationId, Long userId) {
+    public Long getUnreadMessagesCount(Long conversationId, String userId) {
         // Validate conversation exists and user is part of it
         validateUserInConversation(conversationId, userId);
 
@@ -106,7 +106,7 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public void deleteMessage(Long messageId, Long senderId) {
+    public void deleteMessage(Long messageId, String senderId) {
         Message message = messageRepository.findById(messageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Message not found with id: " + messageId));
 
@@ -118,7 +118,7 @@ public class MessageServiceImpl implements MessageService {
         messageRepository.delete(message);
     }
 
-    private void validateUserInConversation(Long conversationId, Long userId) {
+    private void validateUserInConversation(Long conversationId, String userId) {
         Conversation conversation = conversationRepository.findById(conversationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Conversation not found with id: " + conversationId));
 

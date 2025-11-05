@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class WishlistResponseDto {
     
     private Long id;
-    private Long customerId;
+    private String customerId;
     private StoreResponseDto store;
     private LocalDateTime createdAt;
 }

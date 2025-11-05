@@ -9,7 +9,7 @@ public class StoreReviewResponseDto {
     private Long orderId;
     private Long storeId;
     private String storeName;
-    private Long customerId;
+    private String customerId;
     private String customerName;
     private Integer rating;
     private String comment;

@@ -57,7 +57,7 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
-    public ConversationResponseDto getOrCreateConversation(Long customerId, Long sellerId) {
+    public ConversationResponseDto getOrCreateConversation(String customerId, String sellerId) {
         // Check if conversation already exists
         Optional<Conversation> existingConversation = conversationRepository
                 .findByCustomerIdAndSellerId(customerId, sellerId);
@@ -77,7 +77,7 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ConversationResponseDto> getConversationsByCustomer(Long customerId) {
+    public List<ConversationResponseDto> getConversationsByCustomer(String customerId) {
         // Validate customer exists
         if (!userRepository.existsById(customerId)) {
             throw new ResourceNotFoundException("Customer not found with id: " + customerId);
@@ -91,7 +91,7 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ConversationResponseDto> getConversationsBySeller(Long sellerId) {
+    public List<ConversationResponseDto> getConversationsBySeller(String sellerId) {
         // Validate seller exists
         if (!userRepository.existsById(sellerId)) {
             throw new ResourceNotFoundException("Seller not found with id: " + sellerId);
@@ -105,7 +105,7 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ConversationResponseDto> getConversationsByUser(Long userId) {
+    public List<ConversationResponseDto> getConversationsByUser(String userId) {
         // Validate user exists
         if (!userRepository.existsById(userId)) {
             throw new ResourceNotFoundException("User not found with id: " + userId);
@@ -119,7 +119,7 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     @Transactional(readOnly = true)
-    public ConversationDetailDto getConversationDetail(Long conversationId, Long userId) {
+    public ConversationDetailDto getConversationDetail(Long conversationId, String userId) {
         Conversation conversation = conversationRepository.findById(conversationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Conversation not found with id: " + conversationId));
 
@@ -136,7 +136,7 @@ public class ConversationServiceImpl implements ConversationService {
     }
 
     @Override
-    public void deleteConversation(Long conversationId, Long userId) {
+    public void deleteConversation(Long conversationId, String userId) {
         Conversation conversation = conversationRepository.findById(conversationId)
                 .orElseThrow(() -> new ResourceNotFoundException("Conversation not found with id: " + conversationId));
 
@@ -151,7 +151,7 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     @Transactional(readOnly = true)
-    public Long getConversationsCount(Long userId) {
+    public Long getConversationsCount(String userId) {
         // Validate user exists
         if (!userRepository.existsById(userId)) {
             throw new ResourceNotFoundException("User not found with id: " + userId);
@@ -164,7 +164,7 @@ public class ConversationServiceImpl implements ConversationService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean hasConversation(Long customerId, Long sellerId) {
+    public boolean hasConversation(String customerId, String sellerId) {
         return conversationRepository.existsByCustomerIdAndSellerId(customerId, sellerId);
     }
 

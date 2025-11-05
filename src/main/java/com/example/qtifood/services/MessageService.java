@@ -9,17 +9,17 @@ import java.util.List;
 
 public interface MessageService {
     
-    MessageResponseDto sendMessage(Long senderId, CreateMessageDto dto);
+    MessageResponseDto sendMessage(String senderId, CreateMessageDto dto);
     
-    Page<MessageResponseDto> getMessages(Long conversationId, Long userId, Pageable pageable);
+    Page<MessageResponseDto> getMessages(Long conversationId, String userId, Pageable pageable);
     
-    List<MessageResponseDto> getMessages(Long conversationId, Long userId);
+    List<MessageResponseDto> getMessages(Long conversationId, String userId);
     
     MessageResponseDto getLastMessage(Long conversationId);
     
     Long getMessagesCount(Long conversationId);
     
-    Long getUnreadMessagesCount(Long conversationId, Long userId);
+    Long getUnreadMessagesCount(Long conversationId, String userId);
     
-    void deleteMessage(Long messageId, Long senderId);
+    void deleteMessage(Long messageId, String senderId);
 }

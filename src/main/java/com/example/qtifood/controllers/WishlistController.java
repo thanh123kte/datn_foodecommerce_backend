@@ -24,7 +24,7 @@ public class WishlistController {
 
     @PostMapping("/{customerId}")
     public ResponseEntity<WishlistResponseDto> addToWishlist(
-            @PathVariable Long customerId,
+            @PathVariable String customerId,
             @Valid @RequestBody CreateWishlistDto dto) {
         WishlistResponseDto wishlist = wishlistService.addToWishlist(customerId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(wishlist);
@@ -32,7 +32,7 @@ public class WishlistController {
 
     @DeleteMapping("/{customerId}/store/{storeId}")
     public ResponseEntity<Map<String, String>> removeFromWishlist(
-            @PathVariable Long customerId,
+            @PathVariable String customerId,
             @PathVariable Long storeId) {
         wishlistService.removeFromWishlist(customerId, storeId);
         
@@ -42,7 +42,7 @@ public class WishlistController {
     }
 
     @DeleteMapping("/{customerId}")
-    public ResponseEntity<Map<String, String>> clearWishlist(@PathVariable Long customerId) {
+    public ResponseEntity<Map<String, String>> clearWishlist(@PathVariable String customerId) {
         wishlistService.clearWishlist(customerId);
         
         Map<String, String> response = new HashMap<>();
@@ -51,13 +51,13 @@ public class WishlistController {
     }
 
     @GetMapping("/{customerId}")
-    public ResponseEntity<List<WishlistResponseDto>> getWishlist(@PathVariable Long customerId) {
+    public ResponseEntity<List<WishlistResponseDto>> getWishlist(@PathVariable String customerId) {
         List<WishlistResponseDto> wishlist = wishlistService.getWishlist(customerId);
         return ResponseEntity.ok(wishlist);
     }
 
     @GetMapping("/{customerId}/count")
-    public ResponseEntity<Map<String, Long>> getWishlistCount(@PathVariable Long customerId) {
+    public ResponseEntity<Map<String, Long>> getWishlistCount(@PathVariable String customerId) {
         Long count = wishlistService.getWishlistCount(customerId);
         
         Map<String, Long> response = new HashMap<>();
@@ -67,7 +67,7 @@ public class WishlistController {
 
     @GetMapping("/{customerId}/check/{storeId}")
     public ResponseEntity<Map<String, Boolean>> isStoreInWishlist(
-            @PathVariable Long customerId,
+            @PathVariable String customerId,
             @PathVariable Long storeId) {
         boolean inWishlist = wishlistService.isStoreInWishlist(customerId, storeId);
         
@@ -78,7 +78,7 @@ public class WishlistController {
 
     @GetMapping("/store/{storeId}/customers")
     public ResponseEntity<Map<String, Object>> getCustomersByStore(@PathVariable Long storeId) {
-        List<Long> customerIds = wishlistService.getCustomersByStore(storeId);
+        List<String> customerIds = wishlistService.getCustomersByStore(storeId);
         
         Map<String, Object> response = new HashMap<>();
         response.put("customerIds", customerIds);

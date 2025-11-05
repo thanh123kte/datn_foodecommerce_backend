@@ -11,7 +11,7 @@ public interface StoreReviewService {
     StoreReviewResponseDto getStoreReviewById(Long id);
     List<StoreReviewResponseDto> getAllStoreReviews();
     List<StoreReviewResponseDto> getReviewsByStore(Long storeId);
-    List<StoreReviewResponseDto> getReviewsByCustomer(Long customerId);
+    List<StoreReviewResponseDto> getReviewsByCustomer(String customerId);
     StoreReviewResponseDto getReviewByOrder(Long orderId);
     List<StoreReviewResponseDto> getReviewsByStoreAndRating(Long storeId, Integer rating);
     Double getAverageRatingByStore(Long storeId);

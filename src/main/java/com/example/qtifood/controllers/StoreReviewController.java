@@ -46,7 +46,7 @@ public class StoreReviewController {
     }
 
     @GetMapping("/customer/{customerId}")
-    public ResponseEntity<List<StoreReviewResponseDto>> getReviewsByCustomer(@PathVariable Long customerId) {
+    public ResponseEntity<List<StoreReviewResponseDto>> getReviewsByCustomer(@PathVariable String customerId) {
         return ResponseEntity.ok(storeReviewService.getReviewsByCustomer(customerId));
     }
 

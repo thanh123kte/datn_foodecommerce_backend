@@ -108,7 +108,7 @@ public class StoreReviewServiceImpl implements StoreReviewService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<StoreReviewResponseDto> getReviewsByCustomer(Long customerId) {
+    public List<StoreReviewResponseDto> getReviewsByCustomer(String customerId) {
         return storeReviewRepository.findByCustomerId(customerId).stream()
             .map(storeReviewMapper::toDto)
             .collect(Collectors.toList());

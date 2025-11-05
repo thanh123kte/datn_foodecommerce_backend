@@ -12,7 +12,7 @@ public class CreateStoreReviewDto {
     private Long storeId;
     
     @NotNull(message = "Customer ID is required")
-    private Long customerId;
+    private String customerId;
     
     @NotNull(message = "Rating is required")
     @Min(value = 1, message = "Rating must be between 1 and 5")

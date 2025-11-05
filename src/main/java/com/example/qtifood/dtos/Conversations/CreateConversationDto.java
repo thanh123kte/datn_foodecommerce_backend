@@ -13,8 +13,8 @@ import lombok.NoArgsConstructor;
 public class CreateConversationDto {
     
     @NotNull(message = "Customer ID is required")
-    private Long customerId;
+    private String customerId;
     
     @NotNull(message = "Seller ID is required")
-    private Long sellerId;
+    private String sellerId;
 }

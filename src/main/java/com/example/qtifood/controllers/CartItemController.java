@@ -26,7 +26,7 @@ public class CartItemController {
 
     @PostMapping("/{customerId}")
     public ResponseEntity<CartItemResponseDto> addToCart(
-            @PathVariable Long customerId,
+            @PathVariable String customerId,
             @Valid @RequestBody CreateCartItemDto dto) {
         CartItemResponseDto cartItem = cartItemService.addToCart(customerId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(cartItem);
@@ -34,7 +34,7 @@ public class CartItemController {
 
     @PutMapping("/{customerId}/items/{cartItemId}")
     public ResponseEntity<CartItemResponseDto> updateCartItem(
-            @PathVariable Long customerId,
+            @PathVariable String customerId,
             @PathVariable Long cartItemId,
             @Valid @RequestBody UpdateCartItemDto dto) {
         CartItemResponseDto cartItem = cartItemService.updateCartItem(customerId, cartItemId, dto);
@@ -43,7 +43,7 @@ public class CartItemController {
 
     @DeleteMapping("/{customerId}/items/{cartItemId}")
     public ResponseEntity<Map<String, String>> removeFromCart(
-            @PathVariable Long customerId,
+            @PathVariable String customerId,
             @PathVariable Long cartItemId) {
         cartItemService.removeFromCart(customerId, cartItemId);
         
@@ -53,7 +53,7 @@ public class CartItemController {
     }
 
     @DeleteMapping("/{customerId}")
-    public ResponseEntity<Map<String, String>> clearCart(@PathVariable Long customerId) {
+    public ResponseEntity<Map<String, String>> clearCart(@PathVariable String customerId) {
         cartItemService.clearCart(customerId);
         
         Map<String, String> response = new HashMap<>();
@@ -63,7 +63,7 @@ public class CartItemController {
 
     @DeleteMapping("/{customerId}/store/{storeId}")
     public ResponseEntity<Map<String, String>> clearCartByStore(
-            @PathVariable Long customerId,
+            @PathVariable String customerId,
             @PathVariable Long storeId) {
         cartItemService.clearCartByStore(customerId, storeId);
         
@@ -73,35 +73,35 @@ public class CartItemController {
     }
 
     @GetMapping("/{customerId}")
-    public ResponseEntity<List<CartItemResponseDto>> getCartItems(@PathVariable Long customerId) {
+    public ResponseEntity<List<CartItemResponseDto>> getCartItems(@PathVariable String customerId) {
         List<CartItemResponseDto> cartItems = cartItemService.getCartItems(customerId);
         return ResponseEntity.ok(cartItems);
     }
 
     @GetMapping("/{customerId}/store/{storeId}")
     public ResponseEntity<List<CartItemResponseDto>> getCartItemsByStore(
-            @PathVariable Long customerId,
+            @PathVariable String customerId,
             @PathVariable Long storeId) {
         List<CartItemResponseDto> cartItems = cartItemService.getCartItemsByStore(customerId, storeId);
         return ResponseEntity.ok(cartItems);
     }
 
     @GetMapping("/{customerId}/summary")
-    public ResponseEntity<List<CartSummaryDto>> getCartSummary(@PathVariable Long customerId) {
+    public ResponseEntity<List<CartSummaryDto>> getCartSummary(@PathVariable String customerId) {
         List<CartSummaryDto> cartSummary = cartItemService.getCartSummary(customerId);
         return ResponseEntity.ok(cartSummary);
     }
 
     @GetMapping("/{customerId}/items/{cartItemId}")
     public ResponseEntity<CartItemResponseDto> getCartItem(
-            @PathVariable Long customerId,
+            @PathVariable String customerId,
             @PathVariable Long cartItemId) {
         CartItemResponseDto cartItem = cartItemService.getCartItem(customerId, cartItemId);
         return ResponseEntity.ok(cartItem);
     }
 
     @GetMapping("/{customerId}/count")
-    public ResponseEntity<Map<String, Long>> getCartItemsCount(@PathVariable Long customerId) {
+    public ResponseEntity<Map<String, Long>> getCartItemsCount(@PathVariable String customerId) {
         Long count = cartItemService.getCartItemsCount(customerId);
         
         Map<String, Long> response = new HashMap<>();
@@ -111,7 +111,7 @@ public class CartItemController {
 
     @GetMapping("/{customerId}/check/{productId}")
     public ResponseEntity<Map<String, Boolean>> isProductInCart(
-            @PathVariable Long customerId,
+            @PathVariable String customerId,
             @PathVariable Long productId) {
         boolean inCart = cartItemService.isProductInCart(customerId, productId);
         

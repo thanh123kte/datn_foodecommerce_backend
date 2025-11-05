@@ -26,7 +26,7 @@ public class MessageController {
 
     @PostMapping("/user/{senderId}")
     public ResponseEntity<MessageResponseDto> sendMessage(
-            @PathVariable Long senderId,
+            @PathVariable String senderId,
             @Valid @RequestBody CreateMessageDto dto) {
         MessageResponseDto message = messageService.sendMessage(senderId, dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(message);
@@ -35,7 +35,7 @@ public class MessageController {
     @GetMapping("/conversation/{conversationId}/user/{userId}")
     public ResponseEntity<Page<MessageResponseDto>> getMessages(
             @PathVariable Long conversationId,
-            @PathVariable Long userId,
+            @PathVariable String userId,
             @PageableDefault(size = 50, sort = "createdAt") Pageable pageable) {
         Page<MessageResponseDto> messages = messageService.getMessages(conversationId, userId, pageable);
         return ResponseEntity.ok(messages);
@@ -54,7 +54,7 @@ public class MessageController {
     @GetMapping("/conversation/{conversationId}/user/{userId}/unread-count")
     public ResponseEntity<Map<String, Long>> getUnreadMessagesCount(
             @PathVariable Long conversationId,
-            @PathVariable Long userId) {
+            @PathVariable String userId) {
         Long count = messageService.getUnreadMessagesCount(conversationId, userId);
         
         Map<String, Long> response = new HashMap<>();
@@ -65,7 +65,7 @@ public class MessageController {
     @DeleteMapping("/{messageId}/user/{senderId}")
     public ResponseEntity<Map<String, String>> deleteMessage(
             @PathVariable Long messageId,
-            @PathVariable Long senderId) {
+            @PathVariable String senderId) {
         messageService.deleteMessage(messageId, senderId);
         
         Map<String, String> response = new HashMap<>();

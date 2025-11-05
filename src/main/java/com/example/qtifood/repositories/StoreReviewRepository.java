@@ -9,7 +9,7 @@ import com.example.qtifood.entities.StoreReview;
 
 public interface StoreReviewRepository extends JpaRepository<StoreReview, Long> {
     List<StoreReview> findByStoreId(Long storeId);
-    List<StoreReview> findByCustomerId(Long customerId);
+    List<StoreReview> findByCustomerId(String customerId);
     Optional<StoreReview> findByOrderId(Long orderId);
     List<StoreReview> findByStoreIdOrderByCreatedAtDesc(Long storeId);
     List<StoreReview> findByStoreIdAndRating(Long storeId, Integer rating);

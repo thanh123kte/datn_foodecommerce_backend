@@ -9,7 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long> {
@@ -46,7 +45,7 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
            "WHERE m.conversation.id = :conversationId " +
            "AND m.sender.id != :userId")
     Long countUnreadMessages(@Param("conversationId") Long conversationId, 
-                            @Param("userId") Long userId);
+                            @Param("userId") String userId);
     
     // Lấy messages của user trong conversation
     @Query("SELECT m FROM Message m " +
@@ -54,5 +53,5 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
            "AND m.sender.id = :senderId " +
            "ORDER BY m.createdAt DESC")
     List<Message> findByConversationIdAndSenderId(@Param("conversationId") Long conversationId,
-                                                 @Param("senderId") Long senderId);
+                                                 @Param("senderId") String senderId);
 }

@@ -10,19 +10,19 @@ public interface ConversationService {
     
     ConversationResponseDto createConversation(CreateConversationDto dto);
     
-    ConversationResponseDto getOrCreateConversation(Long customerId, Long sellerId);
+    ConversationResponseDto getOrCreateConversation(String customerId, String sellerId);
     
-    List<ConversationResponseDto> getConversationsByCustomer(Long customerId);
+    List<ConversationResponseDto> getConversationsByCustomer(String customerId);
     
-    List<ConversationResponseDto> getConversationsBySeller(Long sellerId);
+    List<ConversationResponseDto> getConversationsBySeller(String sellerId);
     
-    List<ConversationResponseDto> getConversationsByUser(Long userId);
+    List<ConversationResponseDto> getConversationsByUser(String userId);
     
-    ConversationDetailDto getConversationDetail(Long conversationId, Long userId);
+    ConversationDetailDto getConversationDetail(Long conversationId, String userId);
     
-    void deleteConversation(Long conversationId, Long userId);
+    void deleteConversation(Long conversationId, String userId);
     
-    Long getConversationsCount(Long userId);
+    Long getConversationsCount(String userId);
     
-    boolean hasConversation(Long customerId, Long sellerId);
+    boolean hasConversation(String customerId, String sellerId);
 }

@@ -28,7 +28,7 @@ public class WishlistServiceImpl implements WishlistService {
     private final StoreRepository storeRepository;
 
     @Override
-    public WishlistResponseDto addToWishlist(Long customerId, CreateWishlistDto dto) {
+    public WishlistResponseDto addToWishlist(String customerId, CreateWishlistDto dto) {
         // Validate customer exists
         User customer = userRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found with id: " + customerId));
@@ -53,7 +53,7 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
-    public void removeFromWishlist(Long customerId, Long storeId) {
+    public void removeFromWishlist(String customerId, Long storeId) {
         // Validate customer exists
         if (!userRepository.existsById(customerId)) {
             throw new ResourceNotFoundException("Customer not found with id: " + customerId);
@@ -73,7 +73,7 @@ public class WishlistServiceImpl implements WishlistService {
     }
 
     @Override
-    public void clearWishlist(Long customerId) {
+    public void clearWishlist(String customerId) {
         // Validate customer exists
         if (!userRepository.existsById(customerId)) {
             throw new ResourceNotFoundException("Customer not found with id: " + customerId);
@@ -84,7 +84,7 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<WishlistResponseDto> getWishlist(Long customerId) {
+    public List<WishlistResponseDto> getWishlist(String customerId) {
         // Validate customer exists
         if (!userRepository.existsById(customerId)) {
             throw new ResourceNotFoundException("Customer not found with id: " + customerId);
@@ -96,7 +96,7 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     @Transactional(readOnly = true)
-    public Long getWishlistCount(Long customerId) {
+    public Long getWishlistCount(String customerId) {
         // Validate customer exists
         if (!userRepository.existsById(customerId)) {
             throw new ResourceNotFoundException("Customer not found with id: " + customerId);
@@ -107,7 +107,7 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     @Transactional(readOnly = true)
-    public boolean isStoreInWishlist(Long customerId, Long storeId) {
+    public boolean isStoreInWishlist(String customerId, Long storeId) {
         // Validate customer exists
         if (!userRepository.existsById(customerId)) {
             throw new ResourceNotFoundException("Customer not found with id: " + customerId);
@@ -118,7 +118,7 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Long> getCustomersByStore(Long storeId) {
+    public List<String> getCustomersByStore(Long storeId) {
         // Validate store exists
         if (!storeRepository.existsById(storeId)) {
             throw new ResourceNotFoundException("Store not found with id: " + storeId);
