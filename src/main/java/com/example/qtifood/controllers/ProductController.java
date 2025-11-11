@@ -53,6 +53,8 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
+
+
     @GetMapping("/store/{storeId}")
     public ResponseEntity<List<ProductResponseDto>> getProductsByStore(@PathVariable Long storeId) {
         return ResponseEntity.ok(productService.getProductsByStore(storeId));

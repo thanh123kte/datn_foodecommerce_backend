@@ -6,8 +6,6 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.qtifood.dtos.ProductImages.CreateProductImageDto;
-import com.example.qtifood.dtos.ProductImages.UpdateProductImageDto;
 import com.example.qtifood.dtos.ProductImages.ProductImageResponseDto;
 import com.example.qtifood.entities.Product;
 import com.example.qtifood.entities.ProductImage;
@@ -27,77 +25,12 @@ public class ProductImageServiceImpl implements ProductImageService {
     private final ProductRepository productRepository;
 
     @Override
-    public ProductImageResponseDto createProductImage(CreateProductImageDto dto) {
-        Product product = productRepository.findById(dto.productId())
-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + dto.productId()));
-
-        // If this image is set as primary, reset other primary images for this product
-        if (Boolean.TRUE.equals(dto.isPrimary())) {
-            productImageRepository.resetPrimaryImageForProduct(dto.productId());
-        }
-
-        // If this is the first image for the product, set it as primary automatically
-        boolean isFirstImage = !productImageRepository.existsByProductIdAndIsPrimaryTrue(dto.productId());
-        
-        ProductImage productImage = ProductImage.builder()
-                .product(product)
-                .imageUrl(dto.imageUrl())
-                .isPrimary(Boolean.TRUE.equals(dto.isPrimary()) || isFirstImage)
-                .build();
-
-        return toDto(productImageRepository.save(productImage));
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<ProductImageResponseDto> getAllProductImages() {
-        return productImageRepository.findAll()
-                .stream()
-                .map(this::toDto)
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public ProductImageResponseDto getProductImageById(Long id) {
-        ProductImage productImage = productImageRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product image not found with id: " + id));
-        return toDto(productImage);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public List<ProductImageResponseDto> getProductImagesByProductId(Long productId) {
         return productImageRepository.findByProductIdOrderByIsPrimaryDescCreatedAtAsc(productId)
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public ProductImageResponseDto getPrimaryImageByProductId(Long productId) {
-        ProductImage productImage = productImageRepository.findByProductIdAndIsPrimaryTrue(productId)
-                .orElseThrow(() -> new ResourceNotFoundException("Primary image not found for product with id: " + productId));
-        return toDto(productImage);
-    }
-
-    @Override
-    public ProductImageResponseDto updateProductImage(Long id, UpdateProductImageDto dto) {
-        ProductImage productImage = productImageRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product image not found with id: " + id));
-
-        // If setting as primary, reset other primary images for this product
-        if (Boolean.TRUE.equals(dto.isPrimary())) {
-            productImageRepository.resetPrimaryImageForProduct(productImage.getProduct().getId());
-        }
-
-        productImage.setImageUrl(dto.imageUrl());
-        if (dto.isPrimary() != null) {
-            productImage.setIsPrimary(dto.isPrimary());
-        }
-
-        return toDto(productImageRepository.save(productImage));
     }
 
     @Override
@@ -122,11 +55,6 @@ public class ProductImageServiceImpl implements ProductImageService {
     }
 
     @Override
-    public void deleteProductImagesByProductId(Long productId) {
-        productImageRepository.deleteByProductId(productId);
-    }
-
-    @Override
     public ProductImageResponseDto setPrimaryImage(Long imageId) {
         ProductImage productImage = productImageRepository.findById(imageId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product image not found with id: " + imageId));
@@ -138,6 +66,74 @@ public class ProductImageServiceImpl implements ProductImageService {
         productImage.setIsPrimary(true);
         
         return toDto(productImageRepository.save(productImage));
+    }
+
+    @Override
+    public List<ProductImageResponseDto> uploadAndSaveProductImages(Long productId, 
+            List<org.springframework.web.multipart.MultipartFile> files) {
+        
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + productId));
+        
+        String uploadDir = "uploads/products/";
+        java.io.File directory = new java.io.File(uploadDir);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        List<String> imageUrls = files.stream().map(file -> {
+            try {
+                // Validate file
+                if (file.isEmpty()) {
+                    throw new IllegalArgumentException("File không được để trống");
+                }
+
+                // Validate file type
+                String contentType = file.getContentType();
+                if (contentType == null || !contentType.startsWith("image/")) {
+                    throw new IllegalArgumentException("File phải là ảnh (jpg, png, gif, etc.)");
+                }
+
+                // Generate unique filename
+                String originalFilename = file.getOriginalFilename();
+                String fileExtension = "";
+                if (originalFilename != null && originalFilename.contains(".")) {
+                    fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                }
+                
+                String uniqueFilename = java.util.UUID.randomUUID().toString() + "_" + 
+                    (originalFilename != null ? originalFilename : "image" + fileExtension);
+
+                // Save file
+                java.nio.file.Path filePath = java.nio.file.Paths.get(uploadDir + uniqueFilename);
+                java.nio.file.Files.copy(file.getInputStream(), filePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+
+                // Return URL
+                return "/" + uploadDir + uniqueFilename;
+
+            } catch (java.io.IOException e) {
+                throw new RuntimeException("Lỗi khi lưu file: " + file.getOriginalFilename(), e);
+            }
+        }).collect(java.util.stream.Collectors.toList());
+        
+        List<ProductImageResponseDto> results = new java.util.ArrayList<>();
+        
+        if (!imageUrls.isEmpty()) {
+            productImageRepository.resetPrimaryImageForProduct(productId);
+        }
+        
+        for (int i = 0; i < imageUrls.size(); i++) {
+            ProductImage productImage = ProductImage.builder()
+                    .product(product)
+                    .imageUrl(imageUrls.get(i))
+                    .isPrimary(i == 0) // Ảnh đầu tiên làm primary
+                    .build();
+            
+            ProductImage saved = productImageRepository.save(productImage);
+            results.add(toDto(saved));
+        }
+        
+        return results;
     }
 
     private ProductImageResponseDto toDto(ProductImage productImage) {
