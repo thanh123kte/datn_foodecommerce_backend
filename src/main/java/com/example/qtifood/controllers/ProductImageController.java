@@ -40,4 +40,10 @@ public class ProductImageController {
         productImageService.deleteProductImage(id);
         return ResponseEntity.noContent().build();
     }
+
+    @DeleteMapping("/product/{productId}")
+    public ResponseEntity<Void> deleteAllProductImages(@PathVariable Long productId) {
+        productImageService.deleteAllProductImages(productId);
+        return ResponseEntity.noContent().build();
+    }
 }

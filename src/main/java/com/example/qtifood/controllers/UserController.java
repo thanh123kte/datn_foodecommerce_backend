@@ -45,7 +45,7 @@ public class UserController {
     }
 
     /* ====== Add/Remove role ====== */
-    @PostMapping("/{id}/roles/{role}")
+    @PutMapping("/{id}/roles/{role}")
     public UserResponseDto addRole(@PathVariable String id, @PathVariable RoleType role) {
         return ((com.example.qtifood.services.impl.UserServiceImpl) userService).addRole(id, role);
     }

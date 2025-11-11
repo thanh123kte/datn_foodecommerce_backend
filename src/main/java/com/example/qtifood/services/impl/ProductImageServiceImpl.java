@@ -41,6 +41,9 @@ public class ProductImageServiceImpl implements ProductImageService {
         Long productId = productImage.getProduct().getId();
         boolean wasPrimary = Boolean.TRUE.equals(productImage.getIsPrimary());
         
+        // Delete physical file
+        deletePhysicalFile(productImage.getImageUrl());
+        
         productImageRepository.delete(productImage);
         
         // If we deleted the primary image, set the oldest remaining image as primary
@@ -51,6 +54,38 @@ public class ProductImageServiceImpl implements ProductImageService {
                 newPrimary.setIsPrimary(true);
                 productImageRepository.save(newPrimary);
             }
+        }
+    }
+
+    @Override
+    public void deleteAllProductImages(Long productId) {
+        // Kiểm tra product tồn tại
+        productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + productId));
+        
+        // Lấy tất cả ảnh của product
+        List<ProductImage> images = productImageRepository.findByProductId(productId);
+        
+        // Xóa file vật lý trước
+        for (ProductImage image : images) {
+            deletePhysicalFile(image.getImageUrl());
+        }
+        
+        // Xóa từ database
+        productImageRepository.deleteByProductId(productId);
+    }
+
+    private void deletePhysicalFile(String imageUrl) {
+        try {
+            // Loại bỏ dấu "/" ở đầu nếu có
+            String filePath = imageUrl.startsWith("/") ? imageUrl.substring(1) : imageUrl;
+            java.nio.file.Path path = java.nio.file.Paths.get(filePath);
+            if (java.nio.file.Files.exists(path)) {
+                java.nio.file.Files.delete(path);
+            }
+        } catch (java.io.IOException e) {
+            // Log lỗi nhưng không throw exception để không làm gián đoạn việc xóa database
+            System.err.println("Lỗi khi xóa file: " + imageUrl + " - " + e.getMessage());
         }
     }
 

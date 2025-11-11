@@ -56,18 +56,13 @@ public class UserServiceImpl implements UserService {
             throw new IllegalArgumentException("Email already exists");
         }
 
-        // Lấy danh sách roles từ request, nếu trống → mặc định CUSTOMER
-        Set<RoleType> requested = (dto.roles() == null || dto.roles().isEmpty())
-                ? Set.of(RoleType.CUSTOMER)
-                : dto.roles();
+        // Lấy role từ request, nếu trống → mặc định CUSTOMER
+        RoleType requestedRole = (dto.roles() == null || dto.roles().isEmpty())
+                ? RoleType.CUSTOMER
+                : dto.roles().iterator().next(); // Lấy role đầu tiên nếu có nhiều
 
-        List<Role> roles = roleRepository.findByNameIn(requested);
-        if (roles.size() != requested.size()) {
-            // tìm role nào không tồn tại trong DB
-            Set<RoleType> found = roles.stream().map(Role::getName).collect(Collectors.toSet());
-            Set<RoleType> missing = new HashSet<>(requested); missing.removeAll(found);
-            throw new IllegalArgumentException("Missing roles in DB: " + missing);
-        }
+        Role role = roleRepository.findByName(requestedRole)
+                .orElseThrow(() -> new IllegalArgumentException("Role not found: " + requestedRole));
 
         User u = User.builder()
                 .id(dto.id())
@@ -79,7 +74,7 @@ public class UserServiceImpl implements UserService {
                 .dateOfBirth(dto.dateOfBirth())
                 .gender(dto.gender())
                 .isActive(dto.isActive() != null ? dto.isActive() : true)
-                .roles(new HashSet<>(roles))
+                .roles(new HashSet<>(Collections.singletonList(role)))
                 .build();
 
         return toDto(userRepository.save(u));
@@ -101,19 +96,13 @@ public class UserServiceImpl implements UserService {
             u.setPassword(passwordEncoder.encode(dto.password()));
         }
 
-        // Nếu có truyền roles → ghi đè danh sách roles
-        if (dto.roles() != null) {
-            if (dto.roles().isEmpty()) {
-                u.getRoles().clear(); // cho phép xóa hết roles nếu muốn
-            } else {
-                List<Role> roles = roleRepository.findByNameIn(dto.roles());
-                if (roles.size() != dto.roles().size()) {
-                    Set<RoleType> found = roles.stream().map(Role::getName).collect(Collectors.toSet());
-                    Set<RoleType> missing = new HashSet<>(dto.roles()); missing.removeAll(found);
-                    throw new IllegalArgumentException("Missing roles in DB: " + missing);
-                }
-                u.setRoles(new HashSet<>(roles));
-            }
+        // Nếu có truyền roles → set role mới
+        if (dto.roles() != null && !dto.roles().isEmpty()) {
+            RoleType newRole = dto.roles().iterator().next(); // Lấy role đầu tiên
+            Role role = roleRepository.findByName(newRole)
+                    .orElseThrow(() -> new IllegalArgumentException("Role not found: " + newRole));
+            u.getRoles().clear();
+            u.getRoles().add(role);
         }
 
         return toDto(userRepository.save(u));
@@ -127,18 +116,25 @@ public class UserServiceImpl implements UserService {
 
     /* ========= tiện ích gán/bỏ role riêng lẻ ========= */
     public UserResponseDto addRole(String userId, RoleType roleType) {
-    User u = userRepository.findById(userId)
-        .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
-    Role r = roleRepository.findByName(roleType)
-        .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleType));
-    u.getRoles().add(r);
-    return toDto(userRepository.save(u));
+        User u = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
+        Role r = roleRepository.findByName(roleType)
+            .orElseThrow(() -> new IllegalArgumentException("Role not found: " + roleType));
+        // Xóa role cũ và set role mới
+        u.getRoles().clear();
+        u.getRoles().add(r);
+        return toDto(userRepository.save(u));
     }
 
     public UserResponseDto removeRole(String userId, RoleType roleType) {
-    User u = userRepository.findById(userId)
-        .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
-    u.getRoles().removeIf(role -> role.getName() == roleType);
-    return toDto(userRepository.save(u));
+        User u = userRepository.findById(userId)
+            .orElseThrow(() -> new IllegalArgumentException("User not found: " + userId));
+        // Nếu xóa role hiện tại, set về CUSTOMER
+        if (u.getRoles().removeIf(role -> role.getName() == roleType)) {
+            Role customerRole = roleRepository.findByName(RoleType.CUSTOMER)
+                .orElseThrow(() -> new IllegalArgumentException("Customer role not found"));
+            u.getRoles().add(customerRole);
+        }
+        return toDto(userRepository.save(u));
     }
 }

@@ -21,6 +21,7 @@ import com.example.qtifood.repositories.StoreRepository;
 import com.example.qtifood.repositories.CategoriesRepository;
 import com.example.qtifood.repositories.StoreCategoryRepository;
 import com.example.qtifood.services.ProductService;
+import com.example.qtifood.services.ProductImageService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -33,6 +34,7 @@ public class ProductServiceImpl implements ProductService {
     private final StoreRepository storeRepository;
     private final CategoriesRepository categoriesRepository;
     private final StoreCategoryRepository storeCategoryRepository;
+    private final ProductImageService productImageService;
 
     @Override
     public ProductResponseDto createProduct(CreateProductDto dto) {
@@ -133,6 +135,11 @@ public class ProductServiceImpl implements ProductService {
     public void deleteProduct(Long id) {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        
+        // Xóa tất cả ảnh của product trước khi xóa product
+        productImageService.deleteAllProductImages(id);
+        
+        // Sau đó xóa product
         productRepository.delete(product);
     }
 

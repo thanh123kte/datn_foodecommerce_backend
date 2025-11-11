@@ -23,6 +23,8 @@ public class SecurityBeans {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(authz -> authz
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                .requestMatchers("/uploads/**").permitAll()
+                .requestMatchers("/products/**").permitAll()
                 .requestMatchers("/api/**").permitAll()
                 .anyRequest().authenticated()
             );

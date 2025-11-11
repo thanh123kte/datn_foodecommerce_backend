@@ -10,6 +10,8 @@ public interface ProductImageService {
     
     void deleteProductImage(Long id);
     
+    void deleteAllProductImages(Long productId);
+    
     ProductImageResponseDto setPrimaryImage(Long imageId);
     
     List<ProductImageResponseDto> uploadAndSaveProductImages(Long productId, List<org.springframework.web.multipart.MultipartFile> files);
