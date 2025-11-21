@@ -12,6 +12,7 @@ public interface StoreService {
 
     List<StoreResponseDto> getAllStores();
     List<StoreResponseDto> getStoresByOwner(String ownerId);
+    StoreResponseDto getStoreById(Long id);
     List<StoreResponseDto> searchByName(String q);
     List<StoreResponseDto> getStoresByStatus(StoreStatus status);
 

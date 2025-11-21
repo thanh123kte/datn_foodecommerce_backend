@@ -32,6 +32,11 @@ public class StoreController {
         return ResponseEntity.ok(storeService.updateStore(id, dto));
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<StoreResponseDto> getById(@PathVariable Long id) {
+        return ResponseEntity.ok(storeService.getStoreById(id));
+    }
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         storeService.deleteStore(id);

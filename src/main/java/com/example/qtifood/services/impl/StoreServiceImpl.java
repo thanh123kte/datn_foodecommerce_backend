@@ -85,6 +85,14 @@ public class StoreServiceImpl implements StoreService {
         return storeRepository.findByOwnerId(ownerId).stream().map(StoreMapper::toDto).toList();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public StoreResponseDto getStoreById(Long id) {
+        Store s = storeRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Store not found: " + id));
+        return StoreMapper.toDto(s);
+    }
+
     @Override @Transactional(readOnly = true)
     public List<StoreResponseDto> searchByName(String q) {
         return storeRepository.findByNameContainingIgnoreCase(q).stream().map(StoreMapper::toDto).toList();
