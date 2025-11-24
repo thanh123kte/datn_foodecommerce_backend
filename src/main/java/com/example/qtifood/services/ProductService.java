@@ -33,8 +33,8 @@ public interface ProductService {
     // Lấy sản phẩm theo status
     List<ProductResponseDto> getProductsByStatus(ProductStatus status);
 
-    // Tìm kiếm sản phẩm theo tên
-    List<ProductResponseDto> searchProductsByName(String name);
+    // Tìm kiếm sản phẩm theo tên hoặc tên category
+    List<ProductResponseDto> searchProductsByName(String keyword);
 
     // Lấy sản phẩm theo store và status
     List<ProductResponseDto> getProductsByStoreAndStatus(Long storeId, ProductStatus status);

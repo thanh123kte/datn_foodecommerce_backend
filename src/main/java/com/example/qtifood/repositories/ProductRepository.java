@@ -20,6 +20,11 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     
     List<Product> findByNameContainingIgnoreCase(String name);
     
+    @Query("SELECT DISTINCT p FROM Product p " +
+           "WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+           "OR LOWER(p.storeCategory.category.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    List<Product> findByNameOrCategoryNameContainingIgnoreCase(@Param("keyword") String keyword);
+    
     List<Product> findByStoreIdAndStatus(Long storeId, ProductStatus status);
     
     boolean existsByStoreIdAndNameIgnoreCase(Long storeId, String name);

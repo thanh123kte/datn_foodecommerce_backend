@@ -170,8 +170,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductResponseDto> searchProductsByName(String name) {
-        return productRepository.findByNameContainingIgnoreCase(name)
+    public List<ProductResponseDto> searchProductsByName(String keyword) {
+        return productRepository.findByNameOrCategoryNameContainingIgnoreCase(keyword)
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
