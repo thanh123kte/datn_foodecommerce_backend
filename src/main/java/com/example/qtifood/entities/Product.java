@@ -39,18 +39,10 @@ public class Product {
     private Store store;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "category_id", nullable = false,
-        foreignKey = @ForeignKey(
-            name = "fk_product_category",
-            foreignKeyDefinition = "FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE"
-        ))
-    private Categories category;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_category_id",
+    @JoinColumn(name = "store_category_id", nullable = false,
         foreignKey = @ForeignKey(
             name = "fk_product_store_category",
-            foreignKeyDefinition = "FOREIGN KEY (store_category_id) REFERENCES store_categories(id) ON DELETE SET NULL"
+            foreignKeyDefinition = "FOREIGN KEY (store_category_id) REFERENCES store_categories(id) ON DELETE CASCADE"
         ))
     private StoreCategory storeCategory;
 

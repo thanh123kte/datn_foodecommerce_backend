@@ -46,18 +46,16 @@ public class ProductServiceImpl implements ProductService {
         Store store = storeRepository.findById(dto.storeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with id: " + dto.storeId()));
 
-        Categories category = categoriesRepository.findById(dto.categoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + dto.categoryId()));
-
-        StoreCategory storeCategory = null;
-        if (dto.storeCategoryId() != null) {
-            storeCategory = storeCategoryRepository.findById(dto.storeCategoryId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Store category not found with id: " + dto.storeCategoryId()));
+        StoreCategory storeCategory = storeCategoryRepository.findById(dto.storeCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Store category not found with id: " + dto.storeCategoryId()));
+        
+        // Validate that store category belongs to the specified store
+        if (!storeCategory.getStore().getId().equals(dto.storeId())) {
+            throw new IllegalArgumentException("Store category does not belong to the specified store");
         }
 
         Product product = Product.builder()
                 .store(store)
-                .category(category)
                 .storeCategory(storeCategory)
                 .name(dto.name())
                 .description(dto.description())
@@ -91,15 +89,15 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
 
-        if (dto.categoryId() != null) {
-            Categories category = categoriesRepository.findById(dto.categoryId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + dto.categoryId()));
-            product.setCategory(category);
-        }
-
         if (dto.storeCategoryId() != null) {
             StoreCategory storeCategory = storeCategoryRepository.findById(dto.storeCategoryId())
                     .orElseThrow(() -> new ResourceNotFoundException("Store category not found with id: " + dto.storeCategoryId()));
+            
+            // Validate that store category belongs to the product's store
+            if (!storeCategory.getStore().getId().equals(product.getStore().getId())) {
+                throw new IllegalArgumentException("Store category does not belong to the product's store");
+            }
+            
             product.setStoreCategory(storeCategory);
         }
 
@@ -202,10 +200,10 @@ public class ProductServiceImpl implements ProductService {
                 .id(product.getId())
                 .storeId(product.getStore().getId())
                 .storeName(product.getStore().getName())
-                .categoryId(product.getCategory().getId())
-                .categoryName(product.getCategory().getName())
-                .storeCategoryId(product.getStoreCategory() != null ? product.getStoreCategory().getId() : null)
-                .storeCategoryName(product.getStoreCategory() != null ? product.getStoreCategory().getName() : null)
+                .categoryId(product.getStoreCategory().getCategory().getId())
+                .categoryName(product.getStoreCategory().getCategory().getName())
+                .storeCategoryId(product.getStoreCategory().getId())
+                .storeCategoryName(product.getStoreCategory().getName())
                 .name(product.getName())
                 .description(product.getDescription())
                 .price(product.getPrice())

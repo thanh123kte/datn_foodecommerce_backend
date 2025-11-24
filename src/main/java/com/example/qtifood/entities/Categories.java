@@ -42,11 +42,6 @@ public class Categories {
 
     // ========== ONE-TO-MANY CASCADE RELATIONSHIPS ==========
     
-    // Products in this category
-    @Builder.Default
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    private Set<Product> products = new HashSet<>();
-
     // Store categories for this category
     @Builder.Default
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
