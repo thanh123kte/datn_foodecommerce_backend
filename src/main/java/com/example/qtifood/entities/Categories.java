@@ -1,6 +1,8 @@
 package com.example.qtifood.entities;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -38,4 +40,15 @@ public class Categories {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    // ========== ONE-TO-MANY CASCADE RELATIONSHIPS ==========
+    
+    // Products in this category
+    @Builder.Default
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Product> products = new HashSet<>();
+
+    // Store categories for this category
+    @Builder.Default
+    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<StoreCategory> storeCategories = new HashSet<>();
 }

@@ -50,6 +50,9 @@ public class Address {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false,
-        foreignKey = @ForeignKey(name = "fk_addresses_user"))
+        foreignKey = @ForeignKey(
+            name = "fk_addresses_user",
+            foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(firebase_user_id) ON DELETE CASCADE"
+        ))
     private User user;
 }

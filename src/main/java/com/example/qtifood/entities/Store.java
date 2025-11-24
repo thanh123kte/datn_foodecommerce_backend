@@ -3,6 +3,8 @@ package com.example.qtifood.entities;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -32,8 +34,11 @@ public class Store {
     // owner_id → user sở hữu cửa hàng
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "owner_id", nullable = false,
-        foreignKey = @ForeignKey(name = "fk_store_owner"))
-        private User owner; // Change from Long id to String id for firebase_user_id
+        foreignKey = @ForeignKey(
+            name = "fk_store_owner",
+            foreignKeyDefinition = "FOREIGN KEY (owner_id) REFERENCES users(firebase_user_id) ON DELETE CASCADE"
+        ))
+    private User owner;
 
     @Column(length = 100, nullable = false)
     private String name;
@@ -82,4 +87,41 @@ public class Store {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // ========== ONE-TO-MANY CASCADE RELATIONSHIPS ==========
+    
+    // Products in this store
+    @Builder.Default
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Product> products = new HashSet<>();
+
+    // Orders from this store
+    @Builder.Default
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Order> orders = new HashSet<>();
+
+    // Store categories
+    @Builder.Default
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<StoreCategory> storeCategories = new HashSet<>();
+
+    // Cart items from this store
+    @Builder.Default
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<CartItem> cartItems = new HashSet<>();
+
+    // Wishlists for this store
+    @Builder.Default
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Wishlist> wishlists = new HashSet<>();
+
+    // Reviews for this store
+    @Builder.Default
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<StoreReview> storeReviews = new HashSet<>();
+
+    // Vouchers from this store
+    @Builder.Default
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Voucher> vouchers = new HashSet<>();
 }

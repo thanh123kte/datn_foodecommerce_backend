@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/api/users")
@@ -53,5 +54,26 @@ public class UserController {
     @DeleteMapping("/{id}/roles/{role}")
     public UserResponseDto removeRole(@PathVariable String id, @PathVariable RoleType role) {
         return ((com.example.qtifood.services.impl.UserServiceImpl) userService).removeRole(id, role);
+    }
+
+    /* ====== Upload Avatar ====== */
+    @PostMapping(value = "/{id}/avatar", consumes = "multipart/form-data")
+    public ResponseEntity<UserResponseDto> uploadAvatar(
+            @PathVariable String id,
+            @RequestParam("avatar") MultipartFile avatarFile) {
+        
+        if (avatarFile.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        
+        UserResponseDto updatedUser = userService.uploadAvatar(id, avatarFile);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    /* ====== Delete Avatar ====== */
+    @DeleteMapping("/{id}/avatar")
+    public ResponseEntity<UserResponseDto> deleteAvatar(@PathVariable String id) {
+        UserResponseDto updatedUser = userService.deleteAvatar(id);
+        return ResponseEntity.ok(updatedUser);
     }
 }

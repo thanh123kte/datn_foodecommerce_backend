@@ -26,7 +26,10 @@ public class ProductImage {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", nullable = false,
-        foreignKey = @ForeignKey(name = "fk_product_image_product"))
+        foreignKey = @ForeignKey(
+            name = "fk_product_image_product",
+            foreignKeyDefinition = "FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE"
+        ))
     private Product product;
 
     @Column(name = "image_url", columnDefinition = "TEXT", nullable = false)

@@ -28,12 +28,18 @@ public class Wishlist {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customer_id", nullable = false,
-        foreignKey = @ForeignKey(name = "fk_wishlist_customer"))
+        foreignKey = @ForeignKey(
+            name = "fk_wishlist_customer",
+            foreignKeyDefinition = "FOREIGN KEY (customer_id) REFERENCES users(firebase_user_id) ON DELETE CASCADE"
+        ))
     private User customer;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "store_id", nullable = false,
-        foreignKey = @ForeignKey(name = "fk_wishlist_store"))
+        foreignKey = @ForeignKey(
+            name = "fk_wishlist_store",
+            foreignKeyDefinition = "FOREIGN KEY (store_id) REFERENCES stores(id) ON DELETE CASCADE"
+        ))
     private Store store;
 
     @CreationTimestamp

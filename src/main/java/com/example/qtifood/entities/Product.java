@@ -2,6 +2,8 @@ package com.example.qtifood.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -30,17 +32,26 @@ public class Product {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "store_id", nullable = false,
-        foreignKey = @ForeignKey(name = "fk_product_store"))
+        foreignKey = @ForeignKey(
+            name = "fk_product_store",
+            foreignKeyDefinition = "FOREIGN KEY (store_id) REFERENCES stores(id) ON DELETE CASCADE"
+        ))
     private Store store;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "category_id", nullable = false,
-        foreignKey = @ForeignKey(name = "fk_product_category"))
+        foreignKey = @ForeignKey(
+            name = "fk_product_category",
+            foreignKeyDefinition = "FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE"
+        ))
     private Categories category;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "store_category_id",
-        foreignKey = @ForeignKey(name = "fk_product_store_category"))
+        foreignKey = @ForeignKey(
+            name = "fk_product_store_category",
+            foreignKeyDefinition = "FOREIGN KEY (store_category_id) REFERENCES store_categories(id) ON DELETE SET NULL"
+        ))
     private StoreCategory storeCategory;
 
     @Column(length = 150, nullable = false)
@@ -67,4 +78,21 @@ public class Product {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // ========== ONE-TO-MANY CASCADE RELATIONSHIPS ==========
+    
+    // Product images
+    @Builder.Default
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<ProductImage> productImages = new HashSet<>();
+
+    // Order items for this product
+    @Builder.Default
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<OrderItem> orderItems = new HashSet<>();
+
+    // Cart items for this product
+    @Builder.Default
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<CartItem> cartItems = new HashSet<>();
 }

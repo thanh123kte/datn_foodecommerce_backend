@@ -32,8 +32,8 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
                 sc.getStore() != null ? sc.getStore().getId() : null,  // <— lấy từ Store
                 sc.getName(),
                 sc.getDescription(),
-                sc.getParentCategory() != null ? sc.getParentCategory().getId() : null,
-                sc.getParentCategory() != null ? sc.getParentCategory().getName() : null,
+                sc.getCategory() != null ? sc.getCategory().getId() : null,
+                sc.getCategory() != null ? sc.getCategory().getName() : null,
                 sc.getCreatedAt(),
                 sc.getUpdatedAt()
         );
@@ -55,7 +55,7 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
                 .store(store)
                 .name(dto.name())
                 .description(dto.description())
-                .parentCategory(parent)
+                .category(parent)
                 .build();
 
         return toDto(repo.save(sc));
@@ -78,7 +78,7 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
     @Override
     @Transactional(readOnly = true)
     public List<StoreCategoryResponseDto> listByParentCategory(Long parentCategoryId) {
-        return repo.findAllByParentCategory_Id(parentCategoryId)
+        return repo.findAllByCategory_Id(parentCategoryId)
                   .stream().map(this::toDto).toList();
     }
 
@@ -94,7 +94,7 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
         if (dto.parentCategoryId() != null) {
             Categories parent = categoriesRepo.findById(dto.parentCategoryId())
                     .orElseThrow(() -> new IllegalArgumentException("Parent category not found: " + dto.parentCategoryId()));
-            sc.setParentCategory(parent);
+            sc.setCategory(parent);
         }
 
         return toDto(repo.save(sc));

@@ -26,12 +26,18 @@ public class Message {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "conversation_id", nullable = false,
-        foreignKey = @ForeignKey(name = "fk_message_conversation"))
+        foreignKey = @ForeignKey(
+            name = "fk_message_conversation",
+            foreignKeyDefinition = "FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE"
+        ))
     private Conversation conversation;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "sender_id", nullable = false,
-        foreignKey = @ForeignKey(name = "fk_message_sender"))
+        foreignKey = @ForeignKey(
+            name = "fk_message_sender",
+            foreignKeyDefinition = "FOREIGN KEY (sender_id) REFERENCES users(firebase_user_id) ON DELETE CASCADE"
+        ))
     private User sender;
 
     @Column(columnDefinition = "TEXT", nullable = false)

@@ -6,6 +6,7 @@ import com.example.qtifood.dtos.user.UpdateUserRequestDto;
 import com.example.qtifood.dtos.user.UserResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 
 public interface UserService {
     Page<UserResponseDto> getUsers(Pageable pageable);
@@ -13,4 +14,6 @@ public interface UserService {
     UserResponseDto createUser(CreateUserRequestDto dto);
     UserResponseDto updateUser(String id, UpdateUserRequestDto dto);
     void deleteUser(String id);
+    UserResponseDto uploadAvatar(String id, MultipartFile avatarFile);
+    UserResponseDto deleteAvatar(String id);
 }
