@@ -15,6 +15,7 @@ import com.example.qtifood.services.OrderItemService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,17 +30,22 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Override
     @Transactional
     public OrderItemResponseDto createOrderItem(CreateOrderItemDto dto) {
+        // Note: This method is for adding items to existing orders
+        // For creating new orders with items, use OrderService.createOrder() instead
+        // which handles the entire order creation in a single transaction
+        
         OrderItem orderItem = orderItemMapper.toEntity(dto);
         
-        // Set order
-        Order order = orderRepository.findById(dto.getOrderId())
-            .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
-        orderItem.setOrder(order);
-        
-        // Set product
+        // Set product and get current price
         Product product = productRepository.findById(dto.getProductId())
             .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
         orderItem.setProduct(product);
+        
+        // Set current price from product (use discount price if available)
+        BigDecimal currentPrice = product.getDiscountPrice() != null ? 
+                                 product.getDiscountPrice() : 
+                                 product.getPrice();
+        orderItem.setPrice(currentPrice);
         
         return orderItemMapper.toDto(orderItemRepository.save(orderItem));
     }

@@ -11,13 +11,11 @@ public class OrderMapper {
     
     public Order toEntity(CreateOrderDto dto) {
         Order order = new Order();
-        order.setTotalAmount(dto.getTotalAmount());
-        order.setShippingFee(dto.getShippingFee());
+        // totalAmount, shippingFee, expectedDeliveryTime will be calculated by service
         order.setAdminVoucherId(dto.getAdminVoucherId());
         order.setSellerVoucherId(dto.getSellerVoucherId());
         order.setPaymentMethod(dto.getPaymentMethod());
         order.setNote(dto.getNote());
-        order.setExpectedDeliveryTime(dto.getExpectedDeliveryTime());
         return order;
     }
     
