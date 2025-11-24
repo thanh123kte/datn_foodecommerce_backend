@@ -57,7 +57,13 @@ public class Voucher {
     private Integer usageLimit;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "seller_id", foreignKey = @ForeignKey(name = "fk_voucher_seller"))
+    @JoinColumn(
+        name = "seller_id",
+        foreignKey = @ForeignKey(
+            name = "fk_voucher_seller",
+            foreignKeyDefinition = "FOREIGN KEY (seller_id) REFERENCES stores(id) ON DELETE SET NULL"
+        )
+    )
     private Store seller;
 
     @Enumerated(EnumType.STRING)

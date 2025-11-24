@@ -25,7 +25,10 @@ public class SearchHistory {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false,
-        foreignKey = @ForeignKey(name = "fk_search_history_user"))
+        foreignKey = @ForeignKey(
+            name = "fk_search_history_user",
+            foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(firebase_user_id) ON DELETE CASCADE"
+        ))
     private User user;
 
     @Column(length = 255, nullable = false)

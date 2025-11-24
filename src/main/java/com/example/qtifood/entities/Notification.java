@@ -26,7 +26,11 @@ public class Notification {
     private Long id;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = false,
+        foreignKey = @ForeignKey(
+            name = "fk_notification_user",
+            foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(firebase_user_id) ON DELETE CASCADE"
+        ))
     private User user;
     
     @Column(name = "title", nullable = false, length = 100)

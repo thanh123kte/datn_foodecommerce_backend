@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface StoreCategoryRepository extends JpaRepository<StoreCategory, Long> {
     List<StoreCategory> findAllByStoreId(Long storeId);
-    List<StoreCategory> findAllByParentCategory_Id(Long parentCategoryId);
+    List<StoreCategory> findAllByCategory_Id(Long categoryId);
     List<StoreCategory> findAllByStore_Id(Long storeId);
 }

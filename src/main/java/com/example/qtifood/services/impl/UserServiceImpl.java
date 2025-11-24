@@ -6,6 +6,7 @@ import com.example.qtifood.entities.*;
 import com.example.qtifood.enums.RoleType;
 import com.example.qtifood.repositories.RoleRepository;
 import com.example.qtifood.repositories.UserRepository;
+import com.example.qtifood.services.FileUploadService;
 import com.example.qtifood.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -13,6 +14,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -25,6 +27,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FileUploadService fileUploadService;
 
     private UserResponseDto toDto(User u) {
     Set<RoleType> roleNames = u.getRoles().stream()
@@ -136,5 +139,38 @@ public class UserServiceImpl implements UserService {
             u.getRoles().add(customerRole);
         }
         return toDto(userRepository.save(u));
+    }
+
+    @Override
+    public UserResponseDto uploadAvatar(String id, MultipartFile avatarFile) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + id));
+        
+        // Xóa avatar cũ nếu có
+        if (user.getAvatarUrl() != null && !user.getAvatarUrl().trim().isEmpty()) {
+            fileUploadService.deleteFile(user.getAvatarUrl());
+        }
+        
+        // Upload avatar mới
+        String newAvatarPath = fileUploadService.uploadFile(avatarFile, "users", id);
+        user.setAvatarUrl(newAvatarPath);
+        
+        return toDto(userRepository.save(user));
+    }
+
+    @Override
+    public UserResponseDto deleteAvatar(String id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + id));
+
+        if (user.getAvatarUrl() != null && !user.getAvatarUrl().trim().isEmpty()) {
+            // delete file from storage
+            fileUploadService.deleteFile(user.getAvatarUrl());
+            // clear DB field
+            user.setAvatarUrl(null);
+            user = userRepository.save(user);
+        }
+
+        return toDto(user);
     }
 }
