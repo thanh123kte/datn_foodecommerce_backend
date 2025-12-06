@@ -82,6 +82,14 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional(readOnly = true)
+    public AddressResponseDto getAddressById(Long id) {
+        Address address = addressRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Address not found: " + id));
+        return AddressMapper.toDto(address);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<AddressResponseDto> getAddressesByUserId(String userId) {
         return addressRepository.findByUserId(userId)
                 .stream().map(AddressMapper::toDto).toList();

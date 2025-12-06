@@ -15,4 +15,9 @@ public interface OrderService {
     List<OrderResponseDto> getOrdersByStore(Long storeId);
     List<OrderResponseDto> getOrdersByDriver(Long driverId);
     OrderResponseDto updateOrderStatus(Long id, String status);
+    
+    /**
+     * Update only payment status of an order (used by payment gateway callbacks)
+     */
+    void updatePaymentStatus(Long orderId, com.example.qtifood.enums.PaymentStatus status);
 }

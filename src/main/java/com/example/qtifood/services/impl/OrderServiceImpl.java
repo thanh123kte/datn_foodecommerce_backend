@@ -138,4 +138,13 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalArgumentException("Invalid order status: " + status);
         }
     }
+
+    @Override
+    @Transactional
+    public void updatePaymentStatus(Long orderId, com.example.qtifood.enums.PaymentStatus status) {
+        Order order = orderRepository.findById(orderId)
+            .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
+        order.setPaymentStatus(status);
+        orderRepository.save(order);
+    }
 }
