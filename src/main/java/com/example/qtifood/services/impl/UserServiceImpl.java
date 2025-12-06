@@ -7,6 +7,7 @@ import com.example.qtifood.enums.RoleType;
 import com.example.qtifood.repositories.RoleRepository;
 import com.example.qtifood.repositories.UserRepository;
 import com.example.qtifood.services.UserService;
+import com.example.qtifood.services.WalletService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final WalletService walletService;
 
     private UserResponseDto toDto(User u) {
     Set<RoleType> roleNames = u.getRoles().stream()
@@ -77,7 +79,12 @@ public class UserServiceImpl implements UserService {
                 .roles(new HashSet<>(Collections.singletonList(role)))
                 .build();
 
-        return toDto(userRepository.save(u));
+        User savedUser = userRepository.save(u);
+        
+        // Tự động tạo ví cho user mới
+        walletService.initializeWallet(savedUser.getId());
+        
+        return toDto(savedUser);
     }
 
     @Override
