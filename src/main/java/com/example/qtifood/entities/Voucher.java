@@ -57,7 +57,7 @@ public class Voucher {
     private Integer usageLimit;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
-    @JoinColumn(name = "seller_id", foreignKey = @ForeignKey(name = "fk_voucher_seller"))
+    @JoinColumn(name = "seller_id", nullable = true, foreignKey = @ForeignKey(name = "fk_voucher_seller"))
     private Store seller;
 
     @Enumerated(EnumType.STRING)
