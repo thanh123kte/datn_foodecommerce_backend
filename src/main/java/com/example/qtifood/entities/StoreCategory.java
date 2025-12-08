@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
     name = "store_categories",
     indexes = {
         @Index(name = "idx_store_categories_store_id", columnList = "store_id"),
-        @Index(name = "idx_store_categories_parent_id", columnList = "parent_id")
+        @Index(name = "idx_store_categories_category_id", columnList = "category_id")
     }
 )
 @Getter @Setter

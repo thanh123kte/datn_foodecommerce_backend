@@ -4,10 +4,16 @@ import com.example.qtifood.dtos.Orders.CreateOrderDto;
 import com.example.qtifood.dtos.Orders.UpdateOrderDto;
 import com.example.qtifood.dtos.Orders.OrderResponseDto;
 import com.example.qtifood.entities.Order;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
+@RequiredArgsConstructor
 public class OrderMapper {
+    private final OrderItemMapper orderItemMapper;
     
     public Order toEntity(CreateOrderDto dto) {
         Order order = new Order();
@@ -22,10 +28,55 @@ public class OrderMapper {
     public OrderResponseDto toDto(Order order) {
         OrderResponseDto dto = new OrderResponseDto();
         dto.setId(order.getId());
-        dto.setCustomerId(order.getCustomer() != null ? order.getCustomer().getId() : null);
-        dto.setStoreId(order.getStore() != null ? order.getStore().getId() : null);
-        dto.setDriverId(order.getDriver() != null ? order.getDriver().getId() : null);
-        dto.setShippingAddressId(order.getShippingAddress() != null ? order.getShippingAddress().getId() : null);
+        
+        // Customer info
+        if (order.getCustomer() != null) {
+            dto.setCustomerId(order.getCustomer().getId());
+            dto.setCustomerName(order.getCustomer().getFullName());
+            dto.setCustomerPhone(order.getCustomer().getPhone());
+            dto.setCustomerAvatar(buildFileUrl(order.getCustomer().getAvatarUrl()));
+        }
+        
+        // Store info
+        if (order.getStore() != null) {
+            dto.setStoreId(order.getStore().getId());
+            dto.setStoreName(order.getStore().getName());
+        }
+        
+        // Driver info
+        if (order.getDriver() != null) {
+            dto.setDriverId(order.getDriver().getId());
+            dto.setDriverName(order.getDriver().getFullName());
+            dto.setDriverPhone(order.getDriver().getPhone());
+        }
+        
+        // Shipping address info
+        if (order.getShippingAddress() != null) {
+            dto.setShippingAddressId(order.getShippingAddress().getId());
+            dto.setShippingAddress(order.getShippingAddress().getAddress());
+            dto.setShippingReceiver(order.getShippingAddress().getReceiver());
+            dto.setShippingPhone(order.getShippingAddress().getPhone());
+        }
+
+        // Items
+        if (order.getOrderItems() != null && !order.getOrderItems().isEmpty()) {
+            List<com.example.qtifood.dtos.OrderItems.OrderItemResponseDto> items = order.getOrderItems()
+                .stream()
+                .map(orderItemMapper::toDto)
+                .collect(Collectors.toList());
+            dto.setItems(items);
+
+            BigDecimal itemsTotal = items.stream()
+                .map(i -> i.getTotalPrice() != null ? i.getTotalPrice() : BigDecimal.ZERO)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+            dto.setItemsTotal(itemsTotal);
+        } else {
+            dto.setItemsTotal(BigDecimal.ZERO);
+        }
+
+        // Discount (placeholder, vouchers not yet applied)
+        dto.setDiscountAmount(BigDecimal.ZERO);
+        
         dto.setTotalAmount(order.getTotalAmount());
         dto.setShippingFee(order.getShippingFee());
         dto.setAdminVoucherId(order.getAdminVoucherId());
@@ -41,6 +92,27 @@ public class OrderMapper {
         dto.setCreatedAt(order.getCreatedAt());
         dto.setUpdatedAt(order.getUpdatedAt());
         return dto;
+    }
+    
+    /**
+     * Normalize uploaded file paths so the frontend can load them directly.
+     * Accepts already absolute URLs, or relative paths stored in DB (e.g. users/xxx.png).
+     */
+    private String buildFileUrl(String path) {
+        if (path == null || path.trim().isEmpty()) {
+            return null;
+        }
+        String trimmed = path.trim();
+        if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+            return trimmed;
+        }
+        if (trimmed.startsWith("/uploads/")) {
+            return trimmed;
+        }
+        if (trimmed.startsWith("/")) {
+            return "/uploads" + trimmed;
+        }
+        return "/uploads/" + trimmed;
     }
     
     public void updateOrderFromDto(UpdateOrderDto dto, Order order) {

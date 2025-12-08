@@ -8,6 +8,7 @@ import java.util.Set;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.example.qtifood.enums.AdminStatus;
 import com.example.qtifood.enums.ProductStatus;
 
 import jakarta.persistence.*;
@@ -62,6 +63,11 @@ public class Product {
     @Column(nullable = false)
     @Builder.Default
     private ProductStatus status = ProductStatus.AVAILABLE;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "admin_status", nullable = false)
+    @Builder.Default
+    private AdminStatus adminStatus = AdminStatus.ACTIVE;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

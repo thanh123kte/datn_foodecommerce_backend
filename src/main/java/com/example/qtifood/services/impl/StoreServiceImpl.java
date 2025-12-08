@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.qtifood.dtos.Stores.*;
 import com.example.qtifood.entities.Store;
@@ -12,6 +13,7 @@ import com.example.qtifood.enums.StoreStatus;
 import com.example.qtifood.mappers.StoreMapper;
 import com.example.qtifood.repositories.StoreRepository;
 import com.example.qtifood.repositories.UserRepository;
+import com.example.qtifood.services.FileUploadService;
 import com.example.qtifood.services.StoreService;
 
 import lombok.RequiredArgsConstructor;
@@ -23,6 +25,7 @@ public class StoreServiceImpl implements StoreService {
 
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
+    private final FileUploadService fileUploadService;
 
     @Override
     public StoreResponseDto createStore(CreateStoreDto dto) {
@@ -109,5 +112,36 @@ public class StoreServiceImpl implements StoreService {
             .orElseThrow(() -> new RuntimeException("Store not found: " + id));
         s.setStatus(status);
         return StoreMapper.toDto(storeRepository.save(s));
+    }
+
+    @Override
+    public StoreResponseDto uploadImage(Long id, MultipartFile imageFile) {
+        Store store = storeRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Store not found: " + id));
+        
+        // Delete old image if exists
+        if (store.getImageUrl() != null && !store.getImageUrl().trim().isEmpty()) {
+            fileUploadService.deleteFile(store.getImageUrl());
+        }
+        
+        // Upload new image
+        String newImagePath = fileUploadService.uploadFile(imageFile, "stores", id.toString());
+        store.setImageUrl(newImagePath);
+        
+        return StoreMapper.toDto(storeRepository.save(store));
+    }
+
+    @Override
+    public StoreResponseDto deleteImage(Long id) {
+        Store store = storeRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Store not found: " + id));
+        
+        // Delete old image if exists
+        if (store.getImageUrl() != null && !store.getImageUrl().trim().isEmpty()) {
+            fileUploadService.deleteFile(store.getImageUrl());
+        }
+        
+        store.setImageUrl(null);
+        return StoreMapper.toDto(storeRepository.save(store));
     }
 }

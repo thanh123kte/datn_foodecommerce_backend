@@ -68,4 +68,23 @@ public class StoreController {
                                                       @PathVariable StoreStatus status) {
         return ResponseEntity.ok(storeService.setStatus(id, status));
     }
+
+    @PostMapping(value = "/{id}/image", consumes = "multipart/form-data")
+    public ResponseEntity<StoreResponseDto> uploadImage(
+            @PathVariable Long id,
+            @RequestParam("image") org.springframework.web.multipart.MultipartFile imageFile) {
+        
+        if (imageFile.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        
+        StoreResponseDto updatedStore = storeService.uploadImage(id, imageFile);
+        return ResponseEntity.ok(updatedStore);
+    }
+
+    @DeleteMapping("/{id}/image")
+    public ResponseEntity<StoreResponseDto> deleteImage(@PathVariable Long id) {
+        StoreResponseDto updatedStore = storeService.deleteImage(id);
+        return ResponseEntity.ok(updatedStore);
+    }
 }

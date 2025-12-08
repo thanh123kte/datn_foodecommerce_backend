@@ -9,7 +9,7 @@ public interface StoreCategoryService {
     StoreCategoryResponseDto create(CreateStoreCategoryDto dto);
     StoreCategoryResponseDto getById(Long id);
     List<StoreCategoryResponseDto> listByStore(Long storeId);
-    List<StoreCategoryResponseDto> listByParentCategory(Long parentCategoryId);
+    List<StoreCategoryResponseDto> listByCategory(Long categoryId);
     StoreCategoryResponseDto update(Long id, UpdateStoreCategoryDto dto);
     void delete(Long id);
 }

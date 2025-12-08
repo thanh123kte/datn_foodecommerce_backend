@@ -12,8 +12,10 @@ import com.example.qtifood.dtos.Products.ProductResponseDto;
 import com.example.qtifood.entities.Product;
 import com.example.qtifood.entities.Store;
 import com.example.qtifood.entities.StoreCategory;
+import com.example.qtifood.enums.AdminStatus;
 import com.example.qtifood.enums.ProductStatus;
 import com.example.qtifood.entities.Categories;
+import com.example.qtifood.exceptions.BadRequestException;
 import com.example.qtifood.exceptions.ResourceNotFoundException;
 import com.example.qtifood.exceptions.EntityDuplicateException;
 import com.example.qtifood.repositories.ProductRepository;
@@ -61,7 +63,8 @@ public class ProductServiceImpl implements ProductService {
                 .description(dto.description())
                 .price(dto.price())
                 .discountPrice(dto.discountPrice())
-                .status(dto.status() != null ? dto.status() : ProductStatus.AVAILABLE)
+                .status(ProductStatus.AVAILABLE)  // Mặc định luôn là AVAILABLE
+                .adminStatus(AdminStatus.ACTIVE)  // Mặc định luôn là ACTIVE
                 .build();
 
         return toDto(productRepository.save(product));
@@ -191,7 +194,27 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
         
+        // Kiểm tra nếu product bị admin banned thì không cho phép seller update status
+        if (product.getAdminStatus() == AdminStatus.BANNED) {
+            throw new BadRequestException("Cannot update product status. This product has been banned by admin.");
+        }
+        
         product.setStatus(status);
+        return toDto(productRepository.save(product));
+    }
+
+    @Override
+    public ProductResponseDto updateProductAdminStatus(Long id, AdminStatus adminStatus) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        
+        product.setAdminStatus(adminStatus);
+        
+        // Nếu admin banned product, tự động set status = UNAVAILABLE
+        if (adminStatus == AdminStatus.BANNED) {
+            product.setStatus(ProductStatus.UNAVAILABLE);
+        }
+        
         return toDto(productRepository.save(product));
     }
 
@@ -209,6 +232,7 @@ public class ProductServiceImpl implements ProductService {
                 .price(product.getPrice())
                 .discountPrice(product.getDiscountPrice())
                 .status(product.getStatus())
+                .adminStatus(product.getAdminStatus())
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .build();

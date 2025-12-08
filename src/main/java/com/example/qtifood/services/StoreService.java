@@ -17,4 +17,7 @@ public interface StoreService {
     List<StoreResponseDto> getStoresByStatus(StoreStatus status);
 
     StoreResponseDto setStatus(Long id, StoreStatus status);
+    
+    StoreResponseDto uploadImage(Long id, org.springframework.web.multipart.MultipartFile imageFile);
+    StoreResponseDto deleteImage(Long id);
 }
