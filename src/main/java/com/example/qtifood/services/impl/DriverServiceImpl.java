@@ -16,10 +16,8 @@ import com.example.qtifood.exceptions.EntityDuplicateException;
 import com.example.qtifood.exceptions.ResourceNotFoundException;
 import com.example.qtifood.repositories.DriverRepository;
 import com.example.qtifood.services.DriverService;
-import com.example.qtifood.services.FileUploadService;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @RequiredArgsConstructor
@@ -28,7 +26,6 @@ public class DriverServiceImpl implements DriverService {
 
     private final DriverRepository driverRepository;
     private final PasswordEncoder passwordEncoder;
-    private final FileUploadService fileUploadService;
 
     @Override
     public DriverResponseDto createDriver(CreateDriverDto dto) {
@@ -238,48 +235,6 @@ public class DriverServiceImpl implements DriverService {
         driver.setVerified(verified);
         
         return toDto(driverRepository.save(driver));
-    }
-
-    @Override
-    public DriverResponseDto uploadAvatar(Long id, MultipartFile avatarFile) {
-        Driver driver = driverRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Driver not found with id: " + id));
-        
-        // Delete old avatar if exists and is a local file (not external URL)
-        if (driver.getAvatarUrl() != null && !driver.getAvatarUrl().trim().isEmpty()) {
-            String oldAvatarUrl = driver.getAvatarUrl();
-            // Only delete if it's a local file path (not starting with http:// or https://)
-            if (!oldAvatarUrl.startsWith("http://") && !oldAvatarUrl.startsWith("https://")) {
-                try {
-                    fileUploadService.deleteFile(oldAvatarUrl);
-                } catch (Exception e) {
-                    // Log error but continue with upload - old file cleanup is not critical
-                    System.err.println("Failed to delete old avatar: " + e.getMessage());
-                }
-            }
-        }
-        
-        // Upload new avatar (will replace existing if same name)
-        String newAvatarPath = fileUploadService.uploadFile(avatarFile, "drivers", id.toString());
-        driver.setAvatarUrl(newAvatarPath);
-        
-        return toDto(driverRepository.save(driver));
-    }
-
-    @Override
-    public DriverResponseDto deleteAvatar(Long id) {
-        Driver driver = driverRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Driver not found with id: " + id));
-
-        if (driver.getAvatarUrl() != null && !driver.getAvatarUrl().trim().isEmpty()) {
-            // Delete file from storage
-            fileUploadService.deleteFile(driver.getAvatarUrl());
-            // Clear DB field
-            driver.setAvatarUrl(null);
-            driver = driverRepository.save(driver);
-        }
-
-        return toDto(driver);
     }
 
     private DriverResponseDto toDto(Driver driver) {

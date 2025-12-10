@@ -94,15 +94,4 @@ public class DriverController {
                                                          @PathVariable Boolean verified) {
         return ResponseEntity.ok(driverService.verifyDriver(id, verified));
     }
-
-    @PostMapping(value = "/{id}/avatar", consumes = org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<DriverResponseDto> uploadAvatar(@PathVariable Long id,
-                                                         @RequestParam("avatar") org.springframework.web.multipart.MultipartFile avatarFile) {
-        return ResponseEntity.ok(driverService.uploadAvatar(id, avatarFile));
-    }
-
-    @DeleteMapping("/{id}/avatar")
-    public ResponseEntity<DriverResponseDto> deleteAvatar(@PathVariable Long id) {
-        return ResponseEntity.ok(driverService.deleteAvatar(id));
-    }
 }

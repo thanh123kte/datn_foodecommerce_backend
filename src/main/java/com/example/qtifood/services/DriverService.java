@@ -34,8 +34,4 @@ public interface DriverService {
     DriverResponseDto updateVerificationStatus(Long id, VerificationStatus verificationStatus);
     
     DriverResponseDto verifyDriver(Long id, Boolean verified);
-    
-    DriverResponseDto uploadAvatar(Long id, org.springframework.web.multipart.MultipartFile avatarFile);
-    
-    DriverResponseDto deleteAvatar(Long id);
 }
