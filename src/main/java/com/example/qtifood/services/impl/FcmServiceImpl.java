@@ -38,11 +38,14 @@ public class FcmServiceImpl implements FcmService {
     }
 
     @Override
-    public void sendOrderNotification(String userId, String title, String body, Map<String, String> data) {
+    public void sendNotification(String userId, String title, String body, String notificationType, Map<String, String> data) {
         List<String> tokens = deviceTokenRepository.findByUserId(userId)
             .stream().map(dt -> dt.getToken()).toList();
-        log.info("[FcmService] Chuẩn bị gửi FCM cho userId={}, tokens={}, title={}, body={}, data={}", userId, tokens, title, body, data);
-        sendToTokens(tokens, title, body, data);
+        log.info("[FcmService] Chuẩn bị gửi FCM cho userId={}, tokens={}, type={}, title={}, body={}, data={}", userId, tokens, notificationType, title, body, data);
+        // Add notificationType to data payload for FE routing
+        Map<String, String> enrichedData = data != null ? new java.util.HashMap<>(data) : new java.util.HashMap<>();
+        enrichedData.put("notificationType", notificationType);
+        sendToTokens(tokens, title, body, enrichedData);
     }
 
     @Override

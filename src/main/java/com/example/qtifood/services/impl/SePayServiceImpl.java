@@ -17,11 +17,13 @@ import com.example.qtifood.entities.WalletTopupTransaction;
 import com.example.qtifood.enums.TransactionType;
 import com.example.qtifood.repositories.WalletRepository;
 import com.example.qtifood.repositories.WalletTopupTransactionRepository;
+import com.example.qtifood.services.FcmService;
 import com.example.qtifood.services.SePayService;
 import com.example.qtifood.services.WalletService;
 
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +34,7 @@ public class SePayServiceImpl implements SePayService {
     private final WalletRepository walletRepository;
     private final WalletTopupTransactionRepository topupRepository;
     private final WalletService walletService;
+    private final FcmService fcmService;
     
     @Override
     @Transactional
@@ -199,6 +202,20 @@ public class SePayServiceImpl implements SePayService {
             // Update topup transaction status
             topupTx.setStatus("SUCCESS");
             topupRepository.save(topupTx);
+            
+            // Send FCM notification
+            String title = "Nạp tiền thành công";
+            String body = String.format("Bạn vừa nạp %,.0f VND vào ví QTI", amount);
+            Map<String, String> data = Map.of(
+                "amount", amount.toString(),
+                "transactionId", topupTx.getProviderTransactionId()
+            );
+            try {
+                fcmService.sendNotification(userId, title, body, "TOPUP", data);
+                logger.info("FCM sent for topup success: user={}, title={}, body={}", userId, title, body);
+            } catch (Exception e) {
+                logger.warn("Failed to send FCM for topup success: {}", e.getMessage());
+            }
             
             logger.info("Topup success: user={}, amount={}, txId={}", 
                 userId, amount, topupTx.getProviderTransactionId());
