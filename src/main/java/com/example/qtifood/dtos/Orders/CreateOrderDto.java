@@ -9,7 +9,7 @@ import com.example.qtifood.enums.PaymentMethod;
 public class CreateOrderDto {
     private String customerId;
     private Long storeId;
-    private Long driverId;
+    private String driverId;
     private Long shippingAddressId;
     private BigDecimal totalAmount;
     private BigDecimal shippingFee;

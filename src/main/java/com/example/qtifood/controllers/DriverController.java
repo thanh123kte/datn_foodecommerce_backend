@@ -1,11 +1,13 @@
 package com.example.qtifood.controllers;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.qtifood.dtos.Drivers.CreateDriverDto;
 import com.example.qtifood.dtos.Drivers.UpdateDriverDto;
@@ -36,7 +38,7 @@ public class DriverController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<DriverResponseDto> getDriverById(@PathVariable Long id) {
+    public ResponseEntity<DriverResponseDto> getDriverById(@PathVariable String id) {
         return ResponseEntity.ok(driverService.getDriverById(id));
     }
 
@@ -46,13 +48,13 @@ public class DriverController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<DriverResponseDto> updateDriver(@PathVariable Long id,
+    public ResponseEntity<DriverResponseDto> updateDriver(@PathVariable String id,
                                                          @Valid @RequestBody UpdateDriverDto dto) {
         return ResponseEntity.ok(driverService.updateDriver(id, dto));
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteDriver(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteDriver(@PathVariable String id) {
         driverService.deleteDriver(id);
         return ResponseEntity.noContent().build();
     }
@@ -84,14 +86,23 @@ public class DriverController {
     }
 
     @PutMapping("/{id}/verification-status/{status}")
-    public ResponseEntity<DriverResponseDto> updateVerificationStatus(@PathVariable Long id,
+    public ResponseEntity<DriverResponseDto> updateVerificationStatus(@PathVariable String id,
                                                                      @PathVariable VerificationStatus status) {
         return ResponseEntity.ok(driverService.updateVerificationStatus(id, status));
     }
 
     @PutMapping("/{id}/verify/{verified}")
-    public ResponseEntity<DriverResponseDto> verifyDriver(@PathVariable Long id,
+    public ResponseEntity<DriverResponseDto> verifyDriver(@PathVariable String id,
                                                          @PathVariable Boolean verified) {
         return ResponseEntity.ok(driverService.verifyDriver(id, verified));
+    }
+
+    @PostMapping("/{id}/upload-image")
+    public ResponseEntity<Map<String, String>> uploadDriverImage(
+            @PathVariable String id,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("imageType") String imageType) {
+        String imageUrl = driverService.uploadDriverImage(id, file, imageType);
+        return ResponseEntity.ok(Map.of("imageUrl", imageUrl));
     }
 }

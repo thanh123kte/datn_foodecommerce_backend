@@ -4,5 +4,6 @@ package com.example.qtifood.enums;
 public enum RoleType {
     ADMIN,
     CUSTOMER,
-    SELLER
+    SELLER,
+    DRIVER
 }
