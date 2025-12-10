@@ -15,9 +15,11 @@ import com.example.qtifood.repositories.OrderRepository;
 import com.example.qtifood.repositories.StoreRepository;
 import com.example.qtifood.repositories.UserRepository;
 import com.example.qtifood.services.StoreReviewService;
+import com.example.qtifood.services.FileUploadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,6 +31,7 @@ public class StoreReviewServiceImpl implements StoreReviewService {
     private final StoreRepository storeRepository;
     private final UserRepository userRepository;
     private final StoreReviewMapper storeReviewMapper;
+    private final FileUploadService fileUploadService;
 
     @Override
     @Transactional
@@ -140,5 +143,51 @@ public class StoreReviewServiceImpl implements StoreReviewService {
     @Transactional(readOnly = true)
     public Long getTotalReviewsByStore(Long storeId) {
         return storeReviewRepository.getTotalReviewsByStoreId(storeId);
+    }
+
+    @Override
+    @Transactional
+    public StoreReviewResponseDto uploadImage(Long id, MultipartFile imageFile) {
+        StoreReview review = storeReviewRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Store review not found: " + id));
+        
+        // Delete old image if exists and not external URL
+        if (review.getImageUrl() != null && !review.getImageUrl().trim().isEmpty()) {
+            if (!review.getImageUrl().startsWith("http://") && !review.getImageUrl().startsWith("https://")) {
+                try {
+                    fileUploadService.deleteFile(review.getImageUrl());
+                } catch (Exception e) {
+                    // Log error but continue with upload
+                    System.err.println("Failed to delete old review image: " + e.getMessage());
+                }
+            }
+        }
+        
+        // Upload new image
+        String newImagePath = fileUploadService.uploadFile(imageFile, "reviews", id.toString());
+        review.setImageUrl(newImagePath);
+        
+        return storeReviewMapper.toDto(storeReviewRepository.save(review));
+    }
+
+    @Override
+    @Transactional
+    public StoreReviewResponseDto deleteImage(Long id) {
+        StoreReview review = storeReviewRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Store review not found: " + id));
+        
+        // Delete old image if exists and not external URL
+        if (review.getImageUrl() != null && !review.getImageUrl().trim().isEmpty()) {
+            if (!review.getImageUrl().startsWith("http://") && !review.getImageUrl().startsWith("https://")) {
+                try {
+                    fileUploadService.deleteFile(review.getImageUrl());
+                } catch (Exception e) {
+                    System.err.println("Failed to delete review image: " + e.getMessage());
+                }
+            }
+        }
+        
+        review.setImageUrl(null);
+        return storeReviewMapper.toDto(storeReviewRepository.save(review));
     }
 }

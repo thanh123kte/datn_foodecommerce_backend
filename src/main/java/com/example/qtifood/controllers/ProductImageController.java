@@ -25,6 +25,14 @@ public class ProductImageController {
         return ResponseEntity.status(HttpStatus.CREATED).body(productImages);
     }
 
+    @PostMapping(value = "/add-more/{productId}", consumes = "multipart/form-data")
+    public ResponseEntity<List<ProductImageResponseDto>> addMoreProductImages(
+            @PathVariable Long productId,
+            @RequestPart("files") List<org.springframework.web.multipart.MultipartFile> files) {
+        List<ProductImageResponseDto> productImages = productImageService.addMoreProductImages(productId, files);
+        return ResponseEntity.status(HttpStatus.CREATED).body(productImages);
+    }
+
     @GetMapping("/product/{productId}")
     public ResponseEntity<List<ProductImageResponseDto>> getProductImagesByProductId(@PathVariable Long productId) {
         return ResponseEntity.ok(productImageService.getProductImagesByProductId(productId));

@@ -76,4 +76,12 @@ public class UserController {
         UserResponseDto updatedUser = userService.deleteAvatar(id);
         return ResponseEntity.ok(updatedUser);
     }
+
+    /* ====== Get All Sellers with Stats ====== */
+    @GetMapping("/sellers")
+    public ResponseEntity<java.util.List<SellerStatsDto>> getAllSellers() {
+        return ResponseEntity.ok(
+            ((com.example.qtifood.services.impl.UserServiceImpl) userService).getAllSellersWithStats()
+        );
+    }
 }

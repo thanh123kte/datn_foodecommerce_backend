@@ -171,6 +171,75 @@ public class ProductImageServiceImpl implements ProductImageService {
         return results;
     }
 
+    @Override
+    public List<ProductImageResponseDto> addMoreProductImages(Long productId, 
+            List<org.springframework.web.multipart.MultipartFile> files) {
+        
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + productId));
+        
+        // Check if product already has a primary image
+        boolean hasPrimaryImage = productImageRepository.existsByProductIdAndIsPrimaryTrue(productId);
+        
+        String uploadDir = "uploads/products/";
+        java.io.File directory = new java.io.File(uploadDir);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        List<String> imageUrls = files.stream().map(file -> {
+            try {
+                // Validate file
+                if (file.isEmpty()) {
+                    throw new IllegalArgumentException("File không được để trống");
+                }
+
+                // Validate file type
+                String contentType = file.getContentType();
+                if (contentType == null || !contentType.startsWith("image/")) {
+                    throw new IllegalArgumentException("File phải là ảnh (jpg, png, gif, etc.)");
+                }
+
+                // Generate unique filename
+                String originalFilename = file.getOriginalFilename();
+                String fileExtension = "";
+                if (originalFilename != null && originalFilename.contains(".")) {
+                    fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+                }
+                
+                String uniqueFilename = java.util.UUID.randomUUID().toString() + "_" + 
+                    (originalFilename != null ? originalFilename : "image" + fileExtension);
+
+                // Save file
+                java.nio.file.Path filePath = java.nio.file.Paths.get(uploadDir + uniqueFilename);
+                java.nio.file.Files.copy(file.getInputStream(), filePath, java.nio.file.StandardCopyOption.REPLACE_EXISTING);
+
+                // Return URL
+                return "/" + uploadDir + uniqueFilename;
+
+            } catch (java.io.IOException e) {
+                throw new RuntimeException("Lỗi khi lưu file: " + file.getOriginalFilename(), e);
+            }
+        }).collect(java.util.stream.Collectors.toList());
+        
+        List<ProductImageResponseDto> results = new java.util.ArrayList<>();
+        
+        for (int i = 0; i < imageUrls.size(); i++) {
+            ProductImage productImage = ProductImage.builder()
+                    .product(product)
+                    .imageUrl(imageUrls.get(i))
+                    // If no primary image exists, make the first new image primary
+                    // Otherwise, all new images are non-primary
+                    .isPrimary(!hasPrimaryImage && i == 0)
+                    .build();
+            
+            ProductImage saved = productImageRepository.save(productImage);
+            results.add(toDto(saved));
+        }
+        
+        return results;
+    }
+
     private ProductImageResponseDto toDto(ProductImage productImage) {
         return ProductImageResponseDto.builder()
                 .id(productImage.getId())
