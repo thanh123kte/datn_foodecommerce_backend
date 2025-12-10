@@ -2,6 +2,8 @@ package com.example.qtifood.services;
 
 import java.util.List;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import com.example.qtifood.dtos.Drivers.CreateDriverDto;
 import com.example.qtifood.dtos.Drivers.UpdateDriverDto;
 import com.example.qtifood.dtos.Drivers.DriverResponseDto;
@@ -13,13 +15,13 @@ public interface DriverService {
     
     List<DriverResponseDto> getAllDrivers();
     
-    DriverResponseDto getDriverById(Long id);
+    DriverResponseDto getDriverById(String id);
     
     DriverResponseDto getDriverByPhone(String phone);
     
-    DriverResponseDto updateDriver(Long id, UpdateDriverDto dto);
+    DriverResponseDto updateDriver(String id, UpdateDriverDto dto);
     
-    void deleteDriver(Long id);
+    void deleteDriver(String id);
     
     List<DriverResponseDto> getDriversByVerificationStatus(VerificationStatus verificationStatus);
     
@@ -31,7 +33,9 @@ public interface DriverService {
     
     List<DriverResponseDto> getDriversByVehicleType(String vehicleType);
     
-    DriverResponseDto updateVerificationStatus(Long id, VerificationStatus verificationStatus);
+    DriverResponseDto updateVerificationStatus(String id, VerificationStatus verificationStatus);
     
-    DriverResponseDto verifyDriver(Long id, Boolean verified);
+    DriverResponseDto verifyDriver(String id, Boolean verified);
+    
+    String uploadDriverImage(String id, MultipartFile file, String imageType);
 }

@@ -16,13 +16,12 @@ public class CreateOrderDto {
     
     @NotNull(message = "Store ID is required")
     private Long storeId;
-    
-    private Long driverId = null;
-    private Long shippingAddressId = null;
-    private Long adminVoucherId = null;
-    private Long sellerVoucherId = null;
-    
-    @NotNull(message = "Payment method is required")
+    private String driverId;
+    private Long shippingAddressId;
+    private BigDecimal totalAmount;
+    private BigDecimal shippingFee;
+    private Long adminVoucherId;
+    private Long sellerVoucherId;
     private PaymentMethod paymentMethod;
     
     private String note;

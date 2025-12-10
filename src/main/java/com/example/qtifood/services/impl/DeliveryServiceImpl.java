@@ -93,7 +93,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DeliveryResponseDto> getDeliveriesByDriver(Long driverId) {
+    public List<DeliveryResponseDto> getDeliveriesByDriver(String driverId) {
         return deliveryRepository.findByDriverId(driverId).stream()
             .map(deliveryMapper::toDto)
             .collect(Collectors.toList());
@@ -116,7 +116,7 @@ public class DeliveryServiceImpl implements DeliveryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<DeliveryResponseDto> getDeliveriesByDriverAndStatus(Long driverId, DeliveryStatus status) {
+    public List<DeliveryResponseDto> getDeliveriesByDriverAndStatus(String driverId, DeliveryStatus status) {
         return deliveryRepository.findByDriverIdAndStatus(driverId, status).stream()
             .map(deliveryMapper::toDto)
             .collect(Collectors.toList());

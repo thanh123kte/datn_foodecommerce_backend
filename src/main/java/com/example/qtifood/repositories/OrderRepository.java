@@ -8,6 +8,6 @@ import com.example.qtifood.enums.OrderStatus;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     List<Order> findByCustomerId(String customerId);
     List<Order> findByStoreId(Long storeId);
-    List<Order> findByDriverId(Long driverId);
+    List<Order> findByDriverId(String driverId);
     List<Order> findByOrderStatus(OrderStatus status);
 }

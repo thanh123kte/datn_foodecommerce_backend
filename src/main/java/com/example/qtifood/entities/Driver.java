@@ -1,5 +1,6 @@
 package com.example.qtifood.entities;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CreationTimestamp;
@@ -24,8 +25,7 @@ import lombok.*;
 public class Driver {
     
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
     @Column(name = "full_name", length = 100, nullable = false)
     private String fullName;
@@ -33,11 +33,14 @@ public class Driver {
     @Column(length = 20, unique = true, nullable = false)
     private String phone;
 
-    @Column(length = 255, nullable = false)
-    private String password;
-
     @Column(name = "avatar_url", columnDefinition = "TEXT")
     private String avatarUrl;
+
+    @Column(name = "date_of_birth")
+    private LocalDate dateOfBirth;
+
+    @Column(length = 255)
+    private String address;
 
     @Column(name = "vehicle_type", length = 50)
     private String vehicleType;
@@ -45,11 +48,26 @@ public class Driver {
     @Column(name = "vehicle_plate", length = 20, unique = true)
     private String vehiclePlate;
 
+    @Column(name = "vehicle_plate_image_url", columnDefinition = "TEXT")
+    private String vehiclePlateImageUrl;
+
+    @Column(name = "vehicle_registration_image_url", columnDefinition = "TEXT")
+    private String vehicleRegistrationImageUrl;
+
     @Column(name = "cccd_number", length = 20)
     private String cccdNumber;
 
+    @Column(name = "cccd_front_image_url", columnDefinition = "TEXT")
+    private String cccdFrontImageUrl;
+
+    @Column(name = "cccd_back_image_url", columnDefinition = "TEXT")
+    private String cccdBackImageUrl;
+
     @Column(name = "license_number", length = 50)
     private String licenseNumber;
+
+    @Column(name = "license_image_url", columnDefinition = "TEXT")
+    private String licenseImageUrl;
 
     @Builder.Default
     @Column(nullable = false)

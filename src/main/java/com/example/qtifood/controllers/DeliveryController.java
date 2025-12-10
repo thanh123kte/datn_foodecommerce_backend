@@ -43,7 +43,7 @@ public class DeliveryController {
     }
 
     @GetMapping("/driver/{driverId}")
-    public ResponseEntity<List<DeliveryResponseDto>> getDeliveriesByDriver(@PathVariable Long driverId) {
+    public ResponseEntity<List<DeliveryResponseDto>> getDeliveriesByDriver(@PathVariable String driverId) {
         return ResponseEntity.ok(deliveryService.getDeliveriesByDriver(driverId));
     }
 
@@ -58,7 +58,7 @@ public class DeliveryController {
     }
 
     @GetMapping("/driver/{driverId}/status/{status}")
-    public ResponseEntity<List<DeliveryResponseDto>> getDeliveriesByDriverAndStatus(@PathVariable Long driverId, @PathVariable DeliveryStatus status) {
+    public ResponseEntity<List<DeliveryResponseDto>> getDeliveriesByDriverAndStatus(@PathVariable String driverId, @PathVariable DeliveryStatus status) {
         return ResponseEntity.ok(deliveryService.getDeliveriesByDriverAndStatus(driverId, status));
     }
 

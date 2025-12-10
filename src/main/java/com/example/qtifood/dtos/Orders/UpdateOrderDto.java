@@ -8,7 +8,7 @@ import com.example.qtifood.enums.PaymentMethod;
 
 @Data
 public class UpdateOrderDto {
-    private Long driverId;
+    private String driverId;
     private BigDecimal totalAmount;
     private BigDecimal shippingFee;
     private Long adminVoucherId;

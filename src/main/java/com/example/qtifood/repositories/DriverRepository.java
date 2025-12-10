@@ -10,23 +10,23 @@ import org.springframework.data.repository.query.Param;
 import com.example.qtifood.entities.Driver;
 import com.example.qtifood.enums.VerificationStatus;
 
-public interface DriverRepository extends JpaRepository<Driver, Long> {
+public interface DriverRepository extends JpaRepository<Driver, String> {
     
     Optional<Driver> findByPhone(String phone);
     
     boolean existsByPhone(String phone);
     
         boolean existsByVehiclePlate(String vehiclePlate);
-        boolean existsByVehiclePlateAndIdNot(String vehiclePlate, Long id);
-    boolean existsByPhoneAndIdNot(String phone, Long id);
+        boolean existsByVehiclePlateAndIdNot(String vehiclePlate, String id);
+    boolean existsByPhoneAndIdNot(String phone, String id);
     
     boolean existsByCccdNumber(String cccdNumber);
     
-    boolean existsByCccdNumberAndIdNot(String cccdNumber, Long id);
+    boolean existsByCccdNumberAndIdNot(String cccdNumber, String id);
     
     boolean existsByLicenseNumber(String licenseNumber);
     
-    boolean existsByLicenseNumberAndIdNot(String licenseNumber, Long id);
+    boolean existsByLicenseNumberAndIdNot(String licenseNumber, String id);
     
     List<Driver> findByVerificationStatus(VerificationStatus verificationStatus);
     

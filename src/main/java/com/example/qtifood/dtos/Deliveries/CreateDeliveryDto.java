@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 @Data
 public class CreateDeliveryDto {
     private Long orderId;
-    private Long driverId;
+    private String driverId;
     private Double pickupLat;
     private Double pickupLng;
     private Double dropoffLat;

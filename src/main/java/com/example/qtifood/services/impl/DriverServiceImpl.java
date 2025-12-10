@@ -1,20 +1,36 @@
 package com.example.qtifood.services.impl;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.qtifood.dtos.Drivers.CreateDriverDto;
 import com.example.qtifood.dtos.Drivers.UpdateDriverDto;
 import com.example.qtifood.dtos.Drivers.DriverResponseDto;
 import com.example.qtifood.entities.Driver;
+import com.example.qtifood.entities.Role;
+import com.example.qtifood.entities.User;
+import com.example.qtifood.entities.Wallet;
+import com.example.qtifood.enums.RoleType;
 import com.example.qtifood.enums.VerificationStatus;
 import com.example.qtifood.exceptions.EntityDuplicateException;
 import com.example.qtifood.exceptions.ResourceNotFoundException;
 import com.example.qtifood.repositories.DriverRepository;
+import com.example.qtifood.repositories.RoleRepository;
+import com.example.qtifood.repositories.UserRepository;
+import com.example.qtifood.repositories.WalletRepository;
 import com.example.qtifood.services.DriverService;
 
 import lombok.RequiredArgsConstructor;
@@ -25,7 +41,9 @@ import lombok.RequiredArgsConstructor;
 public class DriverServiceImpl implements DriverService {
 
     private final DriverRepository driverRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final WalletRepository walletRepository;
 
     @Override
     public DriverResponseDto createDriver(CreateDriverDto dto) {
@@ -45,19 +63,53 @@ public class DriverServiceImpl implements DriverService {
         }
 
         Driver driver = Driver.builder()
+                .id(dto.id())
                 .fullName(dto.fullName())
                 .phone(dto.phone())
-                .password(passwordEncoder.encode(dto.password()))
                 .avatarUrl(dto.avatarUrl())
+                .dateOfBirth(dto.dateOfBirth())
+                .address(dto.address())
                 .vehicleType(dto.vehicleType())
                 .vehiclePlate(dto.vehiclePlate())
+                .vehiclePlateImageUrl(dto.vehiclePlateImageUrl())
+                .vehicleRegistrationImageUrl(dto.vehicleRegistrationImageUrl())
                 .cccdNumber(dto.cccdNumber())
+                .cccdFrontImageUrl(dto.cccdFrontImageUrl())
+                .cccdBackImageUrl(dto.cccdBackImageUrl())
                 .licenseNumber(dto.licenseNumber())
+                .licenseImageUrl(dto.licenseImageUrl())
                 .verificationStatus(dto.verificationStatus() != null ? dto.verificationStatus() : VerificationStatus.PENDING)
                 .verified(false)
                 .build();
 
-        return toDto(driverRepository.save(driver));
+        Driver savedDriver = driverRepository.save(driver);
+
+        // Lấy role DRIVER từ database
+        Role driverRole = roleRepository.findByName(RoleType.DRIVER)
+                .orElseThrow(() -> new ResourceNotFoundException("Role DRIVER not found"));
+
+        // Tạo User với role DRIVER
+        Set<Role> roles = new HashSet<>();
+        roles.add(driverRole);
+
+        User user = User.builder()
+                .id(savedDriver.getId())
+                .fullName(savedDriver.getFullName())
+                .phone(savedDriver.getPhone())
+                .password("") // Password để trống, driver sẽ đăng nhập qua Firebase
+                .isActive(true)
+                .roles(roles)
+                .build();
+        User savedUser = userRepository.save(user);
+
+        // Tạo ví cho tài xế
+        Wallet wallet = Wallet.builder()
+                .user(savedUser)
+                .balance(BigDecimal.ZERO)
+                .build();
+        walletRepository.save(wallet);
+
+        return toDto(savedDriver);
     }
 
     @Override
@@ -71,7 +123,7 @@ public class DriverServiceImpl implements DriverService {
 
     @Override
     @Transactional(readOnly = true)
-    public DriverResponseDto getDriverById(Long id) {
+    public DriverResponseDto getDriverById(String id) {
         Driver driver = driverRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Driver not found with id: " + id));
         return toDto(driver);
@@ -86,7 +138,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public DriverResponseDto updateDriver(Long id, UpdateDriverDto dto) {
+    public DriverResponseDto updateDriver(String id, UpdateDriverDto dto) {
         Driver driver = driverRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Driver not found with id: " + id));
 
@@ -119,16 +171,16 @@ public class DriverServiceImpl implements DriverService {
             driver.setFullName(dto.fullName());
         }
 
-        if (dto.password() != null) {
-                    // Check if vehicle plate already exists (if provided)
-                    if (dto.vehiclePlate() != null && driverRepository.existsByVehiclePlate(dto.vehiclePlate())) {
-                        throw new EntityDuplicateException("Vehicle plate already exists");
-                    }
-            driver.setPassword(passwordEncoder.encode(dto.password()));
-        }
-
         if (dto.avatarUrl() != null) {
             driver.setAvatarUrl(dto.avatarUrl());
+        }
+
+        if (dto.dateOfBirth() != null) {
+            driver.setDateOfBirth(dto.dateOfBirth());
+        }
+
+        if (dto.address() != null) {
+            driver.setAddress(dto.address());
         }
 
         if (dto.vehicleType() != null) {
@@ -137,6 +189,26 @@ public class DriverServiceImpl implements DriverService {
 
         if (dto.vehiclePlate() != null) {
             driver.setVehiclePlate(dto.vehiclePlate());
+        }
+
+        if (dto.vehiclePlateImageUrl() != null) {
+            driver.setVehiclePlateImageUrl(dto.vehiclePlateImageUrl());
+        }
+
+        if (dto.vehicleRegistrationImageUrl() != null) {
+            driver.setVehicleRegistrationImageUrl(dto.vehicleRegistrationImageUrl());
+        }
+
+        if (dto.cccdFrontImageUrl() != null) {
+            driver.setCccdFrontImageUrl(dto.cccdFrontImageUrl());
+        }
+
+        if (dto.cccdBackImageUrl() != null) {
+            driver.setCccdBackImageUrl(dto.cccdBackImageUrl());
+        }
+
+        if (dto.licenseImageUrl() != null) {
+            driver.setLicenseImageUrl(dto.licenseImageUrl());
         }
 
         if (dto.verified() != null) {
@@ -151,7 +223,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public void deleteDriver(Long id) {
+    public void deleteDriver(String id) {
         Driver driver = driverRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Driver not found with id: " + id));
         driverRepository.delete(driver);
@@ -203,7 +275,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public DriverResponseDto updateVerificationStatus(Long id, VerificationStatus verificationStatus) {
+    public DriverResponseDto updateVerificationStatus(String id, VerificationStatus verificationStatus) {
         Driver driver = driverRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Driver not found with id: " + id));
         
@@ -220,7 +292,7 @@ public class DriverServiceImpl implements DriverService {
     }
 
     @Override
-    public DriverResponseDto verifyDriver(Long id, Boolean verified) {
+    public DriverResponseDto verifyDriver(String id, Boolean verified) {
         Driver driver = driverRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Driver not found with id: " + id));
         
@@ -237,16 +309,132 @@ public class DriverServiceImpl implements DriverService {
         return toDto(driverRepository.save(driver));
     }
 
+    @Override
+    public String uploadDriverImage(String id, MultipartFile file, String imageType) {
+        Driver driver = driverRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Driver not found with id: " + id));
+
+        // Validate file
+        if (file.isEmpty()) {
+            throw new IllegalArgumentException("File không được để trống");
+        }
+
+        // Validate file type
+        String contentType = file.getContentType();
+        if (contentType == null || !contentType.startsWith("image/")) {
+            throw new IllegalArgumentException("File phải là ảnh (jpg, png, gif, etc.)");
+        }
+
+        // Get current image URL based on type to delete old file
+        String oldImageUrl = null;
+        switch (imageType.toLowerCase()) {
+            case "avatar":
+                oldImageUrl = driver.getAvatarUrl();
+                break;
+            case "cccd_front":
+                oldImageUrl = driver.getCccdFrontImageUrl();
+                break;
+            case "cccd_back":
+                oldImageUrl = driver.getCccdBackImageUrl();
+                break;
+            case "license":
+                oldImageUrl = driver.getLicenseImageUrl();
+                break;
+            case "vehicle_plate":
+                oldImageUrl = driver.getVehiclePlateImageUrl();
+                break;
+            case "vehicle_registration":
+                oldImageUrl = driver.getVehicleRegistrationImageUrl();
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid image type: " + imageType);
+        }
+
+        // Delete old image file if exists
+        if (oldImageUrl != null && !oldImageUrl.isEmpty()) {
+            try {
+                // Remove leading slash if present
+                String oldFilePath = oldImageUrl.startsWith("/") ? oldImageUrl.substring(1) : oldImageUrl;
+                Path oldPath = Paths.get(oldFilePath);
+                Files.deleteIfExists(oldPath);
+            } catch (IOException e) {
+                // Log error but continue with upload
+                System.err.println("Could not delete old image: " + oldImageUrl + " - " + e.getMessage());
+            }
+        }
+
+        // Create upload directory
+        String uploadDir = "uploads/drivers/";
+        java.io.File directory = new java.io.File(uploadDir);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        try {
+            // Generate unique filename
+            String originalFilename = file.getOriginalFilename();
+            String fileExtension = "";
+            if (originalFilename != null && originalFilename.contains(".")) {
+                fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
+            }
+
+            String uniqueFilename = UUID.randomUUID().toString() + "_" + 
+                imageType + "_" + id + fileExtension;
+
+            // Save file
+            Path filePath = Paths.get(uploadDir + uniqueFilename);
+            Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+            // Generate URL
+            String imageUrl = "/" + uploadDir + uniqueFilename;
+
+            // Update driver based on image type
+            switch (imageType.toLowerCase()) {
+                case "avatar":
+                    driver.setAvatarUrl(imageUrl);
+                    break;
+                case "cccd_front":
+                    driver.setCccdFrontImageUrl(imageUrl);
+                    break;
+                case "cccd_back":
+                    driver.setCccdBackImageUrl(imageUrl);
+                    break;
+                case "license":
+                    driver.setLicenseImageUrl(imageUrl);
+                    break;
+                case "vehicle_plate":
+                    driver.setVehiclePlateImageUrl(imageUrl);
+                    break;
+                case "vehicle_registration":
+                    driver.setVehicleRegistrationImageUrl(imageUrl);
+                    break;
+            }
+
+            driverRepository.save(driver);
+            return imageUrl;
+
+        } catch (IOException e) {
+            throw new RuntimeException("Lỗi khi lưu file: " + file.getOriginalFilename(), e);
+        }
+    }
+
     private DriverResponseDto toDto(Driver driver) {
         return DriverResponseDto.builder()
                 .id(driver.getId())
                 .fullName(driver.getFullName())
                 .phone(driver.getPhone())
                 .avatarUrl(driver.getAvatarUrl())
+                .dateOfBirth(driver.getDateOfBirth())
+                .address(driver.getAddress())
                 .vehicleType(driver.getVehicleType())
                 .vehiclePlate(driver.getVehiclePlate())
+                .vehiclePlateImageUrl(driver.getVehiclePlateImageUrl())
+                .vehicleRegistrationImageUrl(driver.getVehicleRegistrationImageUrl())
                 .cccdNumber(driver.getCccdNumber())
+                .cccdFrontImageUrl(driver.getCccdFrontImageUrl())
+                .cccdBackImageUrl(driver.getCccdBackImageUrl())
                 .licenseNumber(driver.getLicenseNumber())
+                .licenseImageUrl(driver.getLicenseImageUrl())
                 .verified(driver.getVerified())
                 .verificationStatus(driver.getVerificationStatus())
                 .createdAt(driver.getCreatedAt())
