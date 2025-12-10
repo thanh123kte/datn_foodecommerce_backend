@@ -7,7 +7,7 @@ import com.example.qtifood.enums.DeliveryStatus;
 
 @Data
 public class UpdateDeliveryDto {
-    private Long driverId;
+    private String driverId;
     private Double pickupLat;
     private Double pickupLng;
     private Double dropoffLat;

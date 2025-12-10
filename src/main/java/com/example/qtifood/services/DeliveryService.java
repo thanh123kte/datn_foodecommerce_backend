@@ -12,9 +12,9 @@ public interface DeliveryService {
     void deleteDelivery(Long id);
     DeliveryResponseDto getDeliveryById(Long id);
     List<DeliveryResponseDto> getAllDeliveries();
-    List<DeliveryResponseDto> getDeliveriesByDriver(Long driverId);
+    List<DeliveryResponseDto> getDeliveriesByDriver(String driverId);
     DeliveryResponseDto getDeliveryByOrder(Long orderId);
     List<DeliveryResponseDto> getDeliveriesByStatus(DeliveryStatus status);
-    List<DeliveryResponseDto> getDeliveriesByDriverAndStatus(Long driverId, DeliveryStatus status);
+    List<DeliveryResponseDto> getDeliveriesByDriverAndStatus(String driverId, DeliveryStatus status);
     DeliveryResponseDto updateDeliveryStatus(Long id, DeliveryStatus status);
 }

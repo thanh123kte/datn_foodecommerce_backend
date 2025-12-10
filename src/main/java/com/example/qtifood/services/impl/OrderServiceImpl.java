@@ -163,7 +163,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<OrderResponseDto> getOrdersByDriver(Long driverId) {
+    public List<OrderResponseDto> getOrdersByDriver(String driverId) {
         return orderRepository.findByDriverId(driverId).stream()
             .map(orderMapper::toDto)
             .collect(Collectors.toList());

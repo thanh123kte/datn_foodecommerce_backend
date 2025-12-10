@@ -33,7 +33,7 @@ public class OrderController {
         String title = "Đơn hàng mới";
         String body = "Bạn vừa tạo đơn hàng #" + order.getId();
         log.info("[OrderController] Bắn FCM cho customerId={}, title={}, body={}", order.getCustomerId(), title, body);
-        fcmService.sendOrderNotification(order.getCustomerId(), title, body, Map.of("orderId", String.valueOf(order.getId())));
+        fcmService.sendNotification(order.getCustomerId(), title, body, "ORDER", Map.of("orderId", String.valueOf(order.getId())));
 
         // Gửi FCM cho seller
         String titleSeller = "Bạn vừa nhận được đơn hàng mới";
@@ -46,7 +46,7 @@ public class OrderController {
         }
         if (sellerId != null) {
             log.info("[OrderController] Bắn FCM cho sellerId={}, title={}, body={}", sellerId, titleSeller, bodySeller);
-            fcmService.sendOrderNotification(sellerId, titleSeller, bodySeller, Map.of("orderId", String.valueOf(order.getId())));
+            fcmService.sendNotification(sellerId, titleSeller, bodySeller, "ORDER", Map.of("orderId", String.valueOf(order.getId())));
         }
         return ResponseEntity.ok(order);
     }
@@ -83,7 +83,7 @@ public class OrderController {
     }
 
     @GetMapping("/driver/{driverId}")
-    public ResponseEntity<List<OrderResponseDto>> getOrdersByDriver(@PathVariable Long driverId) {
+    public ResponseEntity<List<OrderResponseDto>> getOrdersByDriver(@PathVariable String driverId) {
         return ResponseEntity.ok(orderService.getOrdersByDriver(driverId));
     }
 
@@ -96,7 +96,7 @@ public class OrderController {
         String title = "Cập nhật trạng thái đơn";
         String body = "Đơn hàng #" + order.getId() + " đã chuyển sang trạng thái " + status.name();
         log.info("[OrderController] Bắn FCM cho customerId={}, title={}, body={}", order.getCustomerId(), title, body);
-        fcmService.sendOrderNotification(order.getCustomerId(), title, body, Map.of("orderId", String.valueOf(order.getId()), "status", status.name()));
+        fcmService.sendNotification(order.getCustomerId(), title, body, "ORDER_STATUS", Map.of("orderId", String.valueOf(order.getId()), "status", status.name()));
         return ResponseEntity.ok(order);
     }
 }

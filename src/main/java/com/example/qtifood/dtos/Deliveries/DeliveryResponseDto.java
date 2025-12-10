@@ -9,7 +9,7 @@ import com.example.qtifood.enums.DeliveryStatus;
 public class DeliveryResponseDto {
     private Long id;
     private Long orderId;
-    private Long driverId;
+    private String driverId;
     private String driverName;
     private Double pickupLat;
     private Double pickupLng;
