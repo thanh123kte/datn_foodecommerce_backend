@@ -87,27 +87,6 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderStatus(OrderStatus.PENDING);
         order.setPaymentStatus(PaymentStatus.PENDING);
         
-<<<<<<< HEAD
-        // Calculate totalAmount from items
-        BigDecimal totalAmount = calculateTotalAmount(dto.getItems());
-        order.setTotalAmount(totalAmount);
-        
-        // Calculate shipping fee (for now, simple logic based on store)
-        BigDecimal shippingFee = calculateShippingFee(order.getStore(), order.getShippingAddress());
-        order.setShippingFee(shippingFee);
-        
-        // Calculate expected delivery time (store prep time + delivery time)
-        LocalDateTime expectedDeliveryTime = calculateExpectedDeliveryTime(order.getStore());
-        order.setExpectedDeliveryTime(expectedDeliveryTime);
-        
-        // Save order first
-        Order savedOrder = orderRepository.save(order);
-        
-        // Create order items in same transaction
-        createOrderItems(savedOrder, dto.getItems());
-        
-        return orderMapper.toDto(savedOrder);
-=======
         // Save order first to generate ID
         Order savedOrder = orderRepository.save(order);
         
@@ -151,7 +130,6 @@ public class OrderServiceImpl implements OrderService {
         }
         
         return orderMapper.toDto(orderRepository.save(savedOrder));
->>>>>>> chillguy
     }
 
     @Override
@@ -241,7 +219,6 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalArgumentException("Invalid order status: " + status);
         }
     }
-<<<<<<< HEAD
     
     // ========== HELPER METHODS FOR ORDER CALCULATION ==========
     
@@ -329,7 +306,7 @@ public class OrderServiceImpl implements OrderService {
             
             orderItemRepository.save(orderItem);
         }
-=======
+        }
 
     @Override
     @Transactional
@@ -338,6 +315,5 @@ public class OrderServiceImpl implements OrderService {
             .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
         order.setPaymentStatus(status);
         orderRepository.save(order);
->>>>>>> chillguy
     }
 }

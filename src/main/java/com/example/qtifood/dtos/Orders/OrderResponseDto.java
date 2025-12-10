@@ -18,7 +18,7 @@ public class OrderResponseDto {
     private String customerAvatar;
     private Long storeId;
     private String storeName;
-    private Long driverId;
+    private String driverId;
     private String driverName;
     private String driverPhone;
     private Long shippingAddressId;
