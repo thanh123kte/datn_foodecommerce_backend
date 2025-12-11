@@ -1,6 +1,7 @@
 package com.example.qtifood.controllers;
 
 import com.example.qtifood.dtos.StoreReviews.CreateStoreReviewDto;
+import com.example.qtifood.dtos.StoreReviews.ReplyRequestDto;
 import com.example.qtifood.dtos.StoreReviews.StoreReviewResponseDto;
 import com.example.qtifood.services.StoreReviewService;
 import lombok.RequiredArgsConstructor;
@@ -84,6 +85,20 @@ public class StoreReviewController {
     @DeleteMapping("/{id}/image")
     public ResponseEntity<StoreReviewResponseDto> deleteImage(@PathVariable Long id) {
         StoreReviewResponseDto updatedReview = storeReviewService.deleteImage(id);
+        return ResponseEntity.ok(updatedReview);
+    }
+
+    @PostMapping("/{id}/reply")
+    public ResponseEntity<StoreReviewResponseDto> addReply(
+            @PathVariable Long id,
+            @Valid @RequestBody ReplyRequestDto replyRequest) {
+        StoreReviewResponseDto updatedReview = storeReviewService.addReply(id, replyRequest.getReply());
+        return ResponseEntity.ok(updatedReview);
+    }
+
+    @DeleteMapping("/{id}/reply")
+    public ResponseEntity<StoreReviewResponseDto> deleteReply(@PathVariable Long id) {
+        StoreReviewResponseDto updatedReview = storeReviewService.deleteReply(id);
         return ResponseEntity.ok(updatedReview);
     }
 }

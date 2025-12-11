@@ -19,4 +19,6 @@ public interface StoreReviewService {
     Long getTotalReviewsByStore(Long storeId);
     StoreReviewResponseDto uploadImage(Long id, MultipartFile imageFile);
     StoreReviewResponseDto deleteImage(Long id);
+    StoreReviewResponseDto addReply(Long id, String reply);
+    StoreReviewResponseDto deleteReply(Long id);
 }

@@ -190,4 +190,32 @@ public class StoreReviewServiceImpl implements StoreReviewService {
         review.setImageUrl(null);
         return storeReviewMapper.toDto(storeReviewRepository.save(review));
     }
+
+    @Override
+    @Transactional
+    public StoreReviewResponseDto addReply(Long id, String reply) {
+        StoreReview review = storeReviewRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Store review not found: " + id));
+        
+        if (reply == null || reply.trim().isEmpty()) {
+            throw new IllegalArgumentException("Reply cannot be empty");
+        }
+        
+        review.setReply(reply.trim());
+        review.setRepliedAt(java.time.LocalDateTime.now());
+        
+        return storeReviewMapper.toDto(storeReviewRepository.save(review));
+    }
+
+    @Override
+    @Transactional
+    public StoreReviewResponseDto deleteReply(Long id) {
+        StoreReview review = storeReviewRepository.findById(id)
+            .orElseThrow(() -> new ResourceNotFoundException("Store review not found: " + id));
+        
+        review.setReply(null);
+        review.setRepliedAt(null);
+        
+        return storeReviewMapper.toDto(storeReviewRepository.save(review));
+    }
 }

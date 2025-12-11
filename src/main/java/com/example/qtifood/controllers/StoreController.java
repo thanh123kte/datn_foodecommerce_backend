@@ -49,8 +49,13 @@ public class StoreController {
     }
 
     @GetMapping("/owner/{ownerId}")
-    public ResponseEntity<List<StoreResponseDto>> byOwner(@PathVariable String ownerId) {
-        return ResponseEntity.ok(storeService.getStoresByOwner(ownerId));
+    public ResponseEntity<StoreResponseDto> byOwner(@PathVariable String ownerId) {
+        List<StoreResponseDto> stores = storeService.getStoresByOwner(ownerId);
+        if (stores.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        // Trả về store đầu tiên vì một owner chỉ có một store
+        return ResponseEntity.ok(stores.get(0));
     }
 
     @GetMapping("/search")
