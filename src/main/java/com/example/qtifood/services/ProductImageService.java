@@ -15,4 +15,6 @@ public interface ProductImageService {
     ProductImageResponseDto setPrimaryImage(Long imageId);
     
     List<ProductImageResponseDto> uploadAndSaveProductImages(Long productId, List<org.springframework.web.multipart.MultipartFile> files);
+    
+    List<ProductImageResponseDto> addMoreProductImages(Long productId, List<org.springframework.web.multipart.MultipartFile> files);
 }

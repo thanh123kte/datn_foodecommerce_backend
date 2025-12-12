@@ -12,8 +12,10 @@ import com.example.qtifood.dtos.Products.ProductResponseDto;
 import com.example.qtifood.entities.Product;
 import com.example.qtifood.entities.Store;
 import com.example.qtifood.entities.StoreCategory;
+import com.example.qtifood.enums.AdminStatus;
 import com.example.qtifood.enums.ProductStatus;
 import com.example.qtifood.entities.Categories;
+import com.example.qtifood.exceptions.BadRequestException;
 import com.example.qtifood.exceptions.ResourceNotFoundException;
 import com.example.qtifood.exceptions.EntityDuplicateException;
 import com.example.qtifood.repositories.ProductRepository;
@@ -46,24 +48,23 @@ public class ProductServiceImpl implements ProductService {
         Store store = storeRepository.findById(dto.storeId())
                 .orElseThrow(() -> new ResourceNotFoundException("Store not found with id: " + dto.storeId()));
 
-        Categories category = categoriesRepository.findById(dto.categoryId())
-                .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + dto.categoryId()));
-
-        StoreCategory storeCategory = null;
-        if (dto.storeCategoryId() != null) {
-            storeCategory = storeCategoryRepository.findById(dto.storeCategoryId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Store category not found with id: " + dto.storeCategoryId()));
+        StoreCategory storeCategory = storeCategoryRepository.findById(dto.storeCategoryId())
+                .orElseThrow(() -> new ResourceNotFoundException("Store category not found with id: " + dto.storeCategoryId()));
+        
+        // Validate that store category belongs to the specified store
+        if (!storeCategory.getStore().getId().equals(dto.storeId())) {
+            throw new IllegalArgumentException("Store category does not belong to the specified store");
         }
 
         Product product = Product.builder()
                 .store(store)
-                .category(category)
                 .storeCategory(storeCategory)
                 .name(dto.name())
                 .description(dto.description())
                 .price(dto.price())
                 .discountPrice(dto.discountPrice())
-                .status(dto.status() != null ? dto.status() : ProductStatus.AVAILABLE)
+                .status(ProductStatus.AVAILABLE)  // Mặc định luôn là AVAILABLE
+                .adminStatus(AdminStatus.ACTIVE)  // Mặc định luôn là ACTIVE
                 .build();
 
         return toDto(productRepository.save(product));
@@ -91,15 +92,15 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
 
-        if (dto.categoryId() != null) {
-            Categories category = categoriesRepository.findById(dto.categoryId())
-                    .orElseThrow(() -> new ResourceNotFoundException("Category not found with id: " + dto.categoryId()));
-            product.setCategory(category);
-        }
-
         if (dto.storeCategoryId() != null) {
             StoreCategory storeCategory = storeCategoryRepository.findById(dto.storeCategoryId())
                     .orElseThrow(() -> new ResourceNotFoundException("Store category not found with id: " + dto.storeCategoryId()));
+            
+            // Validate that store category belongs to the product's store
+            if (!storeCategory.getStore().getId().equals(product.getStore().getId())) {
+                throw new IllegalArgumentException("Store category does not belong to the product's store");
+            }
+            
             product.setStoreCategory(storeCategory);
         }
 
@@ -172,8 +173,8 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ProductResponseDto> searchProductsByName(String name) {
-        return productRepository.findByNameContainingIgnoreCase(name)
+    public List<ProductResponseDto> searchProductsByName(String keyword) {
+        return productRepository.findByNameOrCategoryNameContainingIgnoreCase(keyword)
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
@@ -193,7 +194,27 @@ public class ProductServiceImpl implements ProductService {
         Product product = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
         
+        // Kiểm tra nếu product bị admin banned thì không cho phép seller update status
+        if (product.getAdminStatus() == AdminStatus.BANNED) {
+            throw new BadRequestException("Cannot update product status. This product has been banned by admin.");
+        }
+        
         product.setStatus(status);
+        return toDto(productRepository.save(product));
+    }
+
+    @Override
+    public ProductResponseDto updateProductAdminStatus(Long id, AdminStatus adminStatus) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        
+        product.setAdminStatus(adminStatus);
+        
+        // Nếu admin banned product, tự động set status = UNAVAILABLE
+        if (adminStatus == AdminStatus.BANNED) {
+            product.setStatus(ProductStatus.UNAVAILABLE);
+        }
+        
         return toDto(productRepository.save(product));
     }
 
@@ -202,15 +223,16 @@ public class ProductServiceImpl implements ProductService {
                 .id(product.getId())
                 .storeId(product.getStore().getId())
                 .storeName(product.getStore().getName())
-                .categoryId(product.getCategory().getId())
-                .categoryName(product.getCategory().getName())
-                .storeCategoryId(product.getStoreCategory() != null ? product.getStoreCategory().getId() : null)
-                .storeCategoryName(product.getStoreCategory() != null ? product.getStoreCategory().getName() : null)
+                .categoryId(product.getStoreCategory().getCategory().getId())
+                .categoryName(product.getStoreCategory().getCategory().getName())
+                .storeCategoryId(product.getStoreCategory().getId())
+                .storeCategoryName(product.getStoreCategory().getName())
                 .name(product.getName())
                 .description(product.getDescription())
                 .price(product.getPrice())
                 .discountPrice(product.getDiscountPrice())
                 .status(product.getStatus())
+                .adminStatus(product.getAdminStatus())
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .build();

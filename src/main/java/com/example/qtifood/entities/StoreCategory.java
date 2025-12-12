@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
     name = "store_categories",
     indexes = {
         @Index(name = "idx_store_categories_store_id", columnList = "store_id"),
-        @Index(name = "idx_store_categories_parent_id", columnList = "parent_id")
+        @Index(name = "idx_store_categories_category_id", columnList = "category_id")
     }
 )
 @Getter @Setter
@@ -27,7 +27,10 @@ public class StoreCategory {
     @JoinColumn(
         name = "store_id",
         nullable = false,
-        foreignKey = @ForeignKey(name = "fk_store_categories_store")
+        foreignKey = @ForeignKey(
+            name = "fk_store_categories_store",
+            foreignKeyDefinition = "FOREIGN KEY (store_id) REFERENCES stores(id) ON DELETE CASCADE"
+        )
     )
     @ToString.Exclude
     private Store store;
@@ -40,11 +43,14 @@ public class StoreCategory {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
-        name = "parent_id",
-        foreignKey = @ForeignKey(name = "fk_store_categories_parent_category")
+        name = "category_id",
+        foreignKey = @ForeignKey(
+            name = "fk_store_categories_category",
+            foreignKeyDefinition = "FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE CASCADE"
+        )
     )
     @ToString.Exclude
-    private Categories parentCategory; 
+    private Categories category; 
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

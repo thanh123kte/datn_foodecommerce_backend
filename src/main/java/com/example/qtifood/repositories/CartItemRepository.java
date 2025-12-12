@@ -17,7 +17,8 @@ public interface CartItemRepository extends JpaRepository<CartItem, Long> {
     @Query("SELECT ci FROM CartItem ci " +
            "LEFT JOIN FETCH ci.product p " +
            "LEFT JOIN FETCH ci.store s " +
-           "LEFT JOIN FETCH p.category " +
+           "LEFT JOIN FETCH p.storeCategory sc " +
+           "LEFT JOIN FETCH sc.category " +
            "WHERE ci.customer.id = :customerId " +
            "ORDER BY ci.createdAt DESC")
     List<CartItem> findByCustomerIdWithDetails(@Param("customerId") String customerId);

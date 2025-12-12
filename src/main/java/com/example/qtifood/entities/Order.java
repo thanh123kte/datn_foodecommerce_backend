@@ -2,6 +2,8 @@ package com.example.qtifood.entities;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
@@ -23,19 +25,35 @@ public class Order {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id",
+        foreignKey = @ForeignKey(
+            name = "fk_order_customer",
+            foreignKeyDefinition = "FOREIGN KEY (customer_id) REFERENCES users(firebase_user_id) ON DELETE CASCADE"
+        ))
     private User customer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "store_id")
+    @JoinColumn(name = "store_id",
+        foreignKey = @ForeignKey(
+            name = "fk_order_store",
+            foreignKeyDefinition = "FOREIGN KEY (store_id) REFERENCES stores(id) ON DELETE CASCADE"
+        ))
     private Store store;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver_id")
+    @JoinColumn(name = "driver_id",
+        foreignKey = @ForeignKey(
+            name = "fk_order_driver",
+            foreignKeyDefinition = "FOREIGN KEY (driver_id) REFERENCES drivers(id) ON DELETE SET NULL"
+        ))
     private Driver driver;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shipping_address_id")
+    @JoinColumn(name = "shipping_address_id",
+        foreignKey = @ForeignKey(
+            name = "fk_order_shipping_address",
+            foreignKeyDefinition = "FOREIGN KEY (shipping_address_id) REFERENCES addresses(id) ON DELETE SET NULL"
+        ))
     private Address shippingAddress;
 
     @Column(name = "total_amount", precision = 12, scale = 2)
@@ -84,4 +102,21 @@ public class Order {
     @UpdateTimestamp
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
+
+    // ========== ONE-TO-MANY CASCADE RELATIONSHIPS ==========
+    
+    // Order items in this order
+    @Builder.Default
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<OrderItem> orderItems = new HashSet<>();
+
+    // Store reviews for this order
+    @Builder.Default
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<StoreReview> storeReviews = new HashSet<>();
+
+    // Delivery for this order
+    @Builder.Default
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Delivery> deliveries = new HashSet<>();
 }

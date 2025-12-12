@@ -32,9 +32,9 @@ public class StoreCategoryController {
         return ResponseEntity.ok(service.listByStore(storeId));
     }
 
-    @GetMapping("/parent/{categoryId}")
-    public ResponseEntity<List<StoreCategoryResponseDto>> byParentCategory(@PathVariable("categoryId") Long parentId) {
-        return ResponseEntity.ok(service.listByParentCategory(parentId));
+    @GetMapping("/category/{categoryId}")
+    public ResponseEntity<List<StoreCategoryResponseDto>> byCategory(@PathVariable Long categoryId) {
+        return ResponseEntity.ok(service.listByCategory(categoryId));
     }
 
     @PutMapping("/{id}")

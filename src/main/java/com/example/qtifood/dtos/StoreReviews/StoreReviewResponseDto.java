@@ -14,5 +14,8 @@ public class StoreReviewResponseDto {
     private Integer rating;
     private String comment;
     private String imageUrl;
+    private String reply;
+    private String customerAvatar;
+    private LocalDateTime repliedAt;
     private LocalDateTime createdAt;
 }

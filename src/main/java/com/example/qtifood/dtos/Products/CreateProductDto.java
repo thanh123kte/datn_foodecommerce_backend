@@ -13,9 +13,7 @@ public record CreateProductDto(
         @NotNull(message = "Store ID is required")
         Long storeId,
 
-        @NotNull(message = "Category ID is required")
-        Long categoryId,
-
+        @NotNull(message = "Store Category ID is required")
         Long storeCategoryId,
 
         @NotBlank(message = "Product name is required")

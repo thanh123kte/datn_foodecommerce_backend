@@ -9,5 +9,5 @@ public record CreateStoreCategoryDto(
         @NotNull Long storeId,
         @NotBlank @Size(max = 100) String name,
         String description,
-        Long parentCategoryId
+        @NotNull Long categoryId  // ID từ table categories (toàn sàn)
 ) {}

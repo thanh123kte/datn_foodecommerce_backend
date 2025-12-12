@@ -24,9 +24,12 @@ public class StoreReviewMapper {
         dto.setStoreName(storeReview.getStore() != null ? storeReview.getStore().getName() : null);
         dto.setCustomerId(storeReview.getCustomer() != null ? storeReview.getCustomer().getId() : null);
         dto.setCustomerName(storeReview.getCustomer() != null ? storeReview.getCustomer().getFullName() : null);
+        dto.setCustomerAvatar(storeReview.getCustomer() != null ? storeReview.getCustomer().getAvatarUrl() : null);
         dto.setRating(storeReview.getRating());
         dto.setComment(storeReview.getComment());
         dto.setImageUrl(storeReview.getImageUrl());
+        dto.setReply(storeReview.getReply());
+        dto.setRepliedAt(storeReview.getRepliedAt());
         dto.setCreatedAt(storeReview.getCreatedAt());
         return dto;
     }

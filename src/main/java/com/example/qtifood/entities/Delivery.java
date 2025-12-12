@@ -16,11 +16,23 @@ public class Delivery {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
+    @JoinColumn(
+        name = "order_id",
+        foreignKey = @ForeignKey(
+            name = "fk_delivery_order",
+            foreignKeyDefinition = "FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE"
+        )
+    )
     private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "driver_id")
+    @JoinColumn(
+        name = "driver_id",
+        foreignKey = @ForeignKey(
+            name = "fk_delivery_driver",
+            foreignKeyDefinition = "FOREIGN KEY (driver_id) REFERENCES drivers(id) ON DELETE SET NULL"
+        )
+    )
     private Driver driver;
 
     @Column(name = "pickup_lat")

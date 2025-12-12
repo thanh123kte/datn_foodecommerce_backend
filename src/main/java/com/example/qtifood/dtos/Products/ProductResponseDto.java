@@ -3,6 +3,7 @@ package com.example.qtifood.dtos.Products;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
+import com.example.qtifood.enums.AdminStatus;
 import com.example.qtifood.enums.ProductStatus;
 
 import lombok.Builder;
@@ -23,6 +24,7 @@ public class ProductResponseDto {
     private BigDecimal price;
     private BigDecimal discountPrice;
     private ProductStatus status;
+    private AdminStatus adminStatus;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

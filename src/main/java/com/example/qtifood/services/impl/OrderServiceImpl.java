@@ -3,14 +3,22 @@ package com.example.qtifood.services.impl;
 import com.example.qtifood.dtos.Orders.CreateOrderDto;
 import com.example.qtifood.dtos.Orders.UpdateOrderDto;
 import com.example.qtifood.dtos.Orders.OrderResponseDto;
+import com.example.qtifood.dtos.OrderItems.CreateOrderItemDto;
 import com.example.qtifood.entities.Order;
+import com.example.qtifood.entities.OrderItem;
+import com.example.qtifood.entities.Product;
+import com.example.qtifood.entities.Store;
+import com.example.qtifood.entities.Address;
 import com.example.qtifood.enums.OrderStatus;
 import com.example.qtifood.enums.PaymentStatus;
 import com.example.qtifood.enums.PaymentMethod;
 import com.example.qtifood.enums.TransactionType;
 import com.example.qtifood.exceptions.ResourceNotFoundException;
 import com.example.qtifood.mappers.OrderMapper;
+import com.example.qtifood.mappers.OrderItemMapper;
 import com.example.qtifood.repositories.OrderRepository;
+import com.example.qtifood.repositories.OrderItemRepository;
+import com.example.qtifood.repositories.ProductRepository;
 import com.example.qtifood.repositories.UserRepository;
 import com.example.qtifood.repositories.StoreRepository;
 import com.example.qtifood.repositories.DriverRepository;
@@ -21,6 +29,8 @@ import com.example.qtifood.services.FcmService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
@@ -32,30 +42,48 @@ import java.util.stream.Collectors;
 public class OrderServiceImpl implements OrderService {
     private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
     private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
+    private final ProductRepository productRepository;
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
     private final DriverRepository driverRepository;
     private final AddressRepository addressRepository;
     private final OrderMapper orderMapper;
+    private final OrderItemMapper orderItemMapper;
     private final WalletService walletService;
     private final FcmService fcmService;
 
     @Override
     @Transactional
     public OrderResponseDto createOrder(CreateOrderDto dto) {
+        // Validate required fields
+        if (dto.getItems() == null || dto.getItems().isEmpty()) {
+            throw new IllegalArgumentException("Order must have at least one item");
+        }
+        
         Order order = orderMapper.toEntity(dto);
+        
+        // Set customer
         order.setCustomer(userRepository.findById(dto.getCustomerId())
             .orElseThrow(() -> new ResourceNotFoundException("User not found")));
+        
+        // Set store
         order.setStore(storeRepository.findById(dto.getStoreId())
             .orElseThrow(() -> new ResourceNotFoundException("Store not found")));
+        
+        // Set driver (optional)
         if (dto.getDriverId() != null) {
             order.setDriver(driverRepository.findById(dto.getDriverId())
                 .orElseThrow(() -> new ResourceNotFoundException("Driver not found")));
         }
+        
+        // Set shipping address
         if (dto.getShippingAddressId() != null) {
             order.setShippingAddress(addressRepository.findById(dto.getShippingAddressId())
                 .orElseThrow(() -> new ResourceNotFoundException("Address not found")));
         }
+        
+        // Set initial status
         order.setOrderStatus(OrderStatus.PENDING);
         order.setPaymentStatus(PaymentStatus.PENDING);
         
@@ -191,6 +219,94 @@ public class OrderServiceImpl implements OrderService {
             throw new IllegalArgumentException("Invalid order status: " + status);
         }
     }
+    
+    // ========== HELPER METHODS FOR ORDER CALCULATION ==========
+    
+    /**
+     * Calculate total amount from order items
+     * Gets current price from product entities to prevent manipulation
+     */
+    private BigDecimal calculateTotalAmount(List<CreateOrderItemDto> items) {
+        BigDecimal total = BigDecimal.ZERO;
+        
+        for (CreateOrderItemDto item : items) {
+            Product product = productRepository.findById(item.getProductId())
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + item.getProductId()));
+            
+            // Use discount price if available, otherwise use regular price
+            BigDecimal itemPrice = product.getDiscountPrice() != null ? 
+                                  product.getDiscountPrice() : 
+                                  product.getPrice();
+            
+            BigDecimal itemTotal = itemPrice.multiply(BigDecimal.valueOf(item.getQuantity()));
+            total = total.add(itemTotal);
+        }
+        
+        return total;
+    }
+    
+    /**
+     * Calculate shipping fee based on store and delivery address
+     * For now, simple logic - can be enhanced with actual distance calculation
+     */
+    private BigDecimal calculateShippingFee(Store store, Address shippingAddress) {
+        // Default shipping fee - can be enhanced with:
+        // - Distance calculation between store and address
+        // - Store specific delivery fees
+        // - Time-based pricing (rush hours)
+        // - Minimum order amount for free shipping
+        
+        if (shippingAddress == null) {
+            return BigDecimal.ZERO; // Pickup order
+        }
+        
+        // Simple logic: base fee + distance-based fee
+        BigDecimal baseFee = new BigDecimal("15000"); // 15,000 VND base fee
+        
+        // TODO: Implement actual distance calculation
+        // For now, return base fee
+        return baseFee;
+    }
+    
+    /**
+     * Calculate expected delivery time based on store preparation time
+     */
+    private LocalDateTime calculateExpectedDeliveryTime(Store store) {
+        LocalDateTime now = LocalDateTime.now();
+        
+        // Default: current time + 30 minutes (store prep time) + 20 minutes (delivery time)
+        // Can be enhanced with:
+        // - Store-specific preparation times
+        // - Current order load of the store
+        // - Distance to delivery address
+        // - Driver availability
+        
+        return now.plusMinutes(50); // 30 min prep + 20 min delivery
+    }
+    
+    /**
+     * Create order items in the same transaction
+     */
+    private void createOrderItems(Order order, List<CreateOrderItemDto> itemDtos) {
+        for (CreateOrderItemDto itemDto : itemDtos) {
+            // Get product to set current price
+            Product product = productRepository.findById(itemDto.getProductId())
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + itemDto.getProductId()));
+            
+            // Create order item
+            OrderItem orderItem = orderItemMapper.toEntity(itemDto);
+            orderItem.setOrder(order);
+            orderItem.setProduct(product);
+            
+            // Set current price from product (use discount price if available)
+            BigDecimal currentPrice = product.getDiscountPrice() != null ? 
+                                     product.getDiscountPrice() : 
+                                     product.getPrice();
+            orderItem.setPrice(currentPrice);
+            
+            orderItemRepository.save(orderItem);
+        }
+        }
 
     @Override
     @Transactional

@@ -2,10 +2,15 @@
 package com.example.qtifood.services.impl;
 
 import com.example.qtifood.dtos.user.*;
+import com.example.qtifood.dtos.Stores.StoreResponseDto;
 import com.example.qtifood.entities.*;
 import com.example.qtifood.enums.RoleType;
 import com.example.qtifood.repositories.RoleRepository;
 import com.example.qtifood.repositories.UserRepository;
+import com.example.qtifood.repositories.StoreRepository;
+import com.example.qtifood.repositories.ProductRepository;
+import com.example.qtifood.repositories.OrderRepository;
+import com.example.qtifood.services.FileUploadService;
 import com.example.qtifood.services.UserService;
 import com.example.qtifood.services.WalletService;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,6 +32,10 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FileUploadService fileUploadService;
+    private final StoreRepository storeRepository;
+    private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
     private final WalletService walletService;
 
     private UserResponseDto toDto(User u) {
@@ -143,5 +153,117 @@ public class UserServiceImpl implements UserService {
             u.getRoles().add(customerRole);
         }
         return toDto(userRepository.save(u));
+    }
+
+    @Override
+    public UserResponseDto uploadAvatar(String id, MultipartFile avatarFile) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + id));
+        
+        // Xóa avatar cũ nếu có
+        if (user.getAvatarUrl() != null && !user.getAvatarUrl().trim().isEmpty()) {
+            fileUploadService.deleteFile(user.getAvatarUrl());
+        }
+        
+        // Upload avatar mới
+        String newAvatarPath = fileUploadService.uploadFile(avatarFile, "users", id);
+        user.setAvatarUrl(newAvatarPath);
+        
+        return toDto(userRepository.save(user));
+    }
+
+    @Override
+    public UserResponseDto deleteAvatar(String id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("User not found: " + id));
+
+        if (user.getAvatarUrl() != null && !user.getAvatarUrl().trim().isEmpty()) {
+            // delete file from storage
+            fileUploadService.deleteFile(user.getAvatarUrl());
+            // clear DB field
+            user.setAvatarUrl(null);
+            user = userRepository.save(user);
+        }
+
+        return toDto(user);
+    }
+
+    /* ========= Get All Sellers with Stats ========= */
+    public List<SellerStatsDto> getAllSellersWithStats() {
+        // Lấy tất cả users có role SELLER
+        Role sellerRole = roleRepository.findByName(RoleType.SELLER)
+                .orElseThrow(() -> new IllegalArgumentException("Seller role not found"));
+        
+        List<User> sellers = userRepository.findAll().stream()
+                .filter(user -> user.getRoles().contains(sellerRole))
+                .collect(Collectors.toList());
+        
+        // Map sellers với stats
+        return sellers.stream()
+                .map(this::toSellerStatsDto)
+                .collect(Collectors.toList());
+    }
+
+    private SellerStatsDto toSellerStatsDto(User seller) {
+        Set<RoleType> roleNames = seller.getRoles().stream()
+                .map(Role::getName)
+                .collect(Collectors.toSet());
+        
+        // Lấy store của seller
+        List<Store> stores = storeRepository.findByOwnerId(seller.getId());
+        Store store = stores.isEmpty() ? null : stores.get(0);
+        
+        StoreResponseDto storeDto = null;
+        Long totalProducts = 0L;
+        Long totalOrders = 0L;
+        Double totalRevenue = 0.0;
+        
+        if (store != null) {
+            // Tạo StoreResponseDto
+            storeDto = StoreResponseDto.builder()
+                    .id(store.getId())
+                    .ownerId(store.getOwner().getId())
+                    .name(store.getName())
+                    .description(store.getDescription())
+                    .address(store.getAddress())
+                    .latitude(store.getLatitude() != null ? store.getLatitude().doubleValue() : null)
+                    .longitude(store.getLongitude() != null ? store.getLongitude().doubleValue() : null)
+                    .phone(store.getPhone())
+                    .email(store.getEmail())
+                    .imageUrl(store.getImageUrl())
+                    .status(store.getStatus())
+                    .opStatus(store.getOpStatus())
+                    .openTime(store.getOpenTime())
+                    .closeTime(store.getCloseTime())
+                    .createdAt(store.getCreatedAt())
+                    .updatedAt(store.getUpdatedAt())
+                    .build();
+            
+            // Đếm products
+            totalProducts = (long) productRepository.findByStoreId(store.getId()).size();
+            
+            // Đếm orders và tính revenue
+            List<Order> orders = orderRepository.findByStoreId(store.getId());
+            totalOrders = (long) orders.size();
+            totalRevenue = orders.stream()
+                    .mapToDouble(order -> order.getTotalAmount().doubleValue())
+                    .sum();
+        }
+        
+        return SellerStatsDto.builder()
+                .id(seller.getId())
+                .fullName(seller.getFullName())
+                .email(seller.getEmail())
+                .phone(seller.getPhone())
+                .avatarUrl(seller.getAvatarUrl())
+                .isActive(seller.getIsActive())
+                .createdAt(seller.getCreatedAt())
+                .updatedAt(seller.getUpdatedAt())
+                .roles(roleNames)
+                .store(storeDto)
+                .totalProducts(totalProducts)
+                .totalOrders(totalOrders)
+                .totalRevenue(totalRevenue)
+                .build();
     }
 }

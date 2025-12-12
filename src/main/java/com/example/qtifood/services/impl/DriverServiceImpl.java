@@ -302,14 +302,15 @@ public class DriverServiceImpl implements DriverService {
         Driver driver = driverRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Driver not found with id: " + id));
         
-        driver.setVerified(verified);
-        
-        // Update verification status accordingly
-        if (verified) {
-            driver.setVerificationStatus(VerificationStatus.APPROVED);
-        } else {
-            driver.setVerificationStatus(VerificationStatus.REJECTED);
+        // Only allow verification change if verificationStatus is APPROVED
+        if (driver.getVerificationStatus() != VerificationStatus.APPROVED) {
+            throw new IllegalStateException(
+                "Cannot change verified status. Driver verification status must be APPROVED first. " +
+                "Current status: " + driver.getVerificationStatus()
+            );
         }
+        
+        driver.setVerified(verified);
         
         return toDto(driverRepository.save(driver));
     }

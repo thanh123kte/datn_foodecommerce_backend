@@ -8,8 +8,8 @@ public record StoreCategoryResponseDto(
         Long storeId,
         String name,
         String description,
-        Long parentCategoryId,
-        String parentCategoryName,
+        Long categoryId,
+        String categoryName,  // Tên category từ table categories
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {}

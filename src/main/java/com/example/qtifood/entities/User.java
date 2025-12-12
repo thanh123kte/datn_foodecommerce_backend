@@ -62,4 +62,61 @@ public class User {
     )
     @Builder.Default
     private Set<Role> roles = new HashSet<>();
+
+    // ========== ONE-TO-MANY CASCADE RELATIONSHIPS ==========
+    
+    // Stores owned by this user
+    @Builder.Default
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Store> ownedStores = new HashSet<>();
+
+    // User addresses
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Address> addresses = new HashSet<>();
+
+    // User notifications
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Notification> notifications = new HashSet<>();
+
+    // User search history
+    @Builder.Default
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<SearchHistory> searchHistories = new HashSet<>();
+
+    // Orders as customer
+    @Builder.Default
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Order> customerOrders = new HashSet<>();
+
+    // Cart items
+    @Builder.Default
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<CartItem> cartItems = new HashSet<>();
+
+    // Wishlists
+    @Builder.Default
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Wishlist> wishlists = new HashSet<>();
+
+    // Store reviews as customer
+    @Builder.Default
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<StoreReview> storeReviews = new HashSet<>();
+
+    // Conversations as customer
+    @Builder.Default
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Conversation> customerConversations = new HashSet<>();
+
+    // Conversations as seller
+    @Builder.Default
+    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Conversation> sellerConversations = new HashSet<>();
+
+    // Messages sent
+    @Builder.Default
+    @OneToMany(mappedBy = "sender", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    private Set<Message> sentMessages = new HashSet<>();
 }

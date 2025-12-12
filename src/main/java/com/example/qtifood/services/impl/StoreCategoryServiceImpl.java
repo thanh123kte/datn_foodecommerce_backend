@@ -32,8 +32,8 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
                 sc.getStore() != null ? sc.getStore().getId() : null,  // <— lấy từ Store
                 sc.getName(),
                 sc.getDescription(),
-                sc.getParentCategory() != null ? sc.getParentCategory().getId() : null,
-                sc.getParentCategory() != null ? sc.getParentCategory().getName() : null,
+                sc.getCategory() != null ? sc.getCategory().getId() : null,
+                sc.getCategory() != null ? sc.getCategory().getName() : null,
                 sc.getCreatedAt(),
                 sc.getUpdatedAt()
         );
@@ -45,17 +45,17 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
         Store store = storeRepo.findById(dto.storeId())
                 .orElseThrow(() -> new IllegalArgumentException("Store not found: " + dto.storeId()));
 
-        Categories parent = null;
-        if (dto.parentCategoryId() != null) {
-            parent = categoriesRepo.findById(dto.parentCategoryId())
-                    .orElseThrow(() -> new IllegalArgumentException("Parent category not found: " + dto.parentCategoryId()));
+        Categories category = null;
+        if (dto.categoryId() != null) {
+            category = categoriesRepo.findById(dto.categoryId())
+                    .orElseThrow(() -> new IllegalArgumentException("Category not found: " + dto.categoryId()));
         }
 
         StoreCategory sc = StoreCategory.builder()
                 .store(store)
                 .name(dto.name())
                 .description(dto.description())
-                .parentCategory(parent)
+                .category(category)
                 .build();
 
         return toDto(repo.save(sc));
@@ -77,8 +77,8 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<StoreCategoryResponseDto> listByParentCategory(Long parentCategoryId) {
-        return repo.findAllByParentCategory_Id(parentCategoryId)
+    public List<StoreCategoryResponseDto> listByCategory(Long categoryId) {
+        return repo.findAllByCategory_Id(categoryId)
                   .stream().map(this::toDto).toList();
     }
 
@@ -90,11 +90,11 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
         if (dto.name() != null)        sc.setName(dto.name());
         if (dto.description() != null) sc.setDescription(dto.description());
 
-        // ⚠️ Chỉ đổi parent khi client cung cấp parentCategoryId (không tự động xóa khi null)
-        if (dto.parentCategoryId() != null) {
-            Categories parent = categoriesRepo.findById(dto.parentCategoryId())
-                    .orElseThrow(() -> new IllegalArgumentException("Parent category not found: " + dto.parentCategoryId()));
-            sc.setParentCategory(parent);
+        // ⚠️ Chỉ đổi category khi client cung cấp categoryId (không tự động xóa khi null)
+        if (dto.categoryId() != null) {
+            Categories category = categoriesRepo.findById(dto.categoryId())
+                    .orElseThrow(() -> new IllegalArgumentException("Category not found: " + dto.categoryId()));
+            sc.setCategory(category);
         }
 
         return toDto(repo.save(sc));

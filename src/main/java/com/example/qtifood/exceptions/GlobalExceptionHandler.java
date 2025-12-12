@@ -26,6 +26,15 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.BAD_REQUEST, List.of(ex.getMessage()), req.getRequestURI());
     }
 
+    @ExceptionHandler(FileUploadException.class)
+    public ResponseEntity<ErrorResponse> handleFileUpload(FileUploadException ex, HttpServletRequest req) {
+        return buildResponse(HttpStatus.BAD_REQUEST, List.of(ex.getMessage()), req.getRequestURI());
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgument(IllegalArgumentException ex, HttpServletRequest req) {
+        return buildResponse(HttpStatus.BAD_REQUEST, List.of(ex.getMessage()), req.getRequestURI());
+    }
     
     @ExceptionHandler(EntityDuplicateException.class)
     public ResponseEntity<ErrorResponse> handleDuplicate(EntityDuplicateException ex, HttpServletRequest req) {

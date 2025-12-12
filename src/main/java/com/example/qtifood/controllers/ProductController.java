@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.qtifood.dtos.Products.CreateProductDto;
 import com.example.qtifood.dtos.Products.UpdateProductDto;
+import com.example.qtifood.enums.AdminStatus;
 import com.example.qtifood.enums.ProductStatus;
 import com.example.qtifood.dtos.Products.ProductResponseDto;
 import com.example.qtifood.services.ProductService;
@@ -85,5 +86,13 @@ public class ProductController {
     public ResponseEntity<ProductResponseDto> updateProductStatus(@PathVariable Long id,
                                                                 @PathVariable ProductStatus status) {
         return ResponseEntity.ok(productService.updateProductStatus(id, status));
+    }
+
+    // API dành riêng cho ADMIN để cập nhật admin status (ACTIVE hoặc BANNED)
+    @PutMapping("/{id}/admin-status/{adminStatus}")
+    public ResponseEntity<ProductResponseDto> updateProductAdminStatus(
+            @PathVariable Long id,
+            @PathVariable AdminStatus adminStatus) {
+        return ResponseEntity.ok(productService.updateProductAdminStatus(id, adminStatus));
     }
 }

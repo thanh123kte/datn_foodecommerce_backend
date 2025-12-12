@@ -13,11 +13,17 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     
     List<Product> findByStoreId(Long storeId);
     
-    List<Product> findByCategoryId(Long categoryId);
+    @Query("SELECT p FROM Product p WHERE p.storeCategory.category.id = :categoryId")
+    List<Product> findByCategoryId(@Param("categoryId") Long categoryId);
     
     List<Product> findByStatus(ProductStatus status);
     
     List<Product> findByNameContainingIgnoreCase(String name);
+    
+    @Query("SELECT DISTINCT p FROM Product p " +
+           "WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+           "OR LOWER(p.storeCategory.category.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+    List<Product> findByNameOrCategoryNameContainingIgnoreCase(@Param("keyword") String keyword);
     
     List<Product> findByStoreIdAndStatus(Long storeId, ProductStatus status);
     
@@ -29,7 +35,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findByStoreIdAndNameContaining(@Param("storeId") Long storeId, 
                                                @Param("name") String name);
     
-    @Query("SELECT p FROM Product p WHERE p.category.id = :categoryId AND p.status = :status")
+    @Query("SELECT p FROM Product p WHERE p.storeCategory.category.id = :categoryId AND p.status = :status")
     List<Product> findByCategoryIdAndStatus(@Param("categoryId") Long categoryId, 
                                           @Param("status") ProductStatus status);
+                                          
+    List<Product> findByStoreCategoryId(Long storeCategoryId);
 }

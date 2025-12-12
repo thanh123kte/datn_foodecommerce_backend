@@ -30,17 +30,26 @@ public class CartItem {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "customer_id", nullable = false,
-        foreignKey = @ForeignKey(name = "fk_cart_item_customer"))
+        foreignKey = @ForeignKey(
+            name = "fk_cart_item_customer",
+            foreignKeyDefinition = "FOREIGN KEY (customer_id) REFERENCES users(firebase_user_id) ON DELETE CASCADE"
+        ))
     private User customer;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "store_id", nullable = false,
-        foreignKey = @ForeignKey(name = "fk_cart_item_store"))
+        foreignKey = @ForeignKey(
+            name = "fk_cart_item_store",
+            foreignKeyDefinition = "FOREIGN KEY (store_id) REFERENCES stores(id) ON DELETE CASCADE"
+        ))
     private Store store;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "product_id", nullable = false,
-        foreignKey = @ForeignKey(name = "fk_cart_item_product"))
+        foreignKey = @ForeignKey(
+            name = "fk_cart_item_product",
+            foreignKeyDefinition = "FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE"
+        ))
     private Product product;
 
     @Builder.Default

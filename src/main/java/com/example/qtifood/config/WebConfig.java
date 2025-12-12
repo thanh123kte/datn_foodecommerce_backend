@@ -4,9 +4,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-@Configuration
+// Commented out to avoid CORS conflict with SecurityConfiguration
+// @Configuration
 public class WebConfig implements WebMvcConfigurer {
 
+    // CORS is now handled in SecurityConfiguration
+    /*
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
@@ -23,4 +26,5 @@ public class WebConfig implements WebMvcConfigurer {
                 // Thời gian cache preflight request (seconds)
                 .maxAge(3600);
     }
+    */
 }
