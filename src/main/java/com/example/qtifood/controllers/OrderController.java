@@ -3,6 +3,7 @@ package com.example.qtifood.controllers;
 import com.example.qtifood.dtos.Orders.CreateOrderDto;
 import com.example.qtifood.dtos.Orders.UpdateOrderDto;
 import com.example.qtifood.dtos.Orders.OrderResponseDto;
+import com.example.qtifood.services.DriverAssignmentService;
 import com.example.qtifood.services.OrderService;
 import com.example.qtifood.services.FcmService;
 import com.example.qtifood.enums.OrderStatus;
@@ -23,6 +24,7 @@ public class OrderController {
     private final OrderService orderService;
     private final FcmService fcmService;
     private final StoreService storeService;
+    private final DriverAssignmentService driverAssignmentService;
 
     @PostMapping
     public ResponseEntity<OrderResponseDto> createOrder(@RequestBody CreateOrderDto dto) {
@@ -98,5 +100,44 @@ public class OrderController {
         log.info("[OrderController] Bắn FCM cho customerId={}, title={}, body={}", order.getCustomerId(), title, body);
         fcmService.sendNotification(order.getCustomerId(), title, body, "ORDER_STATUS", Map.of("orderId", String.valueOf(order.getId()), "status", status.name()));
         return ResponseEntity.ok(order);
+    }
+    
+    /**
+     * API tự động gán tài xế cho đơn hàng khi chuyển sang PREPARED
+     * Tìm tài xế ONLINE, gán vào đơn, chuyển trạng thái sang SHIPPING
+     * Gửi notification cho tài xế và lưu tracking vào Firebase Realtime DB
+     * 
+     * @param orderId ID đơn hàng (phải có status = PREPARED)
+     * @return OrderResponseDto với thông tin tài xế đã gán
+     */
+    @PostMapping("/{orderId}/assign-driver")
+    public ResponseEntity<OrderResponseDto> assignDriver(@PathVariable Long orderId) {
+        log.info("[OrderController] Nhận yêu cầu gán tài xế cho đơn hàng: orderId={}", orderId);
+        OrderResponseDto order = driverAssignmentService.assignDriverToOrder(orderId);
+        log.info("[OrderController] Đã gán tài xế cho đơn hàng: orderId={}, driverId={}, status={}", 
+                order.getId(), order.getDriverId(), order.getOrderStatus());
+        return ResponseEntity.ok(order);
+    }
+    
+    /**
+     * API xử lý thanh toán khi tài xế giao hàng thành công
+     * - Cộng tiền cho shop (trừ phí sàn 12%)
+     * - Cộng tiền giao hàng cho driver (trừ phí sàn động)
+     * - Ghi nhận phí sàn cho admin
+     * - Chuyển driver status về ONLINE
+     * 
+     * @param orderId ID đơn hàng đã giao thành công (status = DELIVERED)
+     * @return Success message
+     */
+    @PostMapping("/{orderId}/process-delivery-payment")
+    public ResponseEntity<Map<String, String>> processDeliveryPayment(@PathVariable Long orderId) {
+        log.info("[OrderController] Nhận yêu cầu xử lý thanh toán giao hàng: orderId={}", orderId);
+        driverAssignmentService.processDeliveryPayment(orderId);
+        log.info("[OrderController] Đã xử lý thanh toán giao hàng thành công: orderId={}", orderId);
+        return ResponseEntity.ok(Map.of(
+                "status", "success",
+                "message", "Payment processed successfully",
+                "orderId", String.valueOf(orderId)
+        ));
     }
 }

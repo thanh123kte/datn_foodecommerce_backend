@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.qtifood.dtos.Drivers.CreateDriverDto;
 import com.example.qtifood.dtos.Drivers.UpdateDriverDto;
 import com.example.qtifood.dtos.Drivers.DriverResponseDto;
+import com.example.qtifood.enums.DriverStatus;
 import com.example.qtifood.enums.VerificationStatus;
 
 public interface DriverService {
@@ -38,4 +39,6 @@ public interface DriverService {
     DriverResponseDto verifyDriver(String id, Boolean verified);
     
     String uploadDriverImage(String id, MultipartFile file, String imageType);
+    
+    List<DriverResponseDto> getDriversByStatus(DriverStatus status);
 }

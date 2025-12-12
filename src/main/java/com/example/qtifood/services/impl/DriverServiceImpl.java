@@ -23,6 +23,7 @@ import com.example.qtifood.entities.Driver;
 import com.example.qtifood.entities.Role;
 import com.example.qtifood.entities.User;
 import com.example.qtifood.entities.Wallet;
+import com.example.qtifood.enums.DriverStatus;
 import com.example.qtifood.enums.RoleType;
 import com.example.qtifood.enums.VerificationStatus;
 import com.example.qtifood.exceptions.EntityDuplicateException;
@@ -80,6 +81,7 @@ public class DriverServiceImpl implements DriverService {
                 .licenseImageUrl(dto.licenseImageUrl())
                 .verificationStatus(dto.verificationStatus() != null ? dto.verificationStatus() : VerificationStatus.PENDING)
                 .verified(false)
+                .status(dto.status() != null ? dto.status() : DriverStatus.OFFLINE)
                 .build();
 
         Driver savedDriver = driverRepository.save(driver);
@@ -217,6 +219,10 @@ public class DriverServiceImpl implements DriverService {
 
         if (dto.verificationStatus() != null) {
             driver.setVerificationStatus(dto.verificationStatus());
+        }
+
+        if (dto.status() != null) {
+            driver.setStatus(dto.status());
         }
 
         return toDto(driverRepository.save(driver));
@@ -417,6 +423,15 @@ public class DriverServiceImpl implements DriverService {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public List<DriverResponseDto> getDriversByStatus(DriverStatus status) {
+        return driverRepository.findByStatus(status)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
     private DriverResponseDto toDto(Driver driver) {
         return DriverResponseDto.builder()
                 .id(driver.getId())
@@ -436,6 +451,7 @@ public class DriverServiceImpl implements DriverService {
                 .licenseImageUrl(driver.getLicenseImageUrl())
                 .verified(driver.getVerified())
                 .verificationStatus(driver.getVerificationStatus())
+                .status(driver.getStatus())
                 .createdAt(driver.getCreatedAt())
                 .updatedAt(driver.getUpdatedAt())
                 .build();

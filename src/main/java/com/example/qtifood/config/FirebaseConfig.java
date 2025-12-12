@@ -17,12 +17,14 @@ public class FirebaseConfig {
                 InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("serviceAccountKey.json");
                 FirebaseOptions options = FirebaseOptions.builder()
                         .setCredentials(GoogleCredentials.fromStream(serviceAccount))
+                        .setDatabaseUrl("https://datn-foodecommerce-default-rtdb.asia-southeast1.firebasedatabase.app")
                         .build();
                 FirebaseApp.initializeApp(options);
-                System.out.println("FirebaseApp initialized successfully");
+                System.out.println("FirebaseApp initialized successfully with Realtime Database");
             }
         } catch (Exception e) {
             System.err.println("FirebaseApp initialization failed: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }
