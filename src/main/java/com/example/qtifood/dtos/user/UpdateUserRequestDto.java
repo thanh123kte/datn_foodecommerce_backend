@@ -1,10 +1,11 @@
 // src/main/java/com/example/qtifood/dtos/user/UpdateUserRequestDto.java
 package com.example.qtifood.dtos.user;
 
-import com.example.qtifood.entities.RoleType;
 import jakarta.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.Set;
+
+import com.example.qtifood.enums.RoleType;
 
 public record UpdateUserRequestDto(
         @Size(max = 100) String fullName,

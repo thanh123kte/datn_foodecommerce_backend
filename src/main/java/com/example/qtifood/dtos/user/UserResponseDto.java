@@ -5,10 +5,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 
-import com.example.qtifood.entities.RoleType;
+import com.example.qtifood.enums.RoleType;
+
 
 public record UserResponseDto(
-        Long id,
+        String id,
         String fullName,
         String email,
         String phone,

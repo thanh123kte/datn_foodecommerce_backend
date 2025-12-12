@@ -11,7 +11,8 @@ public interface AddressService {
     AddressResponseDto updateAddress(Long id, UpdateAddressDto dto);
     void deleteAddress(Long id);
     List<AddressResponseDto> getAllAddresses();
-    List<AddressResponseDto> getAddressesByUserId(Long userId);
+    AddressResponseDto getAddressById(Long id);
+    List<AddressResponseDto> getAddressesByUserId(String userId);
     AddressResponseDto setDefaultAddress(Long id);
     AddressResponseDto setUnDefaultAddress(Long id);
 }

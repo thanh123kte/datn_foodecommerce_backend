@@ -2,7 +2,7 @@
 package com.example.qtifood.services;
 
 import com.example.qtifood.entities.Role;
-import com.example.qtifood.entities.RoleType;
+import com.example.qtifood.enums.RoleType;
 
 import java.util.List;
 
