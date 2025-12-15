@@ -2,6 +2,7 @@ package com.example.qtifood.dtos.Wallets;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import com.example.qtifood.enums.TransactionStatus;
 
 import com.example.qtifood.enums.TransactionType;
 
@@ -19,6 +20,7 @@ public class WalletTransactionResponseDto {
     private Long walletId;
     private String userId;
     private TransactionType transactionType;
+    private TransactionStatus status;
     private BigDecimal amount;
     private BigDecimal balanceBefore;
     private BigDecimal balanceAfter;

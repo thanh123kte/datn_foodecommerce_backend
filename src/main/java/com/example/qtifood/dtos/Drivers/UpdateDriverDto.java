@@ -1,5 +1,6 @@
 package com.example.qtifood.dtos.Drivers;
 
+import com.example.qtifood.enums.DriverStatus;
 import com.example.qtifood.enums.VerificationStatus;
 
 import jakarta.validation.constraints.Pattern;
@@ -44,5 +45,7 @@ public record UpdateDriverDto(
 
         Boolean verified,
 
-        VerificationStatus verificationStatus
+        VerificationStatus verificationStatus,
+
+        DriverStatus status
 ) {}

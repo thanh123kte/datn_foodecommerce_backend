@@ -3,6 +3,7 @@ package com.example.qtifood.services.impl;
 import com.example.qtifood.dtos.Deliveries.CreateDeliveryDto;
 import com.example.qtifood.dtos.Deliveries.UpdateDeliveryDto;
 import com.example.qtifood.dtos.Deliveries.DeliveryResponseDto;
+import com.example.qtifood.dtos.Deliveries.DriverIncomeStatsDto;
 import com.example.qtifood.entities.Delivery;
 import com.example.qtifood.entities.Order;
 import com.example.qtifood.entities.Driver;
@@ -16,7 +17,13 @@ import com.example.qtifood.services.DeliveryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.DayOfWeek;
+import java.time.temporal.TemporalAdjusters;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -137,7 +144,78 @@ public class DeliveryServiceImpl implements DeliveryService {
         } else if (status == DeliveryStatus.COMPLETED && delivery.getCompletedAt() == null) {
             delivery.setCompletedAt(now);
         }
-        
+
         return deliveryMapper.toDto(deliveryRepository.save(delivery));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public DriverIncomeStatsDto getDriverIncomeStats(String driverId, String period) {
+        // Kiểm tra driver tồn tại
+        driverRepository.findById(driverId)
+            .orElseThrow(() -> new ResourceNotFoundException("Driver not found"));
+
+        LocalDateTime startDate;
+        final LocalDateTime endDate = LocalDateTime.now();
+
+        // Xác định khoảng thời gian dựa trên period
+        switch (period.toLowerCase()) {
+            case "daily":
+                startDate = LocalDate.now().atStartOfDay();
+                // endDate = LocalDate.now().atTime(LocalTime.MAX); // endDate đã được thiết lập ở trên
+                break;
+            case "weekly":
+                // Tuần bắt đầu từ thứ 2
+                LocalDate startOfWeek = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+                startDate = startOfWeek.atStartOfDay();
+                break;
+            case "monthly":
+                startDate = LocalDate.now().withDayOfMonth(1).atStartOfDay();
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid period. Use 'daily', 'weekly', or 'monthly'");
+        }
+
+        // Lấy danh sách deliveries đã hoàn thành trong khoảng thời gian
+        List<Delivery> deliveries = deliveryRepository.findByDriverIdAndStatus(driverId, DeliveryStatus.COMPLETED)
+            .stream()
+            .filter(d -> d.getCompletedAt() != null
+                && !d.getCompletedAt().isBefore(startDate)
+                && !d.getCompletedAt().isAfter(endDate))
+            .collect(Collectors.toList());
+
+        // Tính toán thống kê
+        int totalDeliveries = deliveries.size();
+        BigDecimal totalIncome = deliveries.stream()
+            .map(d -> d.getDriverIncome() != null ? d.getDriverIncome() : BigDecimal.ZERO)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalShippingFee = deliveries.stream()
+            .map(d -> d.getShippingFee() != null ? d.getShippingFee() : BigDecimal.ZERO)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal totalDistance = deliveries.stream()
+            .map(d -> d.getDistanceKm() != null ? d.getDistanceKm() : BigDecimal.ZERO)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        BigDecimal averageIncomePerDelivery = totalDeliveries > 0
+            ? totalIncome.divide(BigDecimal.valueOf(totalDeliveries), 2, RoundingMode.HALF_UP)
+            : BigDecimal.ZERO;
+
+        BigDecimal averageDistancePerDelivery = totalDeliveries > 0
+            ? totalDistance.divide(BigDecimal.valueOf(totalDeliveries), 2, RoundingMode.HALF_UP)
+            : BigDecimal.ZERO;
+
+        return DriverIncomeStatsDto.builder()
+            .period(period)
+            .startDate(startDate)
+            .endDate(endDate)
+            .totalDeliveries(totalDeliveries)
+            .totalIncome(totalIncome)
+            .totalShippingFee(totalShippingFee)
+            .totalDistance(totalDistance)
+            .averageIncomePerDelivery(averageIncomePerDelivery)
+            .averageDistancePerDelivery(averageDistancePerDelivery)
+            .build();
     }
 }

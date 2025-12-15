@@ -14,4 +14,13 @@ public interface VoucherService {
     List<VoucherResponseDto> getByDiscountType(DiscountType discountType);
     List<VoucherResponseDto> getAdminVouchers();
     List<VoucherResponseDto> getStoreVouchers();
+
+    // Quản lý usage
+    VoucherResponseDto incrementUsage(Long voucherId);
+    VoucherResponseDto decrementUsage(Long voucherId);
+
+    // Kiểm tra và validate voucher
+    VoucherResponseDto validateVoucher(String code);
+    boolean isVoucherExpired(Long voucherId);
+    boolean isVoucherUsageLimitReached(Long voucherId);
 }

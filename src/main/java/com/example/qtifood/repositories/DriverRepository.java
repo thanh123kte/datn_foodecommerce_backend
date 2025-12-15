@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import com.example.qtifood.entities.Driver;
+import com.example.qtifood.enums.DriverStatus;
 import com.example.qtifood.enums.VerificationStatus;
 
 public interface DriverRepository extends JpaRepository<Driver, String> {
@@ -42,4 +43,6 @@ public interface DriverRepository extends JpaRepository<Driver, String> {
     
     @Query("SELECT d FROM Driver d WHERE LOWER(d.vehicleType) LIKE LOWER(CONCAT('%', :vehicleType, '%'))")
     List<Driver> findByVehicleType(@Param("vehicleType") String vehicleType);
+    
+    List<Driver> findByStatus(DriverStatus status);
 }

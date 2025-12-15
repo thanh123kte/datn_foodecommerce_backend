@@ -14,13 +14,11 @@ import com.example.qtifood.entities.Store;
 import com.example.qtifood.entities.StoreCategory;
 import com.example.qtifood.enums.AdminStatus;
 import com.example.qtifood.enums.ProductStatus;
-import com.example.qtifood.entities.Categories;
 import com.example.qtifood.exceptions.BadRequestException;
 import com.example.qtifood.exceptions.ResourceNotFoundException;
 import com.example.qtifood.exceptions.EntityDuplicateException;
 import com.example.qtifood.repositories.ProductRepository;
 import com.example.qtifood.repositories.StoreRepository;
-import com.example.qtifood.repositories.CategoriesRepository;
 import com.example.qtifood.repositories.StoreCategoryRepository;
 import com.example.qtifood.services.ProductService;
 import com.example.qtifood.services.ProductImageService;
@@ -34,7 +32,6 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final StoreRepository storeRepository;
-    private final CategoriesRepository categoriesRepository;
     private final StoreCategoryRepository storeCategoryRepository;
     private final ProductImageService productImageService;
 

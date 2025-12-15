@@ -20,6 +20,11 @@ public class OrderItemController {
         return ResponseEntity.ok(orderItemService.createOrderItem(dto));
     }
 
+    @PostMapping("/bulk")
+    public ResponseEntity<List<OrderItemResponseDto>> createOrderItems(@RequestBody List<CreateOrderItemDto> dtos) {
+        return ResponseEntity.ok(orderItemService.createOrderItems(dtos));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<OrderItemResponseDto> updateOrderItem(@PathVariable Long id, @RequestBody UpdateOrderItemDto dto) {
         return ResponseEntity.ok(orderItemService.updateOrderItem(id, dto));

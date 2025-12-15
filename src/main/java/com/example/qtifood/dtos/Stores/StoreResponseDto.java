@@ -26,6 +26,7 @@ public class StoreResponseDto {
     private OpenStatus opStatus;
     private LocalTime openTime;
     private LocalTime closeTime;
+    private Long viewCount;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

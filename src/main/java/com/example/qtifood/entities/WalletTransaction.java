@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 
 import com.example.qtifood.enums.TransactionType;
+import com.example.qtifood.enums.TransactionStatus;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,6 +33,10 @@ public class WalletTransaction {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private TransactionType transactionType;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private TransactionStatus status;
     
     @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal amount;

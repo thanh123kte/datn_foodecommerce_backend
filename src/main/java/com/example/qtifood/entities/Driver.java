@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.example.qtifood.enums.DriverStatus;
 import com.example.qtifood.enums.VerificationStatus;
 
 import jakarta.persistence.*;
@@ -77,6 +78,11 @@ public class Driver {
     @Column(name = "verification_status", nullable = false)
     @Builder.Default
     private VerificationStatus verificationStatus = VerificationStatus.PENDING;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
+    @Builder.Default
+    private DriverStatus status = DriverStatus.OFFLINE;
 
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)

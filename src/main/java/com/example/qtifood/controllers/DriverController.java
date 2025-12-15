@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import com.example.qtifood.dtos.Drivers.CreateDriverDto;
 import com.example.qtifood.dtos.Drivers.UpdateDriverDto;
 import com.example.qtifood.dtos.Drivers.DriverResponseDto;
+import com.example.qtifood.enums.DriverStatus;
 import com.example.qtifood.enums.VerificationStatus;
 import com.example.qtifood.services.DriverService;
 
@@ -85,6 +86,11 @@ public class DriverController {
         return ResponseEntity.ok(driverService.getDriversByVehicleType(vehicleType));
     }
 
+    @GetMapping("/status/{status}")
+    public ResponseEntity<List<DriverResponseDto>> getDriversByStatus(@PathVariable DriverStatus status) {
+        return ResponseEntity.ok(driverService.getDriversByStatus(status));
+    }
+
     @PutMapping("/{id}/verification-status/{status}")
     public ResponseEntity<DriverResponseDto> updateVerificationStatus(@PathVariable String id,
                                                                      @PathVariable VerificationStatus status) {
@@ -104,5 +110,17 @@ public class DriverController {
             @RequestParam("imageType") String imageType) {
         String imageUrl = driverService.uploadDriverImage(id, file, imageType);
         return ResponseEntity.ok(Map.of("imageUrl", imageUrl));
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<DriverResponseDto> updateDriverStatus(
+            @PathVariable String id,
+            @RequestParam DriverStatus status) {
+        UpdateDriverDto dto = new UpdateDriverDto(
+                null, null, null, null, null, null, null, 
+                null, null, null, null, null, null, null, 
+                null, null, status
+        );
+        return ResponseEntity.ok(driverService.updateDriver(id, dto));
     }
 }

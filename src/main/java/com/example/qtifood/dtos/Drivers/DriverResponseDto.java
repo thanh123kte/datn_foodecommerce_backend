@@ -3,6 +3,7 @@ package com.example.qtifood.dtos.Drivers;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.example.qtifood.enums.DriverStatus;
 import com.example.qtifood.enums.VerificationStatus;
 
 import lombok.Builder;
@@ -28,6 +29,7 @@ public class DriverResponseDto {
     private String licenseImageUrl;
     private Boolean verified;
     private VerificationStatus verificationStatus;
+    private DriverStatus status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

@@ -92,4 +92,12 @@ public class StoreController {
         StoreResponseDto updatedStore = storeService.deleteImage(id);
         return ResponseEntity.ok(updatedStore);
     }
+
+    /**
+     * Tăng lượt xem store khi user mở chi tiết
+     */
+    @PostMapping("/{id}/view")
+    public ResponseEntity<StoreResponseDto> incrementView(@PathVariable Long id) {
+        return ResponseEntity.ok(storeService.incrementView(id));
+    }
 }

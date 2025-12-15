@@ -62,4 +62,40 @@ public class SePayController {
             return ResponseEntity.ok().body(java.util.Map.of("status", "error", "message", e.getMessage()));
         }
     }
+    
+    /**
+     * TEST endpoint để simulate SePay webhook
+     * Dùng để test xử lý webhook mà không cần chờ SePay thực tế
+     * 
+     * @param providerTransactionId Provider transaction ID cần test
+     * @return HTTP 200 OK
+     */
+    @PostMapping("/webhook/test/{providerTransactionId}")
+    public ResponseEntity<Object> testWebhook(@PathVariable String providerTransactionId) {
+        // Tạo webhook giả lập với transaction ID
+        SePayWebhookDto testWebhook = SePayWebhookDto.builder()
+                .transactionId(providerTransactionId)
+                .referenceCode(providerTransactionId)
+                .status("SUCCESS")
+                .content("Test topup: " + providerTransactionId)
+                .transferDescription("Test nap tien vao qtifood")
+                .transferAmount(new BigDecimal("10000"))
+                .build();
+        
+        try {
+            sePayService.handleWebhook(testWebhook);
+            return ResponseEntity.ok().body(java.util.Map.of(
+                "status", "success", 
+                "message", "Test webhook processed successfully",
+                "providerTransactionId", providerTransactionId
+            ));
+        } catch (Exception e) {
+            return ResponseEntity.ok().body(java.util.Map.of(
+                "status", "error", 
+                "message", e.getMessage(),
+                "providerTransactionId", providerTransactionId
+            ));
+        }
+    }
 }
+

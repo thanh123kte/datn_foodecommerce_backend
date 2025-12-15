@@ -65,4 +65,43 @@ public class VoucherController {
     public ResponseEntity<List<VoucherResponseDto>> getStoreVouchers() {
         return ResponseEntity.ok(service.getStoreVouchers());
     }
+    /**
+     * Validate voucher bằng code - Kiểm tra hợp lệ, hết hạn, usage
+     */
+    @GetMapping("/validate/{code}")
+    public ResponseEntity<VoucherResponseDto> validateVoucher(@PathVariable String code) {
+        return ResponseEntity.ok(service.validateVoucher(code));
+    }
+
+    /**
+     * Tăng lượt sử dụng - Gọi khi user apply voucher
+     */
+    @PostMapping("/{id}/increment-usage")
+    public ResponseEntity<VoucherResponseDto> incrementUsage(@PathVariable Long id) {
+        return ResponseEntity.ok(service.incrementUsage(id));
+    }
+
+    /**
+     * Giảm lượt sử dụng - Gọi khi user hủy đơn hoặc rollback
+     */
+    @PostMapping("/{id}/decrement-usage")
+    public ResponseEntity<VoucherResponseDto> decrementUsage(@PathVariable Long id) {
+        return ResponseEntity.ok(service.decrementUsage(id));
+    }
+
+    /**
+     * Kiểm tra voucher đã hết hạn chưa
+     */
+    @GetMapping("/{id}/is-expired")
+    public ResponseEntity<Boolean> isExpired(@PathVariable Long id) {
+        return ResponseEntity.ok(service.isVoucherExpired(id));
+    }
+
+    /**
+     * Kiểm tra voucher đã hết lượt sử dụng chưa
+     */
+    @GetMapping("/{id}/is-usage-limit-reached")
+    public ResponseEntity<Boolean> isUsageLimitReached(@PathVariable Long id) {
+        return ResponseEntity.ok(service.isVoucherUsageLimitReached(id));
+    }
 }

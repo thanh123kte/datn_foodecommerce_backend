@@ -15,7 +15,7 @@ public class OrderItemMapper {
     public OrderItem toEntity(CreateOrderItemDto dto) {
         OrderItem orderItem = new OrderItem();
         orderItem.setQuantity(dto.getQuantity());
-        // price will be set from product entity in service layer
+        orderItem.setPrice(dto.getPrice());
         return orderItem;
     }
     

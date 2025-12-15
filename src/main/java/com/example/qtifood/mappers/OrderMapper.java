@@ -17,7 +17,9 @@ public class OrderMapper {
     
     public Order toEntity(CreateOrderDto dto) {
         Order order = new Order();
-        // totalAmount, shippingFee, expectedDeliveryTime will be calculated by service
+        // Map totalAmount and shippingFee from DTO (calculated by frontend)
+        order.setTotalAmount(dto.getTotalAmount());
+        order.setShippingFee(dto.getShippingFee());
         order.setAdminVoucherId(dto.getAdminVoucherId());
         order.setSellerVoucherId(dto.getSellerVoucherId());
         order.setPaymentMethod(dto.getPaymentMethod());

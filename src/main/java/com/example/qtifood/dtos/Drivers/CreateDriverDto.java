@@ -1,5 +1,6 @@
 package com.example.qtifood.dtos.Drivers;
 
+import com.example.qtifood.enums.DriverStatus;
 import com.example.qtifood.enums.VerificationStatus;
 
 import jakarta.validation.constraints.NotBlank;
@@ -49,5 +50,7 @@ public record CreateDriverDto(
 
         String licenseImageUrl,
 
-        VerificationStatus verificationStatus
+        VerificationStatus verificationStatus,
+
+        DriverStatus status
 ) {}

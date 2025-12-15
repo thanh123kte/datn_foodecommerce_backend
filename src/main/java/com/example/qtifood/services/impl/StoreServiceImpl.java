@@ -45,6 +45,7 @@ public class StoreServiceImpl implements StoreService {
             .openTime(dto.getOpenTime())
             .closeTime(dto.getCloseTime())
             .status(StoreStatus.PENDING)
+            .viewCount(0L)
             .build();
 
         return StoreMapper.toDto(storeRepository.save(s));
@@ -142,6 +143,14 @@ public class StoreServiceImpl implements StoreService {
         }
         
         store.setImageUrl(null);
+        return StoreMapper.toDto(storeRepository.save(store));
+    }
+
+    @Override
+    public StoreResponseDto incrementView(Long id) {
+        Store store = storeRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Store not found: " + id));
+        store.setViewCount(store.getViewCount() + 1);
         return StoreMapper.toDto(storeRepository.save(store));
     }
 }
