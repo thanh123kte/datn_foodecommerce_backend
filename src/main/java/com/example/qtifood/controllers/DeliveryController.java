@@ -3,6 +3,7 @@ package com.example.qtifood.controllers;
 import com.example.qtifood.dtos.Deliveries.CreateDeliveryDto;
 import com.example.qtifood.dtos.Deliveries.UpdateDeliveryDto;
 import com.example.qtifood.dtos.Deliveries.DeliveryResponseDto;
+import com.example.qtifood.dtos.Deliveries.DriverIncomeStatsDto;
 import com.example.qtifood.enums.DeliveryStatus;
 import com.example.qtifood.services.DeliveryService;
 import lombok.RequiredArgsConstructor;
@@ -65,5 +66,24 @@ public class DeliveryController {
     @PatchMapping("/{id}/status")
     public ResponseEntity<DeliveryResponseDto> updateDeliveryStatus(@PathVariable Long id, @RequestParam DeliveryStatus status) {
         return ResponseEntity.ok(deliveryService.updateDeliveryStatus(id, status));
+    }
+    
+    /**
+     * Thống kê thu nhập của tài xế
+     * @param driverId ID của tài xế
+     * @param period Chu kỳ thống kê: "daily" (hôm nay), "weekly" (tuần này), "monthly" (tháng này)
+     * @return Thống kê chi tiết bao gồm:
+     *   - Tổng số đơn giao
+     *   - Tổng thu nhập
+     *   - Tổng phí ship
+     *   - Tổng quãng đường
+     *   - Thu nhập trung bình/đơn
+     *   - Quãng đường trung bình/đơn
+     */
+    @GetMapping("/driver/{driverId}/income-stats")
+    public ResponseEntity<DriverIncomeStatsDto> getDriverIncomeStats(
+            @PathVariable String driverId,
+            @RequestParam(defaultValue = "daily") String period) {
+        return ResponseEntity.ok(deliveryService.getDriverIncomeStats(driverId, period));
     }
 }

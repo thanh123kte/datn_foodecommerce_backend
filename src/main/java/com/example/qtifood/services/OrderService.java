@@ -3,6 +3,7 @@ package com.example.qtifood.services;
 import com.example.qtifood.dtos.Orders.CreateOrderDto;
 import com.example.qtifood.dtos.Orders.UpdateOrderDto;
 import com.example.qtifood.dtos.Orders.OrderResponseDto;
+import com.example.qtifood.dtos.Orders.SalesStatsDto;
 import java.util.List;
 
 public interface OrderService {
@@ -20,4 +21,7 @@ public interface OrderService {
      * Update only payment status of an order (used by payment gateway callbacks)
      */
     void updatePaymentStatus(Long orderId, com.example.qtifood.enums.PaymentStatus status);
+
+    // Seller stats
+    SalesStatsDto getStoreSalesStats(Long storeId, String period);
 }

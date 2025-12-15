@@ -56,6 +56,10 @@ public class Voucher {
     @Column(name = "usage_limit")
     private Integer usageLimit;
 
+    @Column(name = "usage_count")
+    @Builder.Default
+    private Integer usageCount = 0;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(
         name = "seller_id",

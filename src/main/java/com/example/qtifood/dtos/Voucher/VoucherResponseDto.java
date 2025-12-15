@@ -19,6 +19,7 @@ public record VoucherResponseDto(
         LocalDateTime startDate,
         LocalDateTime endDate,
         Integer usageLimit,
+        Integer usageCount,
         Long sellerId,
         String sellerName,
         DiscountStatus status,

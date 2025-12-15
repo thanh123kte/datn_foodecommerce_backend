@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.example.qtifood.dtos.Wallets.*;
 import com.example.qtifood.enums.TransactionType;
 import com.example.qtifood.services.WalletService;
+import com.example.qtifood.entities.WalletTransaction;
 
 
 import jakarta.validation.Valid;
@@ -57,6 +58,55 @@ public class WalletController {
         WalletResponseDto wallet = walletService.withdraw(userId, request.getAmount(), 
                 request.getBankAccount(), request.getDescription());
         return ResponseEntity.ok(wallet);
+    }
+
+    /**
+     * Admin duyệt rút tiền
+     */
+    @PostMapping("/admin/withdrawals/{transactionId}/approve")
+    public ResponseEntity<WalletTransactionResponseDto> approveWithdrawal(
+            @PathVariable Long transactionId) {
+        WalletTransaction tx = walletService.approveWithdrawal(transactionId);
+        WalletTransactionResponseDto dto = WalletTransactionResponseDto.builder()
+            .id(tx.getId())
+            .walletId(tx.getWallet().getId())
+            .userId(tx.getWallet().getUser().getId())
+            .transactionType(tx.getTransactionType())
+            .status(tx.getStatus())
+            .amount(tx.getAmount())
+            .balanceBefore(tx.getBalanceBefore())
+            .balanceAfter(tx.getBalanceAfter())
+            .description(tx.getDescription())
+            .referenceId(tx.getReferenceId())
+            .referenceType(tx.getReferenceType())
+            .createdAt(tx.getCreatedAt())
+            .build();
+        return ResponseEntity.ok(dto);
+    }
+
+    /**
+     * Admin từ chối rút tiền
+     */
+    @PostMapping("/admin/withdrawals/{transactionId}/reject")
+    public ResponseEntity<WalletTransactionResponseDto> rejectWithdrawal(
+            @PathVariable Long transactionId,
+            @RequestParam String reason) {
+        WalletTransaction tx = walletService.rejectWithdrawal(transactionId, reason);
+        WalletTransactionResponseDto dto = WalletTransactionResponseDto.builder()
+            .id(tx.getId())
+            .walletId(tx.getWallet().getId())
+            .userId(tx.getWallet().getUser().getId())
+            .transactionType(tx.getTransactionType())
+            .status(tx.getStatus())
+            .amount(tx.getAmount())
+            .balanceBefore(tx.getBalanceBefore())
+            .balanceAfter(tx.getBalanceAfter())
+            .description(tx.getDescription())
+            .referenceId(tx.getReferenceId())
+            .referenceType(tx.getReferenceType())
+            .createdAt(tx.getCreatedAt())
+            .build();
+        return ResponseEntity.ok(dto);
     }
     
     /**

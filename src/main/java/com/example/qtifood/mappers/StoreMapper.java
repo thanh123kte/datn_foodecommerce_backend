@@ -23,6 +23,7 @@ public class StoreMapper {
             .opStatus(s.getOpStatus())
             .openTime(s.getOpenTime())  
             .closeTime(s.getCloseTime())
+                .viewCount(s.getViewCount())
             .createdAt(s.getCreatedAt())
             .updatedAt(s.getUpdatedAt())
             .build();

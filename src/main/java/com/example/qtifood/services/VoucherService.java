@@ -10,4 +10,13 @@ public interface VoucherService {
     VoucherResponseDto update(Long id, UpdateVoucherDto dto);
     void delete(Long id);
     List<VoucherResponseDto> getBySeller(Long sellerId);
+    
+    // Quản lý usage
+    VoucherResponseDto incrementUsage(Long voucherId);
+    VoucherResponseDto decrementUsage(Long voucherId);
+    
+    // Kiểm tra và validate voucher
+    VoucherResponseDto validateVoucher(String code);
+    boolean isVoucherExpired(Long voucherId);
+    boolean isVoucherUsageLimitReached(Long voucherId);
 }

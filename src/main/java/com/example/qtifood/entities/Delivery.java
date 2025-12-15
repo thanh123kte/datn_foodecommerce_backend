@@ -35,20 +35,32 @@ public class Delivery {
     )
     private Driver driver;
 
-    @Column(name = "pickup_lat")
-    private Double pickupLat;
-
-    @Column(name = "pickup_lng")
-    private Double pickupLng;
-
-    @Column(name = "dropoff_lat")
-    private Double dropoffLat;
-
-    @Column(name = "dropoff_lng")
-    private Double dropoffLng;
-
     @Column(name = "distance_km", precision = 6, scale = 2)
     private BigDecimal distanceKm;
+
+    // Snapshot thông tin đơn để driver xem lịch sử
+    @Column(name = "goods_amount", precision = 12, scale = 2)
+    private BigDecimal goodsAmount;
+
+    @Column(name = "shipping_fee", precision = 12, scale = 2)
+    private BigDecimal shippingFee;
+
+    @Column(name = "driver_income", precision = 12, scale = 2)
+    private BigDecimal driverIncome;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "payment_method")
+    private com.example.qtifood.enums.PaymentMethod paymentMethod;
+
+    @Column(name = "store_name")
+    private String storeName;
+
+    @Column(name = "shipping_address", columnDefinition = "TEXT")
+    private String shippingAddress;
+
+    @Column(name = "customer_name")
+    private String customerName;
+
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
