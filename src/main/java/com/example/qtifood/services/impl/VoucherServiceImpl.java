@@ -3,6 +3,7 @@ package com.example.qtifood.services.impl;
 import com.example.qtifood.dtos.Voucher.*;
 import com.example.qtifood.entities.Voucher;
 import com.example.qtifood.entities.Store;
+import com.example.qtifood.enums.DiscountType;
 import com.example.qtifood.repositories.StoreRepository;
 import com.example.qtifood.repositories.VoucherRepository;
 import com.example.qtifood.services.VoucherService;
@@ -117,5 +118,23 @@ public class VoucherServiceImpl implements VoucherService {
     @Transactional(readOnly = true)
     public List<VoucherResponseDto> getBySeller(Long sellerId) {
         return repo.findAllBySeller_Id(sellerId).stream().map(this::toDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VoucherResponseDto> getByDiscountType(DiscountType discountType) {
+        return repo.findAllByDiscountType(discountType).stream().map(this::toDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VoucherResponseDto> getAdminVouchers() {
+        return repo.findAllByIsCreatedByAdmin(true).stream().map(this::toDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VoucherResponseDto> getStoreVouchers() {
+        return repo.findAllByIsCreatedByAdmin(false).stream().map(this::toDto).toList();
     }
 }

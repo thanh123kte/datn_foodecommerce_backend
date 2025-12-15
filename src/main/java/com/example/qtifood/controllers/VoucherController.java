@@ -1,6 +1,7 @@
 package com.example.qtifood.controllers;
 
 import com.example.qtifood.dtos.Voucher.*;
+import com.example.qtifood.enums.DiscountType;
 import com.example.qtifood.services.VoucherService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -48,5 +49,20 @@ public class VoucherController {
     @GetMapping("/seller/{sellerId}")
     public ResponseEntity<List<VoucherResponseDto>> getBySeller(@PathVariable Long sellerId) {
         return ResponseEntity.ok(service.getBySeller(sellerId));
+    }
+
+    @GetMapping("/type/{discountType}")
+    public ResponseEntity<List<VoucherResponseDto>> getByDiscountType(@PathVariable DiscountType discountType) {
+        return ResponseEntity.ok(service.getByDiscountType(discountType));
+    }
+
+    @GetMapping("/admin")
+    public ResponseEntity<List<VoucherResponseDto>> getAdminVouchers() {
+        return ResponseEntity.ok(service.getAdminVouchers());
+    }
+
+    @GetMapping("/store")
+    public ResponseEntity<List<VoucherResponseDto>> getStoreVouchers() {
+        return ResponseEntity.ok(service.getStoreVouchers());
     }
 }
