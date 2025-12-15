@@ -41,6 +41,10 @@ public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
     // Lấy danh sách customer ids đã thêm store vào wishlist
     @Query("SELECT DISTINCT w.customer.id FROM Wishlist w WHERE w.store.id = :storeId")
     List<String> findCustomerIdsByStoreId(@Param("storeId") Long storeId);
+
+       // Đếm số lượt thích (wishlist) của store
+       @Query("SELECT COUNT(w) FROM Wishlist w WHERE w.store.id = :storeId")
+       Long countByStoreId(@Param("storeId") Long storeId);
     
     // Xóa wishlist theo customer và store
     @Modifying

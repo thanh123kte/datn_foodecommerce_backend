@@ -11,11 +11,14 @@ public class DeliveryResponseDto {
     private Long orderId;
     private String driverId;
     private String driverName;
-    private Double pickupLat;
-    private Double pickupLng;
-    private Double dropoffLat;
-    private Double dropoffLng;
     private BigDecimal distanceKm;
+    private BigDecimal goodsAmount;
+    private BigDecimal shippingFee;
+    private BigDecimal driverIncome;
+    private com.example.qtifood.enums.PaymentMethod paymentMethod;
+    private String storeName;
+    private String shippingAddress;
+    private String customerName;
     private DeliveryStatus status;
     private LocalDateTime startedAt;
     private LocalDateTime completedAt;

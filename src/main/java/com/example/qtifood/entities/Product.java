@@ -19,7 +19,7 @@ import lombok.*;
     name = "products",
     indexes = {
         @Index(name = "idx_products_store_id", columnList = "store_id"),
-        @Index(name = "idx_products_category_id", columnList = "category_id"),
+        @Index(name = "idx_products_store_category_id", columnList = "store_category_id"),
         @Index(name = "idx_products_status", columnList = "status")
     }
 )

@@ -15,16 +15,21 @@ import com.example.qtifood.dtos.Orders.OrderResponseDto;
 import com.example.qtifood.entities.Driver;
 import com.example.qtifood.entities.Order;
 import com.example.qtifood.entities.Wallet;
+import com.example.qtifood.entities.Delivery;
 import com.example.qtifood.enums.DriverStatus;
 import com.example.qtifood.enums.OrderStatus;
+import com.example.qtifood.enums.PaymentMethod;
 import com.example.qtifood.enums.TransactionType;
 import com.example.qtifood.mappers.OrderMapper;
+import com.example.qtifood.enums.DeliveryStatus;
 import com.example.qtifood.repositories.DriverRepository;
 import com.example.qtifood.repositories.OrderRepository;
 import com.example.qtifood.repositories.WalletRepository;
 import com.example.qtifood.services.DriverAssignmentService;
 import com.example.qtifood.services.FcmService;
 import com.example.qtifood.services.WalletService;
+import com.example.qtifood.services.ShippingService;
+import com.example.qtifood.repositories.DeliveryRepository;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -47,9 +52,11 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
     private final OrderRepository orderRepository;
     private final DriverRepository driverRepository;
     private final WalletRepository walletRepository;
+    private final DeliveryRepository deliveryRepository;
     private final OrderMapper orderMapper;
     private final FcmService fcmService;
     private final WalletService walletService;
+    private final ShippingService shippingService;
     
     @Override
     @Transactional
@@ -79,8 +86,8 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
         }
         
         // 5. Lọc tài xế có đủ tiền trong ví để gán trước cho đơn hàng
-        BigDecimal shippingFee = order.getShippingFee() != null ? order.getShippingFee() : BigDecimal.ZERO;
-        BigDecimal requiredDeposit = shippingFee; // Tài xế cần có ít nhất bằng phí ship
+        BigDecimal totalAmount = order.getTotalAmount() != null ? order.getTotalAmount() : BigDecimal.ZERO;
+        BigDecimal requiredDeposit = totalAmount; // Tài xế cần ứng tiền toàn bộ đơn hàng
         
         List<Driver> eligibleDrivers = onlineDrivers.stream()
                 .filter(driver -> {
@@ -124,10 +131,27 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
         // 9. Lưu đơn hàng
         Order savedOrder = orderRepository.save(order);
         
-        // 10. Lưu thông tin tracking vào Firebase Realtime Database
+        // 10. Ứng tiền đơn hàng cho tài xế (deduct from driver wallet)
+        try {
+            String driverId = selectedDriver.getId();
+            walletService.recordTransaction(
+                driverId,
+                TransactionType.PAYMENT,
+                totalAmount,
+                String.format("Ứng tiền đơn hàng #%d (sẽ hoàn sau khi giao thành công)", savedOrder.getId()),
+                String.valueOf(savedOrder.getId()),
+                "ORDER_ADVANCE"
+            );
+            log.info("[DriverAssignment] Driver advance deducted: driverId={}, amount={}, orderId={}", driverId, totalAmount, savedOrder.getId());
+        } catch (Exception e) {
+            log.error("[DriverAssignment] Failed to deduct driver advance for order={}: {}", savedOrder.getId(), e.getMessage());
+            throw new RuntimeException("Failed to deduct driver advance: " + e.getMessage(), e);
+        }
+
+        // 11. Lưu thông tin tracking vào Firebase Realtime Database
         saveTrackingToFirebase(savedOrder);
         
-        // 11. Gửi thông báo cho tài xế
+        // 12. Gửi thông báo cho tài xế
         sendNotificationToDriver(selectedDriver, savedOrder);
         
         log.info("[DriverAssignment] Successfully assigned driver={} to order={}, status changed to SHIPPING", 
@@ -210,10 +234,38 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
             trackingData.put("storeAddress", order.getStore().getAddress());
             trackingData.put("shippingAddress", order.getShippingAddress().getAddress());
             
+            // Tính distance từ seller -> customer
+            double distance = 0.0;
+            try {
+                if (order.getStore().getLatitude() != null && order.getStore().getLongitude() != null
+                        && order.getShippingAddress().getLatitude() != null
+                        && order.getShippingAddress().getLongitude() != null) {
+                    distance = shippingService.calculateDistance(
+                        order.getStore().getLatitude().doubleValue(),
+                        order.getStore().getLongitude().doubleValue(),
+                        order.getShippingAddress().getLatitude().doubleValue(),
+                        order.getShippingAddress().getLongitude().doubleValue()
+                    );
+                }
+            } catch (Exception e) {
+                log.warn("[DriverAssignment] Failed to calculate distance for order={}: {}", order.getId(), e.getMessage());
+            }
+            trackingData.put("distance", distance);
+
             // Thông tin địa chỉ giao hàng chi tiết
             trackingData.put("addressId", order.getShippingAddress().getId());
             trackingData.put("recipientName", order.getShippingAddress().getAddress());
             trackingData.put("recipientPhone", order.getShippingAddress().getPhone());
+
+                // Tọa độ giao hàng (phục vụ tracking bản đồ)
+                Double shippingLat = order.getShippingAddress().getLatitude() != null
+                    ? order.getShippingAddress().getLatitude().doubleValue()
+                    : null;
+                Double shippingLng = order.getShippingAddress().getLongitude() != null
+                    ? order.getShippingAddress().getLongitude().doubleValue()
+                    : null;
+                trackingData.put("shippingLatitude", shippingLat);
+                trackingData.put("shippingLongitude", shippingLng);
             
             // Vị trí ban đầu (sẽ được cập nhật realtime từ app driver)
             Map<String, Object> driverLocation = new HashMap<>();
@@ -279,9 +331,10 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
         BigDecimal totalAmount = order.getTotalAmount() != null ? order.getTotalAmount() : BigDecimal.ZERO;
         BigDecimal shippingFee = order.getShippingFee() != null ? order.getShippingFee() : BigDecimal.ZERO;
         
-        // 1. Tính phí sàn cho shop (12% tổng giá trị đơn hàng)
-        BigDecimal shopPlatformFee = totalAmount.multiply(PLATFORM_FEE_SHOP);
-        BigDecimal shopReceiveAmount = totalAmount.subtract(shopPlatformFee);
+        // 1. Tính tiền hàng (totalAmount - shipping_fee) rồi trừ 12% phí sàn cho shop
+        BigDecimal goodsAmount = totalAmount.subtract(shippingFee);
+        BigDecimal shopPlatformFee = goodsAmount.multiply(PLATFORM_FEE_SHOP);
+        BigDecimal shopReceiveAmount = goodsAmount.subtract(shopPlatformFee);
         
         // 2. Tính phí sàn cho driver (động theo phí ship)
         BigDecimal driverPlatformFee = calculateDriverPlatformFee(shippingFee);
@@ -290,41 +343,107 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
         // 3. Tổng phí sàn admin nhận được
         BigDecimal adminTotalFee = shopPlatformFee.add(driverPlatformFee);
         
-        log.info("[DriverAssignment] Payment breakdown - Order={}, TotalAmount={}, ShippingFee={}, ShopFee={}%, DriverFee={}, ShopReceive={}, DriverReceive={}, AdminReceive={}", 
-                orderId, totalAmount, shippingFee, PLATFORM_FEE_SHOP.multiply(new BigDecimal("100")), 
+        log.info("[DriverAssignment] Payment breakdown - Order={}, TotalAmount={}, GoodsAmount={}, ShippingFee={}, ShopFee={}%, DriverFee={}, ShopReceive={}, DriverReceive={}, AdminReceive={}",
+                orderId, totalAmount, goodsAmount, shippingFee, PLATFORM_FEE_SHOP.multiply(new BigDecimal("100")),
                 driverPlatformFee, shopReceiveAmount, driverReceiveAmount, adminTotalFee);
         
         try {
-            // 4. Cộng tiền cho shop
+            // 4. Xử lý thanh toán dựa vào payment method
             String sellerId = order.getStore().getOwner().getId();
-            walletService.recordTransaction(
-                    sellerId,
-                    TransactionType.EARN,
-                    shopReceiveAmount,
-                    String.format("Doanh thu đơn hàng #%d (đã trừ phí sàn %.0f%%)", orderId, PLATFORM_FEE_SHOP.multiply(new BigDecimal("100")).doubleValue()),
-                    String.valueOf(orderId),
-                    "ORDER_INCOME"
-            );
-            log.info("[DriverAssignment] Credited shop wallet: sellerId={}, amount={}", sellerId, shopReceiveAmount);
-            
-            // 5. Cộng tiền giao hàng cho driver
             String driverId = order.getDriver().getId();
+
+            if (order.getPaymentMethod() == PaymentMethod.QTIWALLET) {
+                // QTIWALLET: Hoàn tiền hàng + cộng tiền ship
+                // Hoàn ứng tiền cho driver
+                walletService.recordTransaction(
+                        driverId,
+                        TransactionType.REFUND,
+                        totalAmount,
+                        String.format("Hoàn ứng tiền đơn hàng #%d (QTIWALLET)", orderId),
+                        String.valueOf(orderId),
+                        "ORDER_ADVANCE_REFUND"
+                );
+                log.info("[DriverAssignment] Refunded driver advance: driverId={}, amount={}", driverId, totalAmount);
+
+                // Cộng tiền hàng cho shop
+                walletService.recordTransaction(
+                        sellerId,
+                        TransactionType.EARN,
+                        shopReceiveAmount,
+                        String.format("Doanh thu đơn hàng #%d (QTIWALLET, đã trừ phí sàn %.0f%%)", orderId, PLATFORM_FEE_SHOP.multiply(new BigDecimal("100")).doubleValue()),
+                        String.valueOf(orderId),
+                        "ORDER_INCOME"
+                );
+                log.info("[DriverAssignment] Credited shop wallet: sellerId={}, amount={}, method=QTIWALLET", sellerId, shopReceiveAmount);
+
+                // Cộng tiền giao hàng cho driver
+                walletService.recordTransaction(
+                        driverId,
+                        TransactionType.EARN,
+                        driverReceiveAmount,
+                        String.format("Phí giao hàng đơn #%d (QTIWALLET, đã trừ phí sàn)", orderId),
+                        String.valueOf(orderId),
+                        "DELIVERY_INCOME"
+                );
+                log.info("[DriverAssignment] Credited driver shipping fee: driverId={}, amount={}", driverId, driverReceiveAmount);
+
+            } else {
+                // COD (Cash/Bank Transfer): Khách trả tiền mặt cho driver
+                // Hoàn ứng tiền cho driver (vì khách đã trả tiền mặt)
+                walletService.recordTransaction(
+                        driverId,
+                        TransactionType.REFUND,
+                        totalAmount,
+                        String.format("Hoàn ứng tiền đơn hàng #%d (COD - khách trả mặt/chuyển khoản)", orderId),
+                        String.valueOf(orderId),
+                        "ORDER_ADVANCE_REFUND"
+                );
+                log.info("[DriverAssignment] Refunded driver advance (COD): driverId={}, amount={}", driverId, totalAmount);
+
+                // Cộng tiền hàng cho shop (seller nhận tiền từ driver chuyển khoản sau)
+                walletService.recordTransaction(
+                        sellerId,
+                        TransactionType.EARN,
+                        shopReceiveAmount,
+                        String.format("Doanh thu đơn hàng #%d (COD, đã trừ phí sàn %.0f%%)", orderId, PLATFORM_FEE_SHOP.multiply(new BigDecimal("100")).doubleValue()),
+                        String.valueOf(orderId),
+                        "ORDER_INCOME"
+                );
+                log.info("[DriverAssignment] Credited shop wallet (COD): sellerId={}, amount={}", sellerId, shopReceiveAmount);
+
+                // Ghi nhận thu nhập phí ship COD cho driver
+                walletService.recordTransaction(
+                        driverId,
+                        TransactionType.MANUAL_INCOME,
+                        driverReceiveAmount,
+                        String.format("Phí giao hàng COD đơn #%d (đã trừ phí sàn)", orderId),
+                        String.valueOf(orderId),
+                        "COD_SHIPPING_INCOME"
+                );
+                log.info("[DriverAssignment] Recorded COD shipping income: driverId={}, amount={}, orderId={}", driverId, driverReceiveAmount, orderId);
+            }
+
+            log.info("[DriverAssignment] Payment processed by method={}", order.getPaymentMethod());
+
+            // 5. Cộng phí sàn cho admin wallet
             walletService.recordTransaction(
-                    driverId,
+                    "admin",
                     TransactionType.EARN,
-                    driverReceiveAmount,
-                    String.format("Phí giao hàng đơn #%d (đã trừ phí sàn)", orderId),
+                    adminTotalFee,
+                    String.format("Phí sàn đơn hàng #%d (shop: %.0f + driver: %.0f)", orderId, shopPlatformFee, driverPlatformFee),
                     String.valueOf(orderId),
-                    "DELIVERY_INCOME"
+                    "PLATFORM_FEE"
             );
-            log.info("[DriverAssignment] Credited driver wallet: driverId={}, amount={}", driverId, driverReceiveAmount);
-            
-            // 6. Ghi nhận phí sàn cho admin (có thể lưu vào bảng riêng hoặc wallet admin)
-            // TODO: Tạo wallet cho admin hoặc bảng platform_revenue
-            log.info("[DriverAssignment] Platform fee collected: amount={} (shop: {}, driver: {})", 
+            log.info("[DriverAssignment] Platform fee credited to admin: amount={} (shop: {}, driver: {})",
                     adminTotalFee, shopPlatformFee, driverPlatformFee);
             
-            // 7. Cập nhật trạng thái driver về ONLINE
+                // 6. Lưu lịch sử giao hàng vào deliveries
+                saveDeliverySnapshot(order, goodsAmount, shippingFee, driverReceiveAmount, shopReceiveAmount);
+
+                // 7. Xóa tracking realtime khi giao xong
+                clearTrackingFromFirebase(orderId);
+
+                // 8. Cập nhật trạng thái driver về ONLINE
             Driver driver = order.getDriver();
             driver.setStatus(DriverStatus.ONLINE);
             driverRepository.save(driver);
@@ -334,6 +453,72 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
         } catch (Exception e) {
             log.error("[DriverAssignment] Failed to process delivery payment for order={}: {}", orderId, e.getMessage(), e);
             throw new RuntimeException("Failed to process delivery payment: " + e.getMessage(), e);
+        }
+    }
+
+    /**
+     * Lưu snapshot vào bảng deliveries để driver xem lịch sử
+     */
+    private void saveDeliverySnapshot(Order order, BigDecimal goodsAmount, BigDecimal shippingFee,
+                                      BigDecimal driverIncome, BigDecimal shopIncome) {
+        try {
+            Delivery delivery = deliveryRepository.findByOrderId(order.getId()).orElse(new Delivery());
+            delivery.setOrder(order);
+            delivery.setDriver(order.getDriver());
+            delivery.setStatus(DeliveryStatus.COMPLETED);
+            delivery.setCompletedAt(delivery.getCompletedAt() != null ? delivery.getCompletedAt() : LocalDateTime.now());
+            // startedAt: lấy thời điểm gán tài xế (nếu chưa có), fallback createdAt của đơn
+            if (delivery.getStartedAt() == null) {
+                delivery.setStartedAt(order.getUpdatedAt() != null ? order.getUpdatedAt() : order.getCreatedAt());
+            }
+
+            // Snapshot dữ liệu
+            delivery.setGoodsAmount(goodsAmount);
+            delivery.setShippingFee(shippingFee);
+            delivery.setDriverIncome(driverIncome);
+            // Không lưu shopIncome theo yêu cầu
+            delivery.setPaymentMethod(order.getPaymentMethod());
+            delivery.setStoreName(order.getStore() != null ? order.getStore().getName() : null);
+            delivery.setShippingAddress(order.getShippingAddress() != null ? order.getShippingAddress().getAddress() : null);
+            delivery.setCustomerName(order.getCustomer() != null ? order.getCustomer().getFullName() : null);
+            // Không lưu customerPhone, pickup/dropoff theo yêu cầu
+
+            // Tính và lưu distance_km
+            if (order.getStore().getLatitude() != null && order.getStore().getLongitude() != null
+                    && order.getShippingAddress().getLatitude() != null
+                    && order.getShippingAddress().getLongitude() != null) {
+                try {
+                    double distanceKm = shippingService.calculateDistance(
+                        order.getStore().getLatitude().doubleValue(),
+                        order.getStore().getLongitude().doubleValue(),
+                        order.getShippingAddress().getLatitude().doubleValue(),
+                        order.getShippingAddress().getLongitude().doubleValue()
+                    );
+                    delivery.setDistanceKm(BigDecimal.valueOf(distanceKm));
+                } catch (Exception e) {
+                    log.warn("[DriverAssignment] Failed to calculate distance for order={}: {}", order.getId(), e.getMessage());
+                }
+            }
+
+            deliveryRepository.save(delivery);
+            log.info("[DriverAssignment] Saved delivery snapshot for order={}", order.getId());
+        } catch (Exception e) {
+            log.error("[DriverAssignment] Failed to save delivery snapshot for order={}: {}", order.getId(), e.getMessage());
+        }
+    }
+
+    /**
+     * Xóa tracking trên Firebase Realtime DB sau khi giao xong
+     */
+    private void clearTrackingFromFirebase(Long orderId) {
+        try {
+            DatabaseReference trackingRef = FirebaseDatabase.getInstance()
+                    .getReference("order_tracking")
+                    .child(String.valueOf(orderId));
+            trackingRef.removeValueAsync();
+            log.info("[DriverAssignment] Cleared realtime tracking for order={}", orderId);
+        } catch (Exception e) {
+            log.error("[DriverAssignment] Failed to clear realtime tracking for order={}: {}", orderId, e.getMessage());
         }
     }
     

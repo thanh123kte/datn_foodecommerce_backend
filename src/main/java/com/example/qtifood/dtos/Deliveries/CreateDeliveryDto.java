@@ -7,9 +7,12 @@ import java.math.BigDecimal;
 public class CreateDeliveryDto {
     private Long orderId;
     private String driverId;
-    private Double pickupLat;
-    private Double pickupLng;
-    private Double dropoffLat;
-    private Double dropoffLng;
     private BigDecimal distanceKm;
+    private BigDecimal goodsAmount;
+    private BigDecimal shippingFee;
+    private BigDecimal driverIncome;
+    private com.example.qtifood.enums.PaymentMethod paymentMethod;
+    private String storeName;
+    private String shippingAddress;
+    private String customerName;
 }

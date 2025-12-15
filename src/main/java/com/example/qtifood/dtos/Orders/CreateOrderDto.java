@@ -27,7 +27,4 @@ public class CreateOrderDto {
     
     private String note;
     
-    @NotEmpty(message = "Order must have at least one item")
-    @Valid
-    private List<CreateOrderItemDto> items; 
 }

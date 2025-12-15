@@ -20,4 +20,7 @@ public interface StoreService {
     
     StoreResponseDto uploadImage(Long id, org.springframework.web.multipart.MultipartFile imageFile);
     StoreResponseDto deleteImage(Long id);
+
+    // Increment view count
+    StoreResponseDto incrementView(Long id);
 }

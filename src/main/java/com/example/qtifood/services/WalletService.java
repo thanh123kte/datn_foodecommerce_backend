@@ -21,6 +21,10 @@ public interface WalletService {
     // Withdrawal
     WalletResponseDto withdraw(String userId, BigDecimal amount, String bankAccount, String description);
     
+    // Admin approval/rejection for withdrawals
+    com.example.qtifood.entities.WalletTransaction approveWithdrawal(Long transactionId);
+    com.example.qtifood.entities.WalletTransaction rejectWithdrawal(Long transactionId, String reason);
+
     // Transaction history
     List<WalletTransactionResponseDto> getTransactionHistory(String userId);
     Page<WalletTransactionResponseDto> getTransactionHistoryPaginated(String userId, Pageable pageable);

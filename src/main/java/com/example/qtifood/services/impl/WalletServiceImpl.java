@@ -14,6 +14,7 @@ import com.example.qtifood.entities.User;
 import com.example.qtifood.entities.Wallet;
 import com.example.qtifood.entities.WalletTransaction;
 import com.example.qtifood.enums.TransactionType;
+import com.example.qtifood.enums.TransactionStatus;
 import com.example.qtifood.exceptions.ResourceNotFoundException;
 import com.example.qtifood.repositories.UserRepository;
 import com.example.qtifood.repositories.WalletRepository;
@@ -107,29 +108,35 @@ public class WalletServiceImpl implements WalletService {
         Wallet wallet = walletRepository.findByUserId(userId)
             .orElseThrow(() -> new ResourceNotFoundException("Wallet not found for user: " + userId));
         
+        // Kiểm tra số dư
         if (wallet.getBalance().compareTo(amount) < 0) {
             throw new IllegalArgumentException("Insufficient balance. Current balance: " + wallet.getBalance());
         }
         
+        // Trừ tiền ngay lập tức (locked) nhưng giao dịch ở trạng thái PENDING chờ admin duyệt
         BigDecimal oldBalance = wallet.getBalance();
-        wallet.setBalance(wallet.getBalance().subtract(amount));
+        BigDecimal newBalance = oldBalance.subtract(amount);
+        wallet.setBalance(newBalance);
         wallet.setTotalWithdrawn(wallet.getTotalWithdrawn().add(amount));
-        
         walletRepository.save(wallet);
         
-        // Record transaction
+        // Tạo giao dịch PENDING để admin duyệt hoàn tất hoặc từ chối (hoàn lại tiền)
         String desc = description != null ? description : "Withdrawal to " + bankAccount;
         WalletTransaction transaction = WalletTransaction.builder()
             .wallet(wallet)
             .transactionType(TransactionType.WITHDRAW)
             .amount(amount)
             .balanceBefore(oldBalance)
-            .balanceAfter(wallet.getBalance())
+            .balanceAfter(newBalance)
             .description(desc)
             .referenceType("WITHDRAWAL")
+            .status(TransactionStatus.PENDING)
             .build();
         
-        transactionRepository.save(transaction);
+        WalletTransaction savedTransaction = transactionRepository.save(transaction);
+        // Đặt reference_id là transaction ID để app có thể track
+        savedTransaction.setReferenceId(String.valueOf(savedTransaction.getId()));
+        transactionRepository.save(savedTransaction);
         
         return toDto(wallet);
     }
@@ -187,6 +194,7 @@ public class WalletServiceImpl implements WalletService {
                 wallet.setTotalDeposited(wallet.getTotalDeposited().add(amount));
                 break;
             case WITHDRAW:
+                // recordTransaction chỉ dùng cho các giao dịch đã được phê duyệt
                 if (oldBalance.compareTo(amount) < 0) {
                     throw new IllegalArgumentException("Insufficient balance");
                 }
@@ -201,6 +209,7 @@ public class WalletServiceImpl implements WalletService {
                 break;
             case REFUND:
             case EARN:
+            case MANUAL_INCOME:
                 newBalance = oldBalance.add(amount);
                 wallet.setTotalEarned(wallet.getTotalEarned().add(amount));
                 break;
@@ -221,6 +230,8 @@ public class WalletServiceImpl implements WalletService {
             .description(description)
             .referenceId(referenceId)
             .referenceType(referenceType)
+            // Các dòng tiền do BE xử lý (nạp tiền, phí ship, tiền hàng, ứng tiền...) đặt SUCCESSFUL
+            .status(TransactionStatus.SUCCESSFUL)
             .build();
         
         transactionRepository.save(transaction);
@@ -245,6 +256,7 @@ public class WalletServiceImpl implements WalletService {
             .walletId(transaction.getWallet().getId())
             .userId(transaction.getWallet().getUser().getId())
             .transactionType(transaction.getTransactionType())
+            .status(transaction.getStatus())
             .amount(transaction.getAmount())
             .balanceBefore(transaction.getBalanceBefore())
             .balanceAfter(transaction.getBalanceAfter())
@@ -253,5 +265,44 @@ public class WalletServiceImpl implements WalletService {
             .referenceType(transaction.getReferenceType())
             .createdAt(transaction.getCreatedAt())
             .build();
+    }
+
+    // Admin duyệt rút tiền: tiền đã bị trừ rồi, chỉ cần chuyển trạng thái APPROVED
+    public WalletTransaction approveWithdrawal(Long transactionId) {
+        WalletTransaction transaction = transactionRepository.findById(transactionId)
+            .orElseThrow(() -> new ResourceNotFoundException("Transaction not found: " + transactionId));
+        if (transaction.getTransactionType() != TransactionType.WITHDRAW) {
+            throw new IllegalArgumentException("Transaction is not a withdraw");
+        }
+        if (transaction.getStatus() != TransactionStatus.PENDING) {
+            throw new IllegalStateException("Transaction is not pending");
+        }
+        // Tiền đã bị trừ rồi khi user gọi withdraw, chỉ cần chuyển trạng thái
+        transaction.setStatus(TransactionStatus.APPROVED);
+        return transactionRepository.save(transaction);
+    }
+
+    // Admin từ chối rút tiền: hoàn lại số tiền vào ví
+    public WalletTransaction rejectWithdrawal(Long transactionId, String reason) {
+        WalletTransaction transaction = transactionRepository.findById(transactionId)
+            .orElseThrow(() -> new ResourceNotFoundException("Transaction not found: " + transactionId));
+        if (transaction.getTransactionType() != TransactionType.WITHDRAW) {
+            throw new IllegalArgumentException("Transaction is not a withdraw");
+        }
+        if (transaction.getStatus() != TransactionStatus.PENDING) {
+            throw new IllegalStateException("Transaction is not pending");
+        }
+        // Hoàn lại tiền vào ví
+        Wallet wallet = transaction.getWallet();
+        BigDecimal refundAmount = transaction.getAmount();
+        wallet.setBalance(wallet.getBalance().add(refundAmount));
+        wallet.setTotalWithdrawn(wallet.getTotalWithdrawn().subtract(refundAmount));
+        walletRepository.save(wallet);
+
+        // Cập nhật giao dịch thành REJECTED
+        transaction.setStatus(TransactionStatus.REJECTED);
+        transaction.setBalanceAfter(wallet.getBalance());
+        transaction.setDescription((transaction.getDescription() != null ? transaction.getDescription() + " | " : "") + "Rejected: " + reason);
+        return transactionRepository.save(transaction);
     }
 }
