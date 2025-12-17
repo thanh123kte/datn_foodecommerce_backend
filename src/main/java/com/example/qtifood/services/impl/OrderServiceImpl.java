@@ -248,8 +248,8 @@ public class OrderServiceImpl implements OrderService {
         com.example.qtifood.entities.Store store = storeRepository.findById(storeId)
             .orElseThrow(() -> new ResourceNotFoundException("Store not found: " + storeId));
 
-        List<Order> orders = orderRepository.findByStoreIdAndOrderStatusAndUpdatedAtBetween(
-            storeId, OrderStatus.DELIVERED, start, end
+        List<Order> orders = orderRepository.findByStoreIdAndOrderStatusInAndUpdatedAtBetween(
+            storeId, List.of(OrderStatus.DELIVERED, OrderStatus.REVIEWED), start, end
         );
 
         long totalOrders = orders.size();

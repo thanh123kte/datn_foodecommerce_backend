@@ -1,8 +1,12 @@
 package com.example.qtifood.entities;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+
+import com.example.qtifood.entities.ReviewImage;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -46,8 +50,9 @@ public class StoreReview {
     @Column(name = "comment", columnDefinition = "TEXT")
     private String comment;
 
-    @Column(name = "image_url", columnDefinition = "TEXT")
-    private String imageUrl;
+    @Builder.Default
+    @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ReviewImage> images = new ArrayList<>();
 
     @Column(name = "reply", columnDefinition = "TEXT")
     private String reply;

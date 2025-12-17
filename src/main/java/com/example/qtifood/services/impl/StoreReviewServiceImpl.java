@@ -2,6 +2,7 @@ package com.example.qtifood.services.impl;
 
 import com.example.qtifood.dtos.StoreReviews.CreateStoreReviewDto;
 import com.example.qtifood.dtos.StoreReviews.StoreReviewResponseDto;
+import com.example.qtifood.entities.ReviewImage;
 import com.example.qtifood.entities.StoreReview;
 import com.example.qtifood.entities.Order;
 import com.example.qtifood.entities.Store;
@@ -10,6 +11,7 @@ import com.example.qtifood.enums.OrderStatus;
 import com.example.qtifood.exceptions.ResourceNotFoundException;
 import com.example.qtifood.exceptions.EntityDuplicateException;
 import com.example.qtifood.mappers.StoreReviewMapper;
+import com.example.qtifood.repositories.ReviewImageRepository;
 import com.example.qtifood.repositories.StoreReviewRepository;
 import com.example.qtifood.repositories.OrderRepository;
 import com.example.qtifood.repositories.StoreRepository;
@@ -32,6 +34,7 @@ public class StoreReviewServiceImpl implements StoreReviewService {
     private final UserRepository userRepository;
     private final StoreReviewMapper storeReviewMapper;
     private final FileUploadService fileUploadService;
+    private final ReviewImageRepository reviewImageRepository;
 
     @Override
     @Transactional
@@ -73,7 +76,14 @@ public class StoreReviewServiceImpl implements StoreReviewService {
             throw new IllegalArgumentException("Only delivered orders can be reviewed");
         }
         
-        return storeReviewMapper.toDto(storeReviewRepository.save(storeReview));
+        StoreReview saved = storeReviewRepository.save(storeReview);
+
+        // Mark order as reviewed and set rating flag
+        order.setOrderStatus(OrderStatus.REVIEWED);
+        order.setRatingStatus(Boolean.TRUE);
+        orderRepository.save(order);
+
+        return storeReviewMapper.toDto(saved);
     }
 
 
@@ -147,48 +157,55 @@ public class StoreReviewServiceImpl implements StoreReviewService {
 
     @Override
     @Transactional
-    public StoreReviewResponseDto uploadImage(Long id, MultipartFile imageFile) {
+    public StoreReviewResponseDto uploadImages(Long id, List<MultipartFile> imageFiles) {
+        if (imageFiles == null || imageFiles.isEmpty()) {
+            throw new IllegalArgumentException("At least one image file is required");
+        }
+
         StoreReview review = storeReviewRepository.findById(id)
             .orElseThrow(() -> new ResourceNotFoundException("Store review not found: " + id));
-        
-        // Delete old image if exists and not external URL
-        if (review.getImageUrl() != null && !review.getImageUrl().trim().isEmpty()) {
-            if (!review.getImageUrl().startsWith("http://") && !review.getImageUrl().startsWith("https://")) {
-                try {
-                    fileUploadService.deleteFile(review.getImageUrl());
-                } catch (Exception e) {
-                    // Log error but continue with upload
-                    System.err.println("Failed to delete old review image: " + e.getMessage());
-                }
-            }
+
+        for (MultipartFile imageFile : imageFiles) {
+            String newImagePath = fileUploadService.uploadFile(imageFile, "reviews", id.toString());
+            ReviewImage image = ReviewImage.builder()
+                    .review(review)
+                    .imageUrl(newImagePath)
+                    .build();
+            review.getImages().add(image);
         }
-        
-        // Upload new image
-        String newImagePath = fileUploadService.uploadFile(imageFile, "reviews", id.toString());
-        review.setImageUrl(newImagePath);
-        
+
         return storeReviewMapper.toDto(storeReviewRepository.save(review));
     }
 
     @Override
     @Transactional
-    public StoreReviewResponseDto deleteImage(Long id) {
-        StoreReview review = storeReviewRepository.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Store review not found: " + id));
-        
-        // Delete old image if exists and not external URL
-        if (review.getImageUrl() != null && !review.getImageUrl().trim().isEmpty()) {
-            if (!review.getImageUrl().startsWith("http://") && !review.getImageUrl().startsWith("https://")) {
+    public StoreReviewResponseDto deleteImage(Long reviewId, Long imageId) {
+        StoreReview review = storeReviewRepository.findById(reviewId)
+            .orElseThrow(() -> new ResourceNotFoundException("Store review not found: " + reviewId));
+
+        ReviewImage image = reviewImageRepository.findById(imageId)
+            .orElseThrow(() -> new ResourceNotFoundException("Review image not found: " + imageId));
+
+        if (!image.getReview().getId().equals(reviewId)) {
+            throw new IllegalArgumentException("Image does not belong to the specified review");
+        }
+
+        // Remove from review collection (orphanRemoval handles delete)
+        review.getImages().removeIf(img -> img.getId().equals(imageId));
+
+        // Delete physical file if not external URL
+        if (image.getImageUrl() != null && !image.getImageUrl().trim().isEmpty()) {
+            if (!image.getImageUrl().startsWith("http://") && !image.getImageUrl().startsWith("https://")) {
                 try {
-                    fileUploadService.deleteFile(review.getImageUrl());
+                    fileUploadService.deleteFile(image.getImageUrl());
                 } catch (Exception e) {
                     System.err.println("Failed to delete review image: " + e.getMessage());
                 }
             }
         }
-        
-        review.setImageUrl(null);
-        return storeReviewMapper.toDto(storeReviewRepository.save(review));
+
+        storeReviewRepository.save(review);
+        return storeReviewMapper.toDto(review);
     }
 
     @Override
