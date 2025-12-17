@@ -4,6 +4,7 @@ import com.example.qtifood.dtos.Orders.CreateOrderDto;
 import com.example.qtifood.dtos.Orders.UpdateOrderDto;
 import com.example.qtifood.dtos.Orders.OrderResponseDto;
 import com.example.qtifood.dtos.Orders.SalesStatsDto;
+import com.example.qtifood.dtos.Orders.TopProductDto;
 import java.util.List;
 
 public interface OrderService {
@@ -16,6 +17,8 @@ public interface OrderService {
     List<OrderResponseDto> getOrdersByStore(Long storeId);
     List<OrderResponseDto> getOrdersByDriver(String driverId);
     OrderResponseDto updateOrderStatus(Long id, String status);
+    List<TopProductDto> getTopSellingProducts(Integer limit);
+    List<TopProductDto> getTopSellingProductsByStore(Long storeId, Integer limit);
     
     /**
      * Update only payment status of an order (used by payment gateway callbacks)

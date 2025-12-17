@@ -1,12 +1,13 @@
 package com.example.qtifood.dtos.Orders;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -20,4 +21,7 @@ public class SalesStatsDto {
     private BigDecimal totalRevenue;
     private Long storeViewCount;
     private Long storeLikeCount;
+
+    @Builder.Default
+    private List<SalesDataPointDto> points = List.of();
 }

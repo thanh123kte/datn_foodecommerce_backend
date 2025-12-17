@@ -4,6 +4,8 @@ import com.example.qtifood.dtos.Orders.CreateOrderDto;
 import com.example.qtifood.dtos.Orders.UpdateOrderDto;
 import com.example.qtifood.dtos.Orders.OrderResponseDto;
 import com.example.qtifood.dtos.Orders.SalesStatsDto;
+import com.example.qtifood.dtos.Orders.SalesDataPointDto;
+import com.example.qtifood.dtos.Orders.TopProductDto;
 import com.example.qtifood.entities.Order;
 import com.example.qtifood.entities.Store;
 import com.example.qtifood.entities.Address;
@@ -14,6 +16,7 @@ import com.example.qtifood.enums.TransactionType;
 import com.example.qtifood.exceptions.ResourceNotFoundException;
 import com.example.qtifood.mappers.OrderMapper;
 import com.example.qtifood.repositories.OrderRepository;
+import com.example.qtifood.repositories.OrderItemRepository;
 import com.example.qtifood.repositories.UserRepository;
 import com.example.qtifood.repositories.StoreRepository;
 import com.example.qtifood.repositories.DriverRepository;
@@ -26,6 +29,7 @@ import com.example.qtifood.services.ShippingService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageRequest;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -36,13 +40,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class OrderServiceImpl implements OrderService {
+    private static final BigDecimal PLATFORM_FEE_SHOP = new BigDecimal("0.12");
     private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
     private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
 
     private final UserRepository userRepository;
     private final StoreRepository storeRepository;
@@ -200,6 +207,27 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<TopProductDto> getTopSellingProducts(Integer limit) {
+        int pageSize = (limit == null || limit <= 0) ? 5 : limit;
+        return orderItemRepository.findTopProductsByOrderStatusIn(
+                List.of(OrderStatus.DELIVERED, OrderStatus.REVIEWED),
+                PageRequest.of(0, pageSize)
+        );
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<TopProductDto> getTopSellingProductsByStore(Long storeId, Integer limit) {
+        int pageSize = (limit == null || limit <= 0) ? 5 : limit;
+        return orderItemRepository.findTopProductsByStoreAndOrderStatusIn(
+                storeId,
+                List.of(OrderStatus.DELIVERED, OrderStatus.REVIEWED),
+                PageRequest.of(0, pageSize)
+        );
+    }
+
+    @Override
     @Transactional
     public OrderResponseDto updateOrderStatus(Long id, String status) {
         Order order = orderRepository.findById(id)
@@ -253,9 +281,27 @@ public class OrderServiceImpl implements OrderService {
         );
 
         long totalOrders = orders.size();
-        BigDecimal totalRevenue = orders.stream()
-            .map(o -> o.getTotalAmount() != null ? o.getTotalAmount() : BigDecimal.ZERO)
-            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        Map<LocalDate, SalesPointAggregate> aggregates = new TreeMap<>();
+        BigDecimal totalRevenue = BigDecimal.ZERO;
+
+        for (Order o : orders) {
+            BigDecimal netRevenue = calculateNetRevenue(o);
+            totalRevenue = totalRevenue.add(netRevenue);
+
+            LocalDate dateKey = resolveOrderDate(o);
+            SalesPointAggregate agg = aggregates.computeIfAbsent(dateKey, d -> new SalesPointAggregate());
+            agg.orders = agg.orders + 1;
+            agg.revenue = agg.revenue.add(netRevenue);
+        }
+
+        List<SalesDataPointDto> points = aggregates.entrySet().stream()
+            .map(entry -> SalesDataPointDto.builder()
+                .label(entry.getKey().toString())
+                .revenue(entry.getValue().revenue)
+                .orders(entry.getValue().orders)
+                .build())
+            .collect(Collectors.toList());
 
         Long likeCount = wishlistRepository.countByStoreId(storeId);
 
@@ -267,7 +313,34 @@ public class OrderServiceImpl implements OrderService {
             .totalRevenue(totalRevenue)
             .storeViewCount(store.getViewCount())
             .storeLikeCount(likeCount)
+            .points(points)
             .build();
+    }
+    
+    private BigDecimal calculateNetRevenue(Order order) {
+        BigDecimal total = order.getTotalAmount() != null ? order.getTotalAmount() : BigDecimal.ZERO;
+        BigDecimal ship = order.getShippingFee() != null ? order.getShippingFee() : BigDecimal.ZERO;
+        BigDecimal goodsAmount = total.subtract(ship);
+        if (goodsAmount.compareTo(BigDecimal.ZERO) < 0) {
+            goodsAmount = BigDecimal.ZERO;
+        }
+        BigDecimal platformFee = goodsAmount.multiply(PLATFORM_FEE_SHOP);
+        return goodsAmount.subtract(platformFee);
+    }
+
+    private LocalDate resolveOrderDate(Order order) {
+        if (order.getUpdatedAt() != null) {
+            return order.getUpdatedAt().toLocalDate();
+        }
+        if (order.getCreatedAt() != null) {
+            return order.getCreatedAt().toLocalDate();
+        }
+        return LocalDate.now();
+    }
+
+    private static class SalesPointAggregate {
+        private BigDecimal revenue = BigDecimal.ZERO;
+        private long orders = 0L;
     }
     
     // ========== HELPER METHODS FOR ORDER CALCULATION ==========
