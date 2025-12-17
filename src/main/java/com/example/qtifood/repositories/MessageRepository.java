@@ -54,4 +54,11 @@ public interface MessageRepository extends JpaRepository<Message, Long> {
            "ORDER BY m.createdAt DESC")
     List<Message> findByConversationIdAndSenderId(@Param("conversationId") Long conversationId,
                                                  @Param("senderId") String senderId);
+    
+    // Lấy tất cả messages trong conversation, sắp xếp theo thời gian tạo tăng dần
+    @Query("SELECT m FROM Message m " +
+           "LEFT JOIN FETCH m.sender " +
+           "WHERE m.conversation.id = :conversationId " +
+           "ORDER BY m.createdAt ASC")
+    List<Message> findByConversationIdOrderByCreatedAtAsc(@Param("conversationId") Long conversationId);
 }

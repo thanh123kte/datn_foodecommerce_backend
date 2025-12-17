@@ -65,13 +65,17 @@ public class SecurityConfiguration {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        // Cho phép tất cả origins cho development (trong production nên chỉ định cụ thể)
-        configuration.addAllowedOriginPattern("*");
+        // Cho phép specific origins cho WebSocket/SockJS
+        configuration.setAllowedOrigins(Arrays.asList(
+            "http://localhost:3000",
+            "http://localhost:3001",
+            "http://127.0.0.1:3000"
+        ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
         configuration.setExposedHeaders(Arrays.asList("Authorization", "Content-Type", "X-Total-Count"));
-        // Không set allowCredentials(true) khi dùng wildcard origin
-        configuration.setAllowCredentials(false);
+        // Enable credentials cho WebSocket/SockJS
+        configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

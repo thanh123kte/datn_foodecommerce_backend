@@ -48,10 +48,60 @@ public class Conversation {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
 
+    @Column(name = "unread_count_customer", nullable = false)
+    @Builder.Default
+    private Integer unreadCountCustomer = 0;
+
+    @Column(name = "unread_count_seller", nullable = false)
+    @Builder.Default
+    private Integer unreadCountSeller = 0;
+
     // ========== ONE-TO-MANY CASCADE RELATIONSHIPS ==========
     
     // Messages in this conversation
     @Builder.Default
     @OneToMany(mappedBy = "conversation", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Message> messages = new HashSet<>();
+    
+    // ========== HELPER METHODS ==========
+    
+    /**
+     * Increment unread count for the receiver
+     * @param senderId ID of the message sender
+     */
+    public void incrementUnreadCount(String senderId) {
+        if (senderId.equals(this.customer.getId())) {
+            // Customer sent message, increment seller's unread count
+            this.unreadCountSeller++;
+        } else if (senderId.equals(this.seller.getId())) {
+            // Seller sent message, increment customer's unread count
+            this.unreadCountCustomer++;
+        }
+    }
+    
+    /**
+     * Reset unread count for a user
+     * @param userId ID of the user who read the messages
+     */
+    public void resetUnreadCount(String userId) {
+        if (userId.equals(this.customer.getId())) {
+            this.unreadCountCustomer = 0;
+        } else if (userId.equals(this.seller.getId())) {
+            this.unreadCountSeller = 0;
+        }
+    }
+    
+    /**
+     * Get unread count for a specific user
+     * @param userId ID of the user
+     * @return Unread count for that user
+     */
+    public Integer getUnreadCountForUser(String userId) {
+        if (userId.equals(this.customer.getId())) {
+            return this.unreadCountCustomer;
+        } else if (userId.equals(this.seller.getId())) {
+            return this.unreadCountSeller;
+        }
+        return 0;
+    }
 }

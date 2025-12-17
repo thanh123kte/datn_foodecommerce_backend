@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.example.qtifood.dtos.Wallets.*;
+import com.example.qtifood.enums.TransactionStatus;
 import com.example.qtifood.enums.TransactionType;
 
 public interface WalletService {
@@ -29,6 +30,12 @@ public interface WalletService {
     List<WalletTransactionResponseDto> getTransactionHistory(String userId);
     Page<WalletTransactionResponseDto> getTransactionHistoryPaginated(String userId, Pageable pageable);
     List<WalletTransactionResponseDto> getTransactionsByType(String userId, TransactionType type);
+    List<WalletTransactionResponseDto> getTransactionsByStatus(TransactionStatus status);
+    Page<WalletTransactionResponseDto> getTransactionsByStatusPaginated(TransactionStatus status, Pageable pageable);
+    
+    // Admin withdrawal requests by status
+    List<WalletTransactionResponseDto> getWithdrawalsByStatus(TransactionStatus status);
+    Page<WalletTransactionResponseDto> getWithdrawalsByStatusPaginated(TransactionStatus status, Pageable pageable);
     
     // Internal transaction (for orders, payments, etc.)
     void recordTransaction(String userId, TransactionType type, BigDecimal amount, 

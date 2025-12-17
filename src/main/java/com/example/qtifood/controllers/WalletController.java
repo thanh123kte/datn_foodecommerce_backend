@@ -155,4 +155,27 @@ public class WalletController {
             return ResponseEntity.badRequest().body("Invalid transaction type: " + type);
         }
     }
+
+    /**
+     * Get all withdrawal requests filtered by status (for admin)
+     * GET /api/wallets/admin/withdrawals/status?status=PENDING&page=0&size=20
+     */
+    @GetMapping("/admin/withdrawals/status")
+    public ResponseEntity<?> getWithdrawalsByStatus(
+            @RequestParam com.example.qtifood.enums.TransactionStatus status,
+            @RequestParam(required = false) Integer page,
+            @RequestParam(required = false) Integer size) {
+        
+        // If pagination is requested
+        if (page != null && size != null) {
+            Pageable pageable = org.springframework.data.domain.PageRequest.of(page, size, 
+                org.springframework.data.domain.Sort.by("createdAt").descending());
+            Page<WalletTransactionResponseDto> withdrawals = 
+                walletService.getWithdrawalsByStatusPaginated(status, pageable);
+            return ResponseEntity.ok(withdrawals);
+        }
+        
+        // Return all withdrawal requests with the status
+        return ResponseEntity.ok(walletService.getWithdrawalsByStatus(status));
+    }
 }

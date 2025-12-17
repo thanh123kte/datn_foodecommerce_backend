@@ -17,7 +17,7 @@ public record CreateVoucherDto(
         LocalDateTime startDate,
         LocalDateTime endDate,
         Integer usageLimit,
-        Long sellerId,
+        Long storeId,
         DiscountStatus status,
         Boolean isActive,
         Boolean isCreatedByAdmin

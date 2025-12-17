@@ -22,4 +22,6 @@ public interface MessageService {
     Long getUnreadMessagesCount(Long conversationId, String userId);
     
     void deleteMessage(Long messageId, String senderId);
+    
+    List<MessageResponseDto> getMessagesByConversationId(Long conversationId);
 }

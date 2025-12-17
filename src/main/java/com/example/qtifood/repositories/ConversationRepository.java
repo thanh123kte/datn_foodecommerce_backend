@@ -23,7 +23,7 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
            "LEFT JOIN FETCH c.customer " +
            "LEFT JOIN FETCH c.seller " +
            "WHERE c.customer.id = :customerId " +
-           "ORDER BY c.createdAt DESC")
+           "ORDER BY (SELECT MAX(m2.createdAt) FROM Message m2 WHERE m2.conversation.id = c.id) DESC NULLS LAST")
     List<Conversation> findByCustomerIdWithDetails(@Param("customerId") String customerId);
     
     // Lấy tất cả conversations của seller
@@ -31,7 +31,7 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
            "LEFT JOIN FETCH c.customer " +
            "LEFT JOIN FETCH c.seller " +
            "WHERE c.seller.id = :sellerId " +
-           "ORDER BY c.createdAt DESC")
+           "ORDER BY (SELECT MAX(m2.createdAt) FROM Message m2 WHERE m2.conversation.id = c.id) DESC NULLS LAST")
     List<Conversation> findBySellerIdWithDetails(@Param("sellerId") String sellerId);
     
     // Lấy conversations của user (có thể là customer hoặc seller)
@@ -39,7 +39,7 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
            "LEFT JOIN FETCH c.customer " +
            "LEFT JOIN FETCH c.seller " +
            "WHERE c.customer.id = :userId OR c.seller.id = :userId " +
-           "ORDER BY c.createdAt DESC")
+           "ORDER BY (SELECT MAX(m2.createdAt) FROM Message m2 WHERE m2.conversation.id = c.id) DESC NULLS LAST")
     List<Conversation> findByUserIdWithDetails(@Param("userId") String userId);
     
     // Kiểm tra conversation tồn tại

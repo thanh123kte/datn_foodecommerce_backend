@@ -2,6 +2,7 @@ package com.example.qtifood.services.impl;
 
 import com.example.qtifood.dtos.Messages.CreateMessageDto;
 import com.example.qtifood.dtos.Messages.MessageResponseDto;
+import com.example.qtifood.dtos.websocket.ChatMessageEvent;
 import com.example.qtifood.entities.Conversation;
 import com.example.qtifood.entities.Message;
 import com.example.qtifood.entities.User;
@@ -12,12 +13,16 @@ import com.example.qtifood.repositories.MessageRepository;
 import com.example.qtifood.repositories.UserRepository;
 import com.example.qtifood.services.MessageService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -25,9 +30,13 @@ import java.util.List;
 @Transactional
 public class MessageServiceImpl implements MessageService {
 
+    private static final Logger logger = LoggerFactory.getLogger(MessageServiceImpl.class);
+    private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
+
     private final MessageRepository messageRepository;
     private final ConversationRepository conversationRepository;
     private final UserRepository userRepository;
+    private final SimpMessagingTemplate messagingTemplate;
 
     @Override
     public MessageResponseDto sendMessage(String senderId, CreateMessageDto dto) {
@@ -54,6 +63,39 @@ public class MessageServiceImpl implements MessageService {
                 .build();
 
         message = messageRepository.save(message);
+        
+        // Increment unread count for the receiver
+        conversation.incrementUnreadCount(senderId);
+        conversationRepository.save(conversation);
+        
+        logger.info("Message saved via REST API: messageId={}, conversationId={}, senderId={}",
+                   message.getId(), dto.getConversationId(), senderId);
+        
+        // Broadcast to WebSocket subscribers
+        try {
+            ChatMessageEvent event = ChatMessageEvent.builder()
+                    .id(message.getId())
+                    .conversationId(dto.getConversationId())
+                    .senderId(senderId)
+                    .senderName(sender.getFullName())
+                    .content(message.getContent())
+                    .messageType(dto.getMessageType().name())
+                    .createdAt(message.getCreatedAt().format(ISO_FORMATTER))
+                    .isRead(false)
+                    .build();
+            
+            messagingTemplate.convertAndSend(
+                    "/topic/chat/conversations/" + dto.getConversationId(),
+                    event
+            );
+            
+            logger.info("Message broadcasted via WebSocket: conversationId={}, messageId={}",
+                       dto.getConversationId(), message.getId());
+        } catch (Exception e) {
+            logger.error("Failed to broadcast message via WebSocket: {}", e.getMessage(), e);
+            // Continue even if broadcast fails - message is already saved
+        }
+        
         return MessageMapper.toDto(message);
     }
 
@@ -116,6 +158,20 @@ public class MessageServiceImpl implements MessageService {
         }
 
         messageRepository.delete(message);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<MessageResponseDto> getMessagesByConversationId(Long conversationId) {
+        // Validate conversation exists
+        if (!conversationRepository.existsById(conversationId)) {
+            throw new ResourceNotFoundException("Conversation not found with id: " + conversationId);
+        }
+
+        // Get all messages sorted by creation time ascending
+        List<Message> messages = messageRepository.findByConversationIdOrderByCreatedAtAsc(conversationId);
+        
+        return MessageMapper.toDtoList(messages);
     }
 
     private void validateUserInConversation(Long conversationId, String userId) {

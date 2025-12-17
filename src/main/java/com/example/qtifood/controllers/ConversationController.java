@@ -34,6 +34,20 @@ public class ConversationController {
         List<ConversationResponseDto> conversations = conversationService.getConversationsByUser(userId);
         return ResponseEntity.ok(conversations);
     }
+    
+    @GetMapping("/seller/{sellerId}")
+    public ResponseEntity<List<ConversationResponseDto>> getConversationsBySeller(
+            @PathVariable String sellerId) {
+        List<ConversationResponseDto> conversations = conversationService.getConversationsBySeller(sellerId);
+        return ResponseEntity.ok(conversations);
+    }
+    
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<List<ConversationResponseDto>> getConversationsByCustomer(
+            @PathVariable String customerId) {
+        List<ConversationResponseDto> conversations = conversationService.getConversationsByCustomer(customerId);
+        return ResponseEntity.ok(conversations);
+    }
 
     @GetMapping("/{conversationId}/user/{userId}")
     public ResponseEntity<ConversationDetailDto> getConversationDetail(
@@ -51,6 +65,17 @@ public class ConversationController {
         
         Map<String, String> response = new HashMap<>();
         response.put("message", "Conversation deleted successfully");
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{conversationId}/mark-read")
+    public ResponseEntity<Map<String, String>> markConversationAsRead(
+            @PathVariable Long conversationId,
+            @RequestParam String userId) {
+        conversationService.markConversationAsRead(conversationId, userId);
+        
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "Conversation marked as read");
         return ResponseEntity.ok(response);
     }
 }

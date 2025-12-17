@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface VoucherRepository extends JpaRepository<Voucher, Long> {
     Optional<Voucher> findByCode(String code);
-    List<Voucher> findAllBySeller_Id(Long sellerId);
+    List<Voucher> findAllByStore_Id(Long storeId);
     List<Voucher> findAllByDiscountType(DiscountType discountType);
     List<Voucher> findAllByIsCreatedByAdmin(Boolean isCreatedByAdmin);
 }

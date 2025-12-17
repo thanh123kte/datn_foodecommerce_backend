@@ -39,8 +39,8 @@ public class VoucherServiceImpl implements VoucherService {
                 v.getEndDate(),
                 v.getUsageLimit(),
                 v.getUsageCount(),
-                v.getSeller() != null ? v.getSeller().getId() : null,
-                v.getSeller() != null ? v.getSeller().getName() : null,
+                v.getStore() != null ? v.getStore().getId() : null,
+                v.getStore() != null ? v.getStore().getName() : null,
                 v.getStatus(),
                 v.getIsActive(),
                 v.getIsCreatedByAdmin(),
@@ -51,15 +51,15 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     public VoucherResponseDto create(CreateVoucherDto dto) {
-        Store seller = null;
+        Store store = null;
 
-        // Nếu có sellerId → đây là voucher của cửa hàng
-        if (dto.sellerId() != null) {
-            seller = storeRepo.findById(dto.sellerId())
-                    .orElseThrow(() -> new IllegalArgumentException("Seller not found: " + dto.sellerId()));
+        // Nếu có storeId → đây là voucher của cửa hàng
+        if (dto.storeId() != null) {
+            store = storeRepo.findById(dto.storeId())
+                    .orElseThrow(() -> new IllegalArgumentException("Store not found: " + dto.storeId()));
         }
 
-        // Nếu không có sellerId → voucher toàn hệ thống (admin tạo)
+        // Nếu không có storeId → voucher toàn hệ thống (admin tạo)
         Voucher v = Voucher.builder()
                 .code(dto.code())
                 .title(dto.title())
@@ -71,7 +71,7 @@ public class VoucherServiceImpl implements VoucherService {
                 .startDate(dto.startDate())
                 .endDate(dto.endDate())
                 .usageLimit(dto.usageLimit())
-                .seller(seller) // 👈 có thể null
+                .store(store) // 👈 có thể null
                 .status(dto.status())
                 .isActive(dto.isActive())
                 .isCreatedByAdmin(dto.isCreatedByAdmin() != null ? dto.isCreatedByAdmin() : false)
@@ -121,8 +121,8 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<VoucherResponseDto> getBySeller(Long sellerId) {
-        return repo.findAllBySeller_Id(sellerId).stream().map(this::toDto).toList();
+    public List<VoucherResponseDto> getByStore(Long storeId) {
+        return repo.findAllByStore_Id(storeId).stream().map(this::toDto).toList();
     }
 
     @Override

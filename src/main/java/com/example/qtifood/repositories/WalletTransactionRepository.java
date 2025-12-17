@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.example.qtifood.entities.WalletTransaction;
+import com.example.qtifood.enums.TransactionStatus;
 import com.example.qtifood.enums.TransactionType;
 
 public interface WalletTransactionRepository extends JpaRepository<WalletTransaction, Long> {
@@ -15,4 +16,8 @@ public interface WalletTransactionRepository extends JpaRepository<WalletTransac
     Page<WalletTransaction> findByWalletId(Long walletId, Pageable pageable);
     List<WalletTransaction> findByWalletIdAndTransactionType(Long walletId, TransactionType type);
     List<WalletTransaction> findByReferenceIdAndReferenceType(String referenceId, String referenceType);
+    List<WalletTransaction> findByStatusOrderByCreatedAtDesc(TransactionStatus status);
+    Page<WalletTransaction> findByStatus(TransactionStatus status, Pageable pageable);
+    List<WalletTransaction> findByTransactionTypeAndStatusOrderByCreatedAtDesc(TransactionType type, TransactionStatus status);
+    Page<WalletTransaction> findByTransactionTypeAndStatus(TransactionType type, TransactionStatus status, Pageable pageable);
 }

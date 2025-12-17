@@ -92,6 +92,7 @@ public class WalletServiceImpl implements WalletService {
             .balanceAfter(wallet.getBalance())
             .description(description != null ? description : "Deposit")
             .referenceType("DEPOSIT")
+            .status(TransactionStatus.SUCCESSFUL)
             .build();
         
         transactionRepository.save(transaction);
@@ -304,5 +305,35 @@ public class WalletServiceImpl implements WalletService {
         transaction.setBalanceAfter(wallet.getBalance());
         transaction.setDescription((transaction.getDescription() != null ? transaction.getDescription() + " | " : "") + "Rejected: " + reason);
         return transactionRepository.save(transaction);
+    }
+
+    @Override
+    public List<WalletTransactionResponseDto> getTransactionsByStatus(TransactionStatus status) {
+        List<WalletTransaction> transactions = transactionRepository.findByStatusOrderByCreatedAtDesc(status);
+        return transactions.stream()
+            .map(this::transactionToDto)
+            .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Override
+    public Page<WalletTransactionResponseDto> getTransactionsByStatusPaginated(TransactionStatus status, Pageable pageable) {
+        Page<WalletTransaction> transactions = transactionRepository.findByStatus(status, pageable);
+        return transactions.map(this::transactionToDto);
+    }
+
+    @Override
+    public List<WalletTransactionResponseDto> getWithdrawalsByStatus(TransactionStatus status) {
+        List<WalletTransaction> transactions = transactionRepository
+            .findByTransactionTypeAndStatusOrderByCreatedAtDesc(TransactionType.WITHDRAW, status);
+        return transactions.stream()
+            .map(this::transactionToDto)
+            .collect(java.util.stream.Collectors.toList());
+    }
+
+    @Override
+    public Page<WalletTransactionResponseDto> getWithdrawalsByStatusPaginated(TransactionStatus status, Pageable pageable) {
+        Page<WalletTransaction> transactions = transactionRepository
+            .findByTransactionTypeAndStatus(TransactionType.WITHDRAW, status, pageable);
+        return transactions.map(this::transactionToDto);
     }
 }

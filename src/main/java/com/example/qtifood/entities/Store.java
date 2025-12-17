@@ -126,6 +126,6 @@ public class Store {
 
     // Vouchers from this store
     @Builder.Default
-    @OneToMany(mappedBy = "seller", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "store", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<Voucher> vouchers = new HashSet<>();
 }

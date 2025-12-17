@@ -25,4 +25,11 @@ public interface ConversationService {
     Long getConversationsCount(String userId);
     
     boolean hasConversation(String customerId, String sellerId);
+    
+    /**
+     * Mark all messages in a conversation as read for a specific user
+     * @param conversationId ID of the conversation
+     * @param userId ID of the user marking messages as read
+     */
+    void markConversationAsRead(Long conversationId, String userId);
 }

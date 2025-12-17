@@ -46,9 +46,9 @@ public class VoucherController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/seller/{sellerId}")
-    public ResponseEntity<List<VoucherResponseDto>> getBySeller(@PathVariable Long sellerId) {
-        return ResponseEntity.ok(service.getBySeller(sellerId));
+    @GetMapping("/store/{storeId}")
+    public ResponseEntity<List<VoucherResponseDto>> getByStore(@PathVariable Long storeId) {
+        return ResponseEntity.ok(service.getByStore(storeId));
     }
 
     @GetMapping("/type/{discountType}")

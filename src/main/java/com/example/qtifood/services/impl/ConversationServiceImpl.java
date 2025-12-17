@@ -85,7 +85,7 @@ public class ConversationServiceImpl implements ConversationService {
 
         List<Conversation> conversations = conversationRepository.findByCustomerIdWithDetails(customerId);
         return conversations.stream()
-                .map(this::mapToResponseDto)
+                .map(conv -> mapToResponseDto(conv, customerId))
                 .collect(Collectors.toList());
     }
 
@@ -99,7 +99,7 @@ public class ConversationServiceImpl implements ConversationService {
 
         List<Conversation> conversations = conversationRepository.findBySellerIdWithDetails(sellerId);
         return conversations.stream()
-                .map(this::mapToResponseDto)
+                .map(conv -> mapToResponseDto(conv, sellerId))
                 .collect(Collectors.toList());
     }
 
@@ -113,7 +113,7 @@ public class ConversationServiceImpl implements ConversationService {
 
         List<Conversation> conversations = conversationRepository.findByUserIdWithDetails(userId);
         return conversations.stream()
-                .map(this::mapToResponseDto)
+                .map(conv -> mapToResponseDto(conv, userId))
                 .collect(Collectors.toList());
     }
 
@@ -168,16 +168,53 @@ public class ConversationServiceImpl implements ConversationService {
         return conversationRepository.existsByCustomerIdAndSellerId(customerId, sellerId);
     }
 
+    @Override
+    public void markConversationAsRead(Long conversationId, String userId) {
+        // Get conversation
+        Conversation conversation = conversationRepository.findById(conversationId)
+                .orElseThrow(() -> new ResourceNotFoundException("Conversation not found with id: " + conversationId));
+        
+        // Verify user is part of the conversation
+        if (!conversation.getCustomer().getId().equals(userId) && 
+            !conversation.getSeller().getId().equals(userId)) {
+            throw new ResourceNotFoundException("User is not part of this conversation");
+        }
+        
+        // Reset unread count for this user
+        conversation.resetUnreadCount(userId);
+        conversationRepository.save(conversation);
+    }
+
+    /**
+     * Map Conversation entity to DTO with last message and unread count for current user
+     * @param conversation The conversation entity
+     * @param currentUserId The ID of the user requesting the conversation (to get their unread count)
+     * @return ConversationResponseDto
+     */
+    private ConversationResponseDto mapToResponseDto(Conversation conversation, String currentUserId) {
+        // Get last message
+        List<Message> lastMessages = messageRepository
+                .findLastMessageByConversationId(conversation.getId(), PageRequest.of(0, 1));
+        Message lastMessage = lastMessages.isEmpty() ? null : lastMessages.get(0);
+
+        // Get unread count for current user from conversation entity
+        Integer unreadCount = conversation.getUnreadCountForUser(currentUserId);
+
+        return ConversationMapper.toDto(conversation, lastMessage, unreadCount);
+    }
+    
+    /**
+     * Map without userId context (backward compatibility)
+     */
     private ConversationResponseDto mapToResponseDto(Conversation conversation) {
         // Get last message
         List<Message> lastMessages = messageRepository
                 .findLastMessageByConversationId(conversation.getId(), PageRequest.of(0, 1));
         Message lastMessage = lastMessages.isEmpty() ? null : lastMessages.get(0);
 
-        // Get unread count (simplified - assuming all messages from other party are unread)
-        Long unreadCount = messageRepository.countUnreadMessages(
-                conversation.getId(), conversation.getCustomer().getId());
+        // Default to customer's unread count for backward compatibility
+        Integer unreadCount = conversation.getUnreadCountCustomer();
 
-        return ConversationMapper.toDto(conversation, lastMessage, unreadCount.intValue());
+        return ConversationMapper.toDto(conversation, lastMessage, unreadCount);
     }
 }

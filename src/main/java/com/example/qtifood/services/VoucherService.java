@@ -10,7 +10,7 @@ public interface VoucherService {
     VoucherResponseDto getById(Long id);
     VoucherResponseDto update(Long id, UpdateVoucherDto dto);
     void delete(Long id);
-    List<VoucherResponseDto> getBySeller(Long sellerId);
+    List<VoucherResponseDto> getByStore(Long storeId);
     List<VoucherResponseDto> getByDiscountType(DiscountType discountType);
     List<VoucherResponseDto> getAdminVouchers();
     List<VoucherResponseDto> getStoreVouchers();
