@@ -276,7 +276,7 @@ public class OrderServiceImpl implements OrderService {
         com.example.qtifood.entities.Store store = storeRepository.findById(storeId)
             .orElseThrow(() -> new ResourceNotFoundException("Store not found: " + storeId));
 
-        List<Order> orders = orderRepository.findByStoreIdAndOrderStatusInAndUpdatedAtBetween(
+        List<Order> orders = orderRepository.findByStoreIdAndOrderStatusInAndCreatedAtBetween(
             storeId, List.of(OrderStatus.DELIVERED, OrderStatus.REVIEWED), start, end
         );
 
@@ -329,11 +329,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     private LocalDate resolveOrderDate(Order order) {
-        if (order.getUpdatedAt() != null) {
-            return order.getUpdatedAt().toLocalDate();
-        }
         if (order.getCreatedAt() != null) {
             return order.getCreatedAt().toLocalDate();
+        }
+        if (order.getUpdatedAt() != null) {
+            return order.getUpdatedAt().toLocalDate();
         }
         return LocalDate.now();
     }
