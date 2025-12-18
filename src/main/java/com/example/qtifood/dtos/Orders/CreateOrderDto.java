@@ -1,13 +1,9 @@
 package com.example.qtifood.dtos.Orders;
 
 import lombok.Data;
-import java.util.List;
 import com.example.qtifood.enums.PaymentMethod;
-import com.example.qtifood.dtos.OrderItems.CreateOrderItemDto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.Valid;
 import java.math.BigDecimal;
 
 @Data

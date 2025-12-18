@@ -71,20 +71,20 @@ public class StoreReviewController {
         return ResponseEntity.ok(statistics);
     }
 
-    @PostMapping(value = "/{id}/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<StoreReviewResponseDto> uploadImage(
+    @PostMapping(value = "/{id}/images", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<StoreReviewResponseDto> uploadImages(
             @PathVariable Long id,
-            @RequestParam("image") MultipartFile imageFile) {
-        if (imageFile.isEmpty()) {
-            throw new IllegalArgumentException("Image file is required");
+            @RequestParam("images") List<MultipartFile> imageFiles) {
+        if (imageFiles == null || imageFiles.isEmpty()) {
+            throw new IllegalArgumentException("At least one image file is required");
         }
-        StoreReviewResponseDto updatedReview = storeReviewService.uploadImage(id, imageFile);
+        StoreReviewResponseDto updatedReview = storeReviewService.uploadImages(id, imageFiles);
         return ResponseEntity.ok(updatedReview);
     }
 
-    @DeleteMapping("/{id}/image")
-    public ResponseEntity<StoreReviewResponseDto> deleteImage(@PathVariable Long id) {
-        StoreReviewResponseDto updatedReview = storeReviewService.deleteImage(id);
+    @DeleteMapping("/{id}/images/{imageId}")
+    public ResponseEntity<StoreReviewResponseDto> deleteImage(@PathVariable Long id, @PathVariable Long imageId) {
+        StoreReviewResponseDto updatedReview = storeReviewService.deleteImage(id, imageId);
         return ResponseEntity.ok(updatedReview);
     }
 

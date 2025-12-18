@@ -2,6 +2,8 @@ package com.example.qtifood.dtos.StoreReviews;
 
 import lombok.Data;
 import java.time.LocalDateTime;
+import java.util.List;
+
 
 @Data
 public class StoreReviewResponseDto {
@@ -13,7 +15,7 @@ public class StoreReviewResponseDto {
     private String customerName;
     private Integer rating;
     private String comment;
-    private String imageUrl;
+    private List<ReviewImageDto> images;
     private String reply;
     private String customerAvatar;
     private LocalDateTime repliedAt;

@@ -10,7 +10,6 @@ public interface ShippingService {
      * @return phí ship chi tiết
      */
     ShippingFeeResponseDto calculateShippingFee(ShippingFeeRequestDto request);
-
     /**
      * Tính khoảng cách Haversine giữa 2 điểm (km)
      */

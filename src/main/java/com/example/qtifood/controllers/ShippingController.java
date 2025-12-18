@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/shipping")
 @RequiredArgsConstructor
 public class ShippingController {
-
-
+    
+    
     private final ShippingService shippingService;
-
+    
     /**
      * Tính phí ship dựa vào tọa độ quán và địa chỉ nhận
-     *
+     * 
      * @param request chứa:
      *   - storeLatitude: vĩ độ quán
      *   - storeLongitude: kinh độ quán
@@ -33,11 +33,11 @@ public class ShippingController {
     @PostMapping("/calculate-fee")
     public ResponseEntity<ShippingFeeResponseDto> calculateShippingFee(
             @RequestBody ShippingFeeRequestDto request) {
-
+        
         ShippingFeeResponseDto response = shippingService.calculateShippingFee(request);
         return ResponseEntity.ok(response);
     }
-
+    
     /**
      * Tính khoảng cách giữa 2 điểm (cho debug)
      */
@@ -47,7 +47,7 @@ public class ShippingController {
             @RequestParam Double lon1,
             @RequestParam Double lat2,
             @RequestParam Double lon2) {
-
+        
         double distance = shippingService.calculateDistance(lat1, lon1, lat2, lon2);
         return ResponseEntity.ok(distance);
     }

@@ -15,7 +15,7 @@ public interface OrderItemService {
     List<OrderItemResponseDto> getOrderItemsByOrderId(Long orderId);
     List<OrderItemResponseDto> getOrderItemsByProductId(Long productId);
     void deleteOrderItemsByOrderId(Long orderId);
-
+    
     /**
      * Thêm nhiều items vào order một lúc
      * @param orderId ID của order

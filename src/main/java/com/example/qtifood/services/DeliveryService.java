@@ -18,7 +18,7 @@ public interface DeliveryService {
     List<DeliveryResponseDto> getDeliveriesByStatus(DeliveryStatus status);
     List<DeliveryResponseDto> getDeliveriesByDriverAndStatus(String driverId, DeliveryStatus status);
     DeliveryResponseDto updateDeliveryStatus(Long id, DeliveryStatus status);
-
+    
     // Thống kê thu nhập tài xế
     DriverIncomeStatsDto getDriverIncomeStats(String driverId, String period);
 }

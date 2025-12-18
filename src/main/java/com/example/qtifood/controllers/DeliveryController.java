@@ -67,7 +67,6 @@ public class DeliveryController {
     public ResponseEntity<DeliveryResponseDto> updateDeliveryStatus(@PathVariable Long id, @RequestParam DeliveryStatus status) {
         return ResponseEntity.ok(deliveryService.updateDeliveryStatus(id, status));
     }
-
     /**
      * Thống kê thu nhập của tài xế
      * @param driverId ID của tài xế

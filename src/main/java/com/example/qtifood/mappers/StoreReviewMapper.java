@@ -1,9 +1,15 @@
 package com.example.qtifood.mappers;
 
-import com.example.qtifood.dtos.StoreReviews.CreateStoreReviewDto;
-import com.example.qtifood.dtos.StoreReviews.StoreReviewResponseDto;
-import com.example.qtifood.entities.StoreReview;
+import java.util.Collections;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Component;
+
+import com.example.qtifood.dtos.StoreReviews.CreateStoreReviewDto;
+import com.example.qtifood.dtos.StoreReviews.ReviewImageDto;
+import com.example.qtifood.dtos.StoreReviews.StoreReviewResponseDto;
+import com.example.qtifood.entities.ReviewImage;
+import com.example.qtifood.entities.StoreReview;
 
 @Component
 public class StoreReviewMapper {
@@ -12,7 +18,6 @@ public class StoreReviewMapper {
         StoreReview storeReview = new StoreReview();
         storeReview.setRating(dto.getRating());
         storeReview.setComment(dto.getComment());
-        storeReview.setImageUrl(dto.getImageUrl());
         return storeReview;
     }
     
@@ -27,12 +32,21 @@ public class StoreReviewMapper {
         dto.setCustomerAvatar(storeReview.getCustomer() != null ? storeReview.getCustomer().getAvatarUrl() : null);
         dto.setRating(storeReview.getRating());
         dto.setComment(storeReview.getComment());
-        dto.setImageUrl(storeReview.getImageUrl());
+        dto.setImages(storeReview.getImages() == null
+                ? Collections.emptyList()
+                : storeReview.getImages().stream().map(this::toImageDto).collect(Collectors.toList()));
         dto.setReply(storeReview.getReply());
         dto.setRepliedAt(storeReview.getRepliedAt());
         dto.setCreatedAt(storeReview.getCreatedAt());
         return dto;
     }
     
+    private ReviewImageDto toImageDto(ReviewImage image) {
+        ReviewImageDto dto = new ReviewImageDto();
+        dto.setId(image.getId());
+        dto.setImageUrl(image.getImageUrl());
+        dto.setCreatedAt(image.getCreatedAt());
+        return dto;
+    }
 
 }

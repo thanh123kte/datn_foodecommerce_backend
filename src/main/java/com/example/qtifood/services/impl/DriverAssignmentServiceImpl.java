@@ -147,7 +147,7 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
             log.error("[DriverAssignment] Failed to deduct driver advance for order={}: {}", savedOrder.getId(), e.getMessage());
             throw new RuntimeException("Failed to deduct driver advance: " + e.getMessage(), e);
         }
-
+        
         // 11. Lưu thông tin tracking vào Firebase Realtime Database
         saveTrackingToFirebase(savedOrder);
         
@@ -238,7 +238,7 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
             double distance = 0.0;
             try {
                 if (order.getStore().getLatitude() != null && order.getStore().getLongitude() != null
-                        && order.getShippingAddress().getLatitude() != null
+                        && order.getShippingAddress().getLatitude() != null 
                         && order.getShippingAddress().getLongitude() != null) {
                     distance = shippingService.calculateDistance(
                         order.getStore().getLatitude().doubleValue(),
@@ -251,7 +251,7 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
                 log.warn("[DriverAssignment] Failed to calculate distance for order={}: {}", order.getId(), e.getMessage());
             }
             trackingData.put("distance", distance);
-
+            
             // Thông tin địa chỉ giao hàng chi tiết
             trackingData.put("addressId", order.getShippingAddress().getId());
             trackingData.put("recipientName", order.getShippingAddress().getAddress());
@@ -343,15 +343,15 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
         // 3. Tổng phí sàn admin nhận được
         BigDecimal adminTotalFee = shopPlatformFee.add(driverPlatformFee);
         
-        log.info("[DriverAssignment] Payment breakdown - Order={}, TotalAmount={}, GoodsAmount={}, ShippingFee={}, ShopFee={}%, DriverFee={}, ShopReceive={}, DriverReceive={}, AdminReceive={}",
-                orderId, totalAmount, goodsAmount, shippingFee, PLATFORM_FEE_SHOP.multiply(new BigDecimal("100")),
+        log.info("[DriverAssignment] Payment breakdown - Order={}, TotalAmount={}, GoodsAmount={}, ShippingFee={}, ShopFee={}%, DriverFee={}, ShopReceive={}, DriverReceive={}, AdminReceive={}", 
+                orderId, totalAmount, goodsAmount, shippingFee, PLATFORM_FEE_SHOP.multiply(new BigDecimal("100")), 
                 driverPlatformFee, shopReceiveAmount, driverReceiveAmount, adminTotalFee);
         
         try {
             // 4. Xử lý thanh toán dựa vào payment method
             String sellerId = order.getStore().getOwner().getId();
             String driverId = order.getDriver().getId();
-
+            
             if (order.getPaymentMethod() == PaymentMethod.QTIWALLET) {
                 // QTIWALLET: Hoàn tiền hàng + cộng tiền ship
                 // Hoàn ứng tiền cho driver
@@ -364,7 +364,7 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
                         "ORDER_ADVANCE_REFUND"
                 );
                 log.info("[DriverAssignment] Refunded driver advance: driverId={}, amount={}", driverId, totalAmount);
-
+                
                 // Cộng tiền hàng cho shop
                 walletService.recordTransaction(
                         sellerId,
@@ -375,7 +375,7 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
                         "ORDER_INCOME"
                 );
                 log.info("[DriverAssignment] Credited shop wallet: sellerId={}, amount={}, method=QTIWALLET", sellerId, shopReceiveAmount);
-
+                
                 // Cộng tiền giao hàng cho driver
                 walletService.recordTransaction(
                         driverId,
@@ -386,7 +386,7 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
                         "DELIVERY_INCOME"
                 );
                 log.info("[DriverAssignment] Credited driver shipping fee: driverId={}, amount={}", driverId, driverReceiveAmount);
-
+                
             } else {
                 // COD (Cash/Bank Transfer): Khách trả tiền mặt cho driver
                 // Hoàn ứng tiền cho driver (vì khách đã trả tiền mặt)
@@ -399,7 +399,7 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
                         "ORDER_ADVANCE_REFUND"
                 );
                 log.info("[DriverAssignment] Refunded driver advance (COD): driverId={}, amount={}", driverId, totalAmount);
-
+                
                 // Cộng tiền hàng cho shop (seller nhận tiền từ driver chuyển khoản sau)
                 walletService.recordTransaction(
                         sellerId,
@@ -410,7 +410,7 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
                         "ORDER_INCOME"
                 );
                 log.info("[DriverAssignment] Credited shop wallet (COD): sellerId={}, amount={}", sellerId, shopReceiveAmount);
-
+                
                 // Ghi nhận thu nhập phí ship COD cho driver
                 walletService.recordTransaction(
                         driverId,
@@ -422,9 +422,9 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
                 );
                 log.info("[DriverAssignment] Recorded COD shipping income: driverId={}, amount={}, orderId={}", driverId, driverReceiveAmount, orderId);
             }
-
+            
             log.info("[DriverAssignment] Payment processed by method={}", order.getPaymentMethod());
-
+            
             // 5. Cộng phí sàn cho admin wallet
             walletService.recordTransaction(
                     "admin",
@@ -434,7 +434,7 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
                     String.valueOf(orderId),
                     "PLATFORM_FEE"
             );
-            log.info("[DriverAssignment] Platform fee credited to admin: amount={} (shop: {}, driver: {})",
+            log.info("[DriverAssignment] Platform fee credited to admin: amount={} (shop: {}, driver: {})", 
                     adminTotalFee, shopPlatformFee, driverPlatformFee);
             
                 // 6. Lưu lịch sử giao hàng vào deliveries
@@ -482,10 +482,10 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
             delivery.setShippingAddress(order.getShippingAddress() != null ? order.getShippingAddress().getAddress() : null);
             delivery.setCustomerName(order.getCustomer() != null ? order.getCustomer().getFullName() : null);
             // Không lưu customerPhone, pickup/dropoff theo yêu cầu
-
+            
             // Tính và lưu distance_km
             if (order.getStore().getLatitude() != null && order.getStore().getLongitude() != null
-                    && order.getShippingAddress().getLatitude() != null
+                    && order.getShippingAddress().getLatitude() != null 
                     && order.getShippingAddress().getLongitude() != null) {
                 try {
                     double distanceKm = shippingService.calculateDistance(

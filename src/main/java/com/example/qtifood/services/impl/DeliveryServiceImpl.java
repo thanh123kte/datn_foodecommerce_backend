@@ -147,7 +147,6 @@ public class DeliveryServiceImpl implements DeliveryService {
 
         return deliveryMapper.toDto(deliveryRepository.save(delivery));
     }
-
     @Override
     @Transactional(readOnly = true)
     public DriverIncomeStatsDto getDriverIncomeStats(String driverId, String period) {
@@ -189,23 +188,23 @@ public class DeliveryServiceImpl implements DeliveryService {
         BigDecimal totalIncome = deliveries.stream()
             .map(d -> d.getDriverIncome() != null ? d.getDriverIncome() : BigDecimal.ZERO)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-
+        
         BigDecimal totalShippingFee = deliveries.stream()
             .map(d -> d.getShippingFee() != null ? d.getShippingFee() : BigDecimal.ZERO)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-
+        
         BigDecimal totalDistance = deliveries.stream()
             .map(d -> d.getDistanceKm() != null ? d.getDistanceKm() : BigDecimal.ZERO)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        BigDecimal averageIncomePerDelivery = totalDeliveries > 0
+        
+        BigDecimal averageIncomePerDelivery = totalDeliveries > 0 
             ? totalIncome.divide(BigDecimal.valueOf(totalDeliveries), 2, RoundingMode.HALF_UP)
             : BigDecimal.ZERO;
-
+        
         BigDecimal averageDistancePerDelivery = totalDeliveries > 0
             ? totalDistance.divide(BigDecimal.valueOf(totalDeliveries), 2, RoundingMode.HALF_UP)
             : BigDecimal.ZERO;
-
+        
         return DriverIncomeStatsDto.builder()
             .period(period)
             .startDate(startDate)

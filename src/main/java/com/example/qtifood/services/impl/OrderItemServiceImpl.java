@@ -134,34 +134,34 @@ public class OrderItemServiceImpl implements OrderItemService {
         // Validate order exists
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + orderId));
-
+        
         if (items == null || items.isEmpty()) {
             throw new IllegalArgumentException("Items list cannot be empty");
         }
-
+        
         List<OrderItemResponseDto> createdItems = new ArrayList<>();
-
+        
         // Create each order item
         for (CreateOrderItemDto itemDto : items) {
             // Load product
             Product product = productRepository.findById(itemDto.getProductId())
                     .orElseThrow(() -> new ResourceNotFoundException("Product not found: " + itemDto.getProductId()));
-
+            
             // Create OrderItem
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
             orderItem.setProduct(product);
             orderItem.setQuantity(itemDto.getQuantity());
                 orderItem.setPrice(itemDto.getPrice());
-
+            
             // Save order item
             OrderItem savedItem = orderItemRepository.save(orderItem);
             createdItems.add(orderItemMapper.toDto(savedItem));
-
-                log.info("[OrderItemService] Added item to order: order={}, product={}, quantity={}, price={}",
+            
+                log.info("[OrderItemService] Added item to order: order={}, product={}, quantity={}, price={}", 
                     orderId, product.getId(), itemDto.getQuantity(), itemDto.getPrice());
         }
-
+        
         // Update order total amount (recalculate all items)
         List<OrderItem> allItems = orderItemRepository.findByOrderId(orderId);
         BigDecimal newItemsTotal = allItems.stream()
@@ -169,14 +169,14 @@ public class OrderItemServiceImpl implements OrderItemService {
                 ? item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()))
                 : BigDecimal.ZERO)
             .reduce(BigDecimal.ZERO, BigDecimal::add);
-
+        
         BigDecimal shippingFee = order.getShippingFee() != null ? order.getShippingFee() : BigDecimal.ZERO;
         order.setTotalAmount(newItemsTotal.add(shippingFee));
         orderRepository.save(order);
-
-        log.info("[OrderItemService] Updated order total: order={}, itemsTotal={}, shippingFee={}, newTotal={}",
+        
+        log.info("[OrderItemService] Updated order total: order={}, itemsTotal={}, shippingFee={}, newTotal={}", 
                 orderId, newItemsTotal, shippingFee, order.getTotalAmount());
-
+        
         return createdItems;
     }
 }

@@ -65,6 +65,7 @@ public class VoucherController {
     public ResponseEntity<List<VoucherResponseDto>> getStoreVouchers() {
         return ResponseEntity.ok(service.getStoreVouchers());
     }
+
     /**
      * Validate voucher bằng code - Kiểm tra hợp lệ, hết hạn, usage
      */

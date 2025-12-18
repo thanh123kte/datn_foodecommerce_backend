@@ -282,7 +282,7 @@ public class WalletServiceImpl implements WalletService {
         transaction.setStatus(TransactionStatus.APPROVED);
         return transactionRepository.save(transaction);
     }
-
+    
     // Admin từ chối rút tiền: hoàn lại số tiền vào ví
     public WalletTransaction rejectWithdrawal(Long transactionId, String reason) {
         WalletTransaction transaction = transactionRepository.findById(transactionId)
@@ -299,7 +299,7 @@ public class WalletServiceImpl implements WalletService {
         wallet.setBalance(wallet.getBalance().add(refundAmount));
         wallet.setTotalWithdrawn(wallet.getTotalWithdrawn().subtract(refundAmount));
         walletRepository.save(wallet);
-
+        
         // Cập nhật giao dịch thành REJECTED
         transaction.setStatus(TransactionStatus.REJECTED);
         transaction.setBalanceAfter(wallet.getBalance());

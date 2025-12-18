@@ -17,8 +17,8 @@ public interface StoreReviewService {
     List<StoreReviewResponseDto> getReviewsByStoreAndRating(Long storeId, Integer rating);
     Double getAverageRatingByStore(Long storeId);
     Long getTotalReviewsByStore(Long storeId);
-    StoreReviewResponseDto uploadImage(Long id, MultipartFile imageFile);
-    StoreReviewResponseDto deleteImage(Long id);
+    StoreReviewResponseDto uploadImages(Long id, List<MultipartFile> imageFiles);
+    StoreReviewResponseDto deleteImage(Long reviewId, Long imageId);
     StoreReviewResponseDto addReply(Long id, String reply);
     StoreReviewResponseDto deleteReply(Long id);
 }

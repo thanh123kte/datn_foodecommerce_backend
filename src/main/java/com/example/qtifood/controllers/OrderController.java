@@ -4,6 +4,7 @@ import com.example.qtifood.dtos.Orders.CreateOrderDto;
 import com.example.qtifood.dtos.Orders.UpdateOrderDto;
 import com.example.qtifood.dtos.Orders.OrderResponseDto;
 import com.example.qtifood.dtos.Orders.SalesStatsDto;
+import com.example.qtifood.dtos.Orders.TopProductDto;
 import com.example.qtifood.dtos.OrderItems.CreateOrderItemDto;
 import com.example.qtifood.dtos.OrderItems.OrderItemResponseDto;
 import com.example.qtifood.services.DriverAssignmentService;
@@ -114,6 +115,20 @@ public class OrderController {
             @RequestParam(defaultValue = "daily") String period) {
         return ResponseEntity.ok(orderService.getStoreSalesStats(storeId, period));
     }
+
+    // Top sản phẩm bán chạy toàn hệ thống (mặc định 5)
+    @GetMapping("/top-products")
+    public ResponseEntity<List<TopProductDto>> getTopProducts(@RequestParam(defaultValue = "5") Integer limit) {
+        return ResponseEntity.ok(orderService.getTopSellingProducts(limit));
+    }
+
+    // Top sản phẩm bán chạy của một store (mặc định 5)
+    @GetMapping("/store/{storeId}/top-products")
+    public ResponseEntity<List<TopProductDto>> getTopProductsByStore(
+            @PathVariable Long storeId,
+            @RequestParam(defaultValue = "5") Integer limit) {
+        return ResponseEntity.ok(orderService.getTopSellingProductsByStore(storeId, limit));
+    }
     
     /**
      * API tự động gán tài xế cho đơn hàng khi chuyển sang PREPARED
@@ -214,7 +229,7 @@ public class OrderController {
 
     /**
      * Thêm order items vào đơn hàng đã tồn tại
-     *
+     * 
      * @param orderId ID đơn hàng cần thêm items
      * @param items Danh sách items cần thêm
      * @return Danh sách order items đã được tạo
