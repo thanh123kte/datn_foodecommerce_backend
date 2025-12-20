@@ -6,8 +6,6 @@ import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.example.qtifood.entities.ReviewImage;
-
 import jakarta.persistence.*;
 import lombok.*;
 
