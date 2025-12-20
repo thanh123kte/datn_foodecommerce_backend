@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.qtifood.dtos.Products.CreateProductDto;
 import com.example.qtifood.dtos.Products.UpdateProductDto;
+import com.example.qtifood.dtos.file.ImageSearchRequest;
+import com.example.qtifood.dtos.file.ImageSearchResponse;
 import com.example.qtifood.enums.AdminStatus;
 import com.example.qtifood.enums.ProductStatus;
 import com.example.qtifood.dtos.Products.ProductResponseDto;
@@ -94,5 +96,13 @@ public class ProductController {
             @PathVariable Long id,
             @PathVariable AdminStatus adminStatus) {
         return ResponseEntity.ok(productService.updateProductAdminStatus(id, adminStatus));
+    }
+
+    // Tìm kiếm sản phẩm theo hình ảnh sử dụng FastAPI
+    @PostMapping("/search-by-image")
+    public ResponseEntity<ImageSearchResponse> searchProductsByImage(
+            @Valid @RequestBody ImageSearchRequest request) {
+        ImageSearchResponse response = productService.searchProductsByImage(request);
+        return ResponseEntity.ok(response);
     }
 }

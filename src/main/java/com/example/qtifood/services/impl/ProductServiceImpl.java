@@ -5,10 +5,19 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.example.qtifood.dtos.Products.CreateProductDto;
 import com.example.qtifood.dtos.Products.UpdateProductDto;
 import com.example.qtifood.dtos.Products.ProductResponseDto;
+import com.example.qtifood.dtos.file.ImageSearchRequest;
+import com.example.qtifood.dtos.file.ImageSearchResponse;
 import com.example.qtifood.entities.Product;
 import com.example.qtifood.entities.Store;
 import com.example.qtifood.entities.StoreCategory;
@@ -30,10 +39,16 @@ import lombok.RequiredArgsConstructor;
 @Transactional
 public class ProductServiceImpl implements ProductService {
 
+    private static final Logger logger = LoggerFactory.getLogger(ProductServiceImpl.class);
+
     private final ProductRepository productRepository;
     private final StoreRepository storeRepository;
     private final StoreCategoryRepository storeCategoryRepository;
     private final ProductImageService productImageService;
+    private final RestTemplate restTemplate;
+
+    @Value("${fastapi.image-search.url:http://127.0.0.1:8000/image_search}")
+    private String imageSearchUrl;
 
     @Override
     public ProductResponseDto createProduct(CreateProductDto dto) {
@@ -233,5 +248,43 @@ public class ProductServiceImpl implements ProductService {
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ImageSearchResponse searchProductsByImage(ImageSearchRequest request) {
+        try {
+            logger.info("Calling FastAPI image search at: {}", imageSearchUrl);
+            
+            // Prepare headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            
+            // Create request entity
+            HttpEntity<ImageSearchRequest> httpRequest = new HttpEntity<>(request, headers);
+            
+            // Call FastAPI endpoint
+            ImageSearchResponse response = restTemplate.postForObject(
+                imageSearchUrl,
+                httpRequest,
+                ImageSearchResponse.class
+            );
+            
+            if (response == null) {
+                logger.warn("FastAPI returned null response for image search");
+                response = ImageSearchResponse.builder()
+                        .productDocId(List.of())
+                        .build();
+            }
+            
+            logger.info("FastAPI image search completed. Found {} products", 
+                       response.getProductDocId() != null ? response.getProductDocId().size() : 0);
+            
+            return response;
+            
+        } catch (Exception e) {
+            logger.error("Error calling FastAPI image search: {}", e.getMessage(), e);
+            throw new BadRequestException("Failed to search products by image: " + e.getMessage());
+        }
     }
 }
