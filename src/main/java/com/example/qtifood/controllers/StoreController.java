@@ -1,3 +1,4 @@
+    
 package com.example.qtifood.controllers;
 
 import java.util.List;
@@ -99,5 +100,13 @@ public class StoreController {
     @PostMapping("/{id}/view")
     public ResponseEntity<StoreResponseDto> incrementView(@PathVariable Long id) {
         return ResponseEntity.ok(storeService.incrementView(id));
+    }
+
+    // Lấy danh sách cửa hàng gần user, sắp xếp tăng dần theo km
+    @GetMapping("/nearby")
+    public ResponseEntity<List<NearbyStoreDto>> getNearbyStores(
+            @RequestParam double lat,
+            @RequestParam double lng) {
+        return ResponseEntity.ok(storeService.getNearbyStores(lat, lng));
     }
 }

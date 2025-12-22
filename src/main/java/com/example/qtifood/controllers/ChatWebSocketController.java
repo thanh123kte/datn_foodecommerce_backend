@@ -9,6 +9,7 @@ import com.example.qtifood.enums.MessageType;
 import com.example.qtifood.repositories.ConversationRepository;
 import com.example.qtifood.repositories.MessageRepository;
 import com.example.qtifood.repositories.UserRepository;
+import com.example.qtifood.services.FcmService;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,16 +41,19 @@ public class ChatWebSocketController {
     private final ConversationRepository conversationRepository;
     private final MessageRepository messageRepository;
     private final UserRepository userRepository;
+    private final FcmService fcmService;
     
     public ChatWebSocketController(
             SimpMessagingTemplate messagingTemplate,
             ConversationRepository conversationRepository,
             MessageRepository messageRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            FcmService fcmService) {
         this.messagingTemplate = messagingTemplate;
         this.conversationRepository = conversationRepository;
         this.messageRepository = messageRepository;
         this.userRepository = userRepository;
+        this.fcmService = fcmService;
     }
     
     /**
@@ -162,6 +166,25 @@ public class ChatWebSocketController {
             
             logger.info("Message broadcasted: conversationId={}, messageId={}", 
                        conversationId, savedMessage.getId());
+
+                // Send FCM notification to receiver
+                String receiverId = senderId.equals(customerId) ? sellerId : customerId;
+                String title = "Tin nhắn mới";
+                String body = sender.getFullName() != null ?
+                    (sender.getFullName() + ": " + truncateContent(savedMessage.getContent())) :
+                    ("Bạn có tin nhắn mới: " + truncateContent(savedMessage.getContent()));
+                fcmService.sendNotification(
+                    receiverId,
+                    title,
+                    body,
+                    "CHAT",
+                    java.util.Map.of(
+                        "conversationId", String.valueOf(conversationId),
+                        "messageId", String.valueOf(savedMessage.getId()),
+                        "senderId", senderId
+                    )
+                );
+                logger.info("FCM sent to receiverId={} for conversationId={}", receiverId, conversationId);
             
         } catch (Exception e) {
             logger.error("Error processing message: conversationId={}, senderId={}, error={}", 
@@ -194,4 +217,10 @@ public class ChatWebSocketController {
      * Error response DTO
      */
     private record ErrorResponse(String message) {}
+
+    private String truncateContent(String content) {
+        if (content == null) return "";
+        String trimmed = content.trim();
+        return trimmed.length() > 60 ? trimmed.substring(0, 57) + "..." : trimmed;
+    }
 }
