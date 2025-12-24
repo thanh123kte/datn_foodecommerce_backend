@@ -74,6 +74,14 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
+    public void softDeleteAddress(Long id) {
+        Address address = addressRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Address not found: " + id));
+        address.setIsDeleted(true);
+        addressRepository.save(address);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<AddressResponseDto> getAllAddresses() {
         return addressRepository.findAll()
@@ -92,6 +100,20 @@ public class AddressServiceImpl implements AddressService {
     @Transactional(readOnly = true)
     public List<AddressResponseDto> getAddressesByUserId(String userId) {
         return addressRepository.findByUserId(userId)
+                .stream().map(AddressMapper::toDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AddressResponseDto> getAllAddressesNotDeleted() {
+        return addressRepository.findByIsDeletedFalse()
+                .stream().map(AddressMapper::toDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AddressResponseDto> getAddressesByUserIdNotDeleted(String userId) {
+        return addressRepository.findByUserIdAndIsDeletedFalse(userId)
                 .stream().map(AddressMapper::toDto).toList();
     }
 

@@ -26,9 +26,14 @@ public interface ProductService {
 
     // Xóa sản phẩm
     void deleteProduct(Long id);
+    void softDeleteProduct(Long id);
 
     // Lấy sản phẩm theo store
     List<ProductResponseDto> getProductsByStore(Long storeId);
+
+    List<ProductResponseDto> getAllProductsNotDeleted();
+
+    List<ProductResponseDto> getProductsByStoreNotDeleted(Long storeId);
 
     // Lấy sản phẩm theo category
     List<ProductResponseDto> getProductsByCategory(Long categoryId);

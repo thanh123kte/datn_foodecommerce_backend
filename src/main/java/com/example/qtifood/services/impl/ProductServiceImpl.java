@@ -157,9 +157,35 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
+    public void softDeleteProduct(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
+        product.setIsDeleted(true);
+        productRepository.save(product);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<ProductResponseDto> getProductsByStore(Long storeId) {
         return productRepository.findByStoreId(storeId)
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductResponseDto> getAllProductsNotDeleted() {
+        return productRepository.findByIsDeletedFalse()
+                .stream()
+                .map(this::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProductResponseDto> getProductsByStoreNotDeleted(Long storeId) {
+        return productRepository.findByStoreIdAndIsDeletedFalse(storeId)
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
@@ -245,6 +271,7 @@ public class ProductServiceImpl implements ProductService {
                 .discountPrice(product.getDiscountPrice())
                 .status(product.getStatus())
                 .adminStatus(product.getAdminStatus())
+                .isDeleted(product.getIsDeleted())
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .build();

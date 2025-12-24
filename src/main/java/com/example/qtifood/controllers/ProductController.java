@@ -38,6 +38,11 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
+    @GetMapping("/isnot_deleted")
+    public ResponseEntity<List<ProductResponseDto>> getAllProductsNotDeleted() {
+        return ResponseEntity.ok(productService.getAllProductsNotDeleted());
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id,
                                                            @Valid @RequestBody UpdateProductDto dto) {
@@ -56,11 +61,22 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}/soft-delete")
+    public ResponseEntity<Void> softDeleteProduct(@PathVariable Long id) {
+        productService.softDeleteProduct(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
 
     @GetMapping("/store/{storeId}")
     public ResponseEntity<List<ProductResponseDto>> getProductsByStore(@PathVariable Long storeId) {
         return ResponseEntity.ok(productService.getProductsByStore(storeId));
+    }
+
+    @GetMapping("/store/{storeId}/isnot_deleted")
+    public ResponseEntity<List<ProductResponseDto>> getProductsByStoreNotDeleted(@PathVariable Long storeId) {
+        return ResponseEntity.ok(productService.getProductsByStoreNotDeleted(storeId));
     }
 
     @GetMapping("/category/{categoryId}")

@@ -25,6 +25,7 @@ public class ProductResponseDto {
     private BigDecimal discountPrice;
     private ProductStatus status;
     private AdminStatus adminStatus;
+    private Boolean isDeleted;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

@@ -41,6 +41,10 @@ public class StoreCategory {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Builder.Default
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(
         name = "category_id",

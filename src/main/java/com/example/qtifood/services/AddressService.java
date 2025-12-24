@@ -13,6 +13,9 @@ public interface AddressService {
     List<AddressResponseDto> getAllAddresses();
     AddressResponseDto getAddressById(Long id);
     List<AddressResponseDto> getAddressesByUserId(String userId);
+    List<AddressResponseDto> getAllAddressesNotDeleted();
+    List<AddressResponseDto> getAddressesByUserIdNotDeleted(String userId);
+    void softDeleteAddress(Long id);
     AddressResponseDto setDefaultAddress(Long id);
     AddressResponseDto setUnDefaultAddress(Long id);
 }

@@ -10,6 +10,8 @@ import com.example.qtifood.entities.Address;
 
 public interface AddressRepository extends JpaRepository<Address, Long> {
     List<Address> findByUserId(String userId);
+    List<Address> findByIsDeletedFalse();
+    List<Address> findByUserIdAndIsDeletedFalse(String userId);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("update Address a set a.isDefault = false where a.user.id = :userId and a.id <> :keepId")

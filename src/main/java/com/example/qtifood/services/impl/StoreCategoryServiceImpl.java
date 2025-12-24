@@ -34,6 +34,7 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
                 sc.getDescription(),
                 sc.getCategory() != null ? sc.getCategory().getId() : null,
                 sc.getCategory() != null ? sc.getCategory().getName() : null,
+                sc.getIsDeleted(),
                 sc.getCreatedAt(),
                 sc.getUpdatedAt()
         );
@@ -70,6 +71,13 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<StoreCategoryResponseDto> listAllNotDeleted() {
+        return repo.findAllByIsDeletedFalse()
+                  .stream().map(this::toDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<StoreCategoryResponseDto> listByStore(Long storeId) {
         return repo.findAllByStore_Id(storeId)   // <— đổi sang field store
                   .stream().map(this::toDto).toList();
@@ -77,10 +85,26 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<StoreCategoryResponseDto> listByStoreNotDeleted(Long storeId) {
+        return repo.findAllByStore_IdAndIsDeletedFalse(storeId)
+                  .stream().map(this::toDto).toList();
+    }
+
+
+    @Override
+    @Transactional(readOnly = true)
     public List<StoreCategoryResponseDto> listByCategory(Long categoryId) {
         return repo.findAllByCategory_Id(categoryId)
                   .stream().map(this::toDto).toList();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<StoreCategoryResponseDto> listByCategoryNotDeleted(Long categoryId) {
+        return repo.findAllByCategory_IdAndIsDeletedFalse(categoryId)
+                  .stream().map(this::toDto).toList();
+    }
+
 
     @Override
     public StoreCategoryResponseDto update(Long id, UpdateStoreCategoryDto dto) {
@@ -103,5 +127,13 @@ public class StoreCategoryServiceImpl implements StoreCategoryService {
     @Override
     public void delete(Long id) {
         repo.deleteById(id);
+    }
+
+    @Override
+    public void softDelete(Long id) {
+        StoreCategory sc = repo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("StoreCategory not found: " + id));
+        sc.setIsDeleted(true);
+        repo.save(sc);
     }
 }

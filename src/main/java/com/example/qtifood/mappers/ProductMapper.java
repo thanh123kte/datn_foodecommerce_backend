@@ -23,6 +23,7 @@ public class ProductMapper {
                 .price(product.getPrice())
                 .discountPrice(product.getDiscountPrice())
                 .status(product.getStatus())
+                .isDeleted(product.getIsDeleted())
                 .createdAt(product.getCreatedAt())
                 .updatedAt(product.getUpdatedAt())
                 .build();

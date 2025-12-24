@@ -15,6 +15,7 @@ public class AddressMapper {
                 .latitude(a.getLatitude() == null ? null : a.getLatitude().doubleValue())
                 .longitude(a.getLongitude() == null ? null : a.getLongitude().doubleValue())
                 .isDefault(a.getIsDefault())
+                .isDeleted(a.getIsDeleted())
                 .createdAt(a.getCreatedAt())
                 .updatedAt(a.getUpdatedAt())
                 .build();
