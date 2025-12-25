@@ -35,3 +35,17 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Uploads ###
+uploads/categories/
+uploads/products/
+uploads/stores/
+uploads/users/
+uploads/drivers/
+uploads/reviews/
+uploads
+
+# Google / Firebase service account
+src/main/resources/serviceAccountKey.json
+**/serviceAccountKey.json
+**/*serviceAccount*.json

@@ -20,8 +20,10 @@ public class StoreMapper {
             .email(s.getEmail())
             .imageUrl(s.getImageUrl())
             .status(s.getStatus())
-            .openTime(s.getOpenTime())
+            .opStatus(s.getOpStatus())
+            .openTime(s.getOpenTime())  
             .closeTime(s.getCloseTime())
+                .viewCount(s.getViewCount())
             .createdAt(s.getCreatedAt())
             .updatedAt(s.getUpdatedAt())
             .build();

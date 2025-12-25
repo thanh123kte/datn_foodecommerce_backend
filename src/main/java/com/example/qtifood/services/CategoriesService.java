@@ -22,4 +22,10 @@ public interface CategoriesService {
 
     // Xoá
     void deleteCategory(Long id);
+
+    // Upload image
+    CategoryResponseDto uploadImage(Long id, org.springframework.web.multipart.MultipartFile imageFile);
+
+    // Delete image
+    CategoryResponseDto deleteImage(Long id);
 }

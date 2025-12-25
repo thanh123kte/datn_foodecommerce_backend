@@ -74,6 +74,14 @@ public class AddressServiceImpl implements AddressService {
     }
 
     @Override
+    public void softDeleteAddress(Long id) {
+        Address address = addressRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Address not found: " + id));
+        address.setIsDeleted(true);
+        addressRepository.save(address);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<AddressResponseDto> getAllAddresses() {
         return addressRepository.findAll()
@@ -82,8 +90,30 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AddressResponseDto> getAddressesByUserId(Long userId) {
+    public AddressResponseDto getAddressById(Long id) {
+        Address address = addressRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Address not found: " + id));
+        return AddressMapper.toDto(address);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AddressResponseDto> getAddressesByUserId(String userId) {
         return addressRepository.findByUserId(userId)
+                .stream().map(AddressMapper::toDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AddressResponseDto> getAllAddressesNotDeleted() {
+        return addressRepository.findByIsDeletedFalse()
+                .stream().map(AddressMapper::toDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<AddressResponseDto> getAddressesByUserIdNotDeleted(String userId) {
+        return addressRepository.findByUserIdAndIsDeletedFalse(userId)
                 .stream().map(AddressMapper::toDto).toList();
     }
 
@@ -92,7 +122,7 @@ public class AddressServiceImpl implements AddressService {
         Address a = addressRepository.findById(id)
             .orElseThrow(() -> new RuntimeException("Address not found: " + id));
 
-        addressRepository.unsetOthersDefault(a.getUser().getId(), a.getId());
+    addressRepository.unsetOthersDefault(a.getUser().getId(), a.getId());
         a.setIsDefault(true);
 
         return AddressMapper.toDto(addressRepository.save(a));
@@ -108,8 +138,8 @@ public class AddressServiceImpl implements AddressService {
     }
 
     private void applyDefaultForUser(Address target) {
-        Long userId = target.getUser().getId();
-        List<Address> all = addressRepository.findByUserId(userId);
+    String userId = target.getUser().getId();
+    List<Address> all = addressRepository.findByUserId(userId);
         for (Address a : all) {
             a.setIsDefault(a.getId().equals(target.getId()));
         }

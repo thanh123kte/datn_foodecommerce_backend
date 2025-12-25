@@ -8,7 +8,7 @@ import lombok.Data;
 @Data
 public class CreateStoreDto {
     @NotNull
-    private Long ownerId;
+    private String ownerId;
 
     @NotBlank
     @Size(max = 100)

@@ -14,6 +14,7 @@ public class AddressResponseDto {
     private Double latitude;
     private Double longitude;
     private Boolean isDefault;
+    private Boolean isDeleted;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 }

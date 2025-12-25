@@ -40,6 +40,10 @@ public class Address {
     @Column(name = "is_default", nullable = false)
     private Boolean isDefault = false;
 
+    @Builder.Default
+    @Column(name = "is_deleted", nullable = false)
+    private Boolean isDeleted = false;
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -50,6 +54,9 @@ public class Address {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false,
-        foreignKey = @ForeignKey(name = "fk_addresses_user"))
+        foreignKey = @ForeignKey(
+            name = "fk_addresses_user",
+            foreignKeyDefinition = "FOREIGN KEY (user_id) REFERENCES users(firebase_user_id) ON DELETE CASCADE"
+        ))
     private User user;
 }
