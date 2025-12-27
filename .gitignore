@@ -36,16 +36,17 @@ out/
 ### VS Code ###
 .vscode/
 
+### Environment Variables ###
+.env
+
 ### Uploads ###
-uploads/categories/
-uploads/products/
-uploads/stores/
-uploads/users/
-uploads/drivers/
-uploads/reviews/
-uploads
+uploads/
+
+### db ###
+db/
 
 # Google / Firebase service account
 src/main/resources/serviceAccountKey.json
 **/serviceAccountKey.json
 **/*serviceAccount*.json
+
