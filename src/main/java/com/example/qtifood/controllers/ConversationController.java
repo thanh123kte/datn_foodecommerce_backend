@@ -20,6 +20,14 @@ public class ConversationController {
 
     private final ConversationService conversationService;
 
+    // Lấy tất cả cuộc trò chuyện của một user (không phân biệt vai trò)
+    @GetMapping
+    public ResponseEntity<List<ConversationResponseDto>> getAllConversationsForUser(
+            @RequestParam String userId) {
+        List<ConversationResponseDto> conversations = conversationService.getConversationsByUser(userId);
+        return ResponseEntity.ok(conversations);
+    }
+
     @PostMapping("/get-or-create")
     public ResponseEntity<ConversationResponseDto> getOrCreateConversation(
             @RequestParam String customerId,

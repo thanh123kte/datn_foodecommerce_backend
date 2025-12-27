@@ -12,6 +12,8 @@ import com.example.qtifood.enums.ProductStatus;
 public interface ProductRepository extends JpaRepository<Product, Long> {
     
     List<Product> findByStoreId(Long storeId);
+    List<Product> findByIsDeletedFalse();
+    List<Product> findByStoreIdAndIsDeletedFalse(Long storeId);
     
     @Query("SELECT p FROM Product p WHERE p.storeCategory.category.id = :categoryId")
     List<Product> findByCategoryId(@Param("categoryId") Long categoryId);

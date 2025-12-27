@@ -25,6 +25,7 @@ public record VoucherResponseDto(
         DiscountStatus status,
         Boolean isActive,
         Boolean isCreatedByAdmin,
+        Boolean isDeleted,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {}

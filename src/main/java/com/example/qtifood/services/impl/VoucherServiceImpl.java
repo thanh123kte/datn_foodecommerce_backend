@@ -44,6 +44,7 @@ public class VoucherServiceImpl implements VoucherService {
                 v.getStatus(),
                 v.getIsActive(),
                 v.getIsCreatedByAdmin(),
+                v.getIsDeleted(),
                 v.getCreatedAt(),
                 v.getUpdatedAt()
         );
@@ -89,6 +90,12 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<VoucherResponseDto> getAllNotDeleted() {
+        return repo.findAllByIsDeletedFalse().stream().map(this::toDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public VoucherResponseDto getById(Long id) {
         return repo.findById(id).map(this::toDto)
                 .orElseThrow(() -> new IllegalArgumentException("Voucher not found: " + id));
@@ -120,6 +127,14 @@ public class VoucherServiceImpl implements VoucherService {
     }
 
     @Override
+    public void softDelete(Long id) {
+        Voucher voucher = repo.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Voucher not found: " + id));
+        voucher.setIsDeleted(true);
+        repo.save(voucher);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public List<VoucherResponseDto> getByStore(Long storeId) {
         return repo.findAllByStore_Id(storeId).stream().map(this::toDto).toList();
@@ -127,8 +142,21 @@ public class VoucherServiceImpl implements VoucherService {
 
     @Override
     @Transactional(readOnly = true)
+    public List<VoucherResponseDto> getByStoreNotDeleted(Long storeId) {
+        return repo.findAllByStore_IdAndIsDeletedFalse(storeId).stream().map(this::toDto).toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<VoucherResponseDto> getByDiscountType(DiscountType discountType) {
         return repo.findAllByDiscountType(discountType).stream().map(this::toDto).toList();}
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VoucherResponseDto> getByDiscountTypeNotDeleted(DiscountType discountType) {
+        return repo.findAllByDiscountTypeAndIsDeletedFalse(discountType).stream().map(this::toDto).toList();
+    }
+
     public VoucherResponseDto incrementUsage(Long voucherId) {
         Voucher voucher = repo.findById(voucherId)
                 .orElseThrow(() -> new IllegalArgumentException("Voucher not found: " + voucherId));
@@ -173,6 +201,13 @@ public class VoucherServiceImpl implements VoucherService {
     @Transactional(readOnly = true)
     public List<VoucherResponseDto> getAdminVouchers() {
         return repo.findAllByIsCreatedByAdmin(true).stream().map(this::toDto).toList();}
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VoucherResponseDto> getAdminVouchersNotDeleted() {
+        return repo.findAllByIsCreatedByAdminAndIsDeletedFalse(true).stream().map(this::toDto).toList();
+    }
+
     public VoucherResponseDto validateVoucher(String code) {
         Voucher voucher = repo.findByCode(code)
                 .orElseThrow(() -> new IllegalArgumentException("Voucher không tồn tại: " + code));
@@ -200,6 +235,13 @@ public class VoucherServiceImpl implements VoucherService {
     @Transactional(readOnly = true)
     public List<VoucherResponseDto> getStoreVouchers() {
         return repo.findAllByIsCreatedByAdmin(false).stream().map(this::toDto).toList();}
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<VoucherResponseDto> getStoreVouchersNotDeleted() {
+        return repo.findAllByIsCreatedByAdminAndIsDeletedFalse(false).stream().map(this::toDto).toList();
+    }
+
     public boolean isVoucherExpired(Long voucherId) {
         Voucher voucher = repo.findById(voucherId)
                 .orElseThrow(() -> new IllegalArgumentException("Voucher not found: " + voucherId));

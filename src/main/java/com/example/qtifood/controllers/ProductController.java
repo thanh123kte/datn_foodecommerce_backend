@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 
 import com.example.qtifood.dtos.Products.CreateProductDto;
 import com.example.qtifood.dtos.Products.UpdateProductDto;
+import com.example.qtifood.dtos.file.ImageSearchRequest;
+import com.example.qtifood.dtos.file.ImageSearchResponse;
 import com.example.qtifood.enums.AdminStatus;
 import com.example.qtifood.enums.ProductStatus;
 import com.example.qtifood.dtos.Products.ProductResponseDto;
@@ -36,6 +38,11 @@ public class ProductController {
         return ResponseEntity.ok(productService.getAllProducts());
     }
 
+    @GetMapping("/isnot_deleted")
+    public ResponseEntity<List<ProductResponseDto>> getAllProductsNotDeleted() {
+        return ResponseEntity.ok(productService.getAllProductsNotDeleted());
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<ProductResponseDto> updateProduct(@PathVariable Long id,
                                                            @Valid @RequestBody UpdateProductDto dto) {
@@ -54,11 +61,22 @@ public class ProductController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}/soft-delete")
+    public ResponseEntity<Void> softDeleteProduct(@PathVariable Long id) {
+        productService.softDeleteProduct(id);
+        return ResponseEntity.noContent().build();
+    }
+
 
 
     @GetMapping("/store/{storeId}")
     public ResponseEntity<List<ProductResponseDto>> getProductsByStore(@PathVariable Long storeId) {
         return ResponseEntity.ok(productService.getProductsByStore(storeId));
+    }
+
+    @GetMapping("/store/{storeId}/isnot_deleted")
+    public ResponseEntity<List<ProductResponseDto>> getProductsByStoreNotDeleted(@PathVariable Long storeId) {
+        return ResponseEntity.ok(productService.getProductsByStoreNotDeleted(storeId));
     }
 
     @GetMapping("/category/{categoryId}")
@@ -94,5 +112,13 @@ public class ProductController {
             @PathVariable Long id,
             @PathVariable AdminStatus adminStatus) {
         return ResponseEntity.ok(productService.updateProductAdminStatus(id, adminStatus));
+    }
+
+    // Tìm kiếm sản phẩm theo hình ảnh sử dụng FastAPI
+    @PostMapping("/search-by-image")
+    public ResponseEntity<ImageSearchResponse> searchProductsByImage(
+            @Valid @RequestBody ImageSearchRequest request) {
+        ImageSearchResponse response = productService.searchProductsByImage(request);
+        return ResponseEntity.ok(response);
     }
 }

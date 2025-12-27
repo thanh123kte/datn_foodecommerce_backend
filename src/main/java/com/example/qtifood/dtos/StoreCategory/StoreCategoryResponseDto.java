@@ -10,6 +10,7 @@ public record StoreCategoryResponseDto(
         String description,
         Long categoryId,
         String categoryName,  // Tên category từ table categories
+        Boolean isDeleted,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {}

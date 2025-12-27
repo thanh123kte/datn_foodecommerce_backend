@@ -7,6 +7,8 @@ import com.example.qtifood.dtos.Products.UpdateProductDto;
 import com.example.qtifood.enums.AdminStatus;
 import com.example.qtifood.enums.ProductStatus;
 import com.example.qtifood.dtos.Products.ProductResponseDto;
+import com.example.qtifood.dtos.file.ImageSearchRequest;
+import com.example.qtifood.dtos.file.ImageSearchResponse;
 
 public interface ProductService {
 
@@ -24,9 +26,14 @@ public interface ProductService {
 
     // Xóa sản phẩm
     void deleteProduct(Long id);
+    void softDeleteProduct(Long id);
 
     // Lấy sản phẩm theo store
     List<ProductResponseDto> getProductsByStore(Long storeId);
+
+    List<ProductResponseDto> getAllProductsNotDeleted();
+
+    List<ProductResponseDto> getProductsByStoreNotDeleted(Long storeId);
 
     // Lấy sản phẩm theo category
     List<ProductResponseDto> getProductsByCategory(Long categoryId);
@@ -45,4 +52,7 @@ public interface ProductService {
 
     // Cập nhật admin status (dành cho admin) - ACTIVE hoặc BANNED
     ProductResponseDto updateProductAdminStatus(Long id, AdminStatus adminStatus);
+
+    // Tìm kiếm sản phẩm theo hình ảnh (gọi FastAPI image search)
+    ImageSearchResponse searchProductsByImage(ImageSearchRequest request);
 }

@@ -27,6 +27,11 @@ public class VoucherController {
         return ResponseEntity.ok(service.getAll());
     }
 
+    @GetMapping("/isnot_deleted")
+    public ResponseEntity<List<VoucherResponseDto>> getAllNotDeleted() {
+        return ResponseEntity.ok(service.getAllNotDeleted());
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<VoucherResponseDto> getById(@PathVariable Long id) {
         return ResponseEntity.ok(service.getById(id));
@@ -46,9 +51,20 @@ public class VoucherController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}/soft-delete")
+    public ResponseEntity<Void> softDelete(@PathVariable Long id) {
+        service.softDelete(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/store/{storeId}")
     public ResponseEntity<List<VoucherResponseDto>> getByStore(@PathVariable Long storeId) {
         return ResponseEntity.ok(service.getByStore(storeId));
+    }
+
+    @GetMapping("/store/{storeId}/isnot_deleted")
+    public ResponseEntity<List<VoucherResponseDto>> getByStoreNotDeleted(@PathVariable Long storeId) {
+        return ResponseEntity.ok(service.getByStoreNotDeleted(storeId));
     }
 
     @GetMapping("/type/{discountType}")
@@ -56,14 +72,30 @@ public class VoucherController {
         return ResponseEntity.ok(service.getByDiscountType(discountType));
     }
 
+    @GetMapping("/type/{discountType}/isnot_deleted")
+    public ResponseEntity<List<VoucherResponseDto>> getByDiscountTypeNotDeleted(
+            @PathVariable DiscountType discountType) {
+        return ResponseEntity.ok(service.getByDiscountTypeNotDeleted(discountType));
+    }
+
     @GetMapping("/admin")
     public ResponseEntity<List<VoucherResponseDto>> getAdminVouchers() {
         return ResponseEntity.ok(service.getAdminVouchers());
     }
 
+    @GetMapping("/admin/isnot_deleted")
+    public ResponseEntity<List<VoucherResponseDto>> getAdminVouchersNotDeleted() {
+        return ResponseEntity.ok(service.getAdminVouchersNotDeleted());
+    }
+
     @GetMapping("/store")
     public ResponseEntity<List<VoucherResponseDto>> getStoreVouchers() {
         return ResponseEntity.ok(service.getStoreVouchers());
+    }
+
+    @GetMapping("/store/isnot_deleted")
+    public ResponseEntity<List<VoucherResponseDto>> getStoreVouchersNotDeleted() {
+        return ResponseEntity.ok(service.getStoreVouchersNotDeleted());
     }
 
     /**

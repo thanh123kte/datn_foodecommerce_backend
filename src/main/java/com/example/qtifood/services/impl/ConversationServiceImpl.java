@@ -202,19 +202,4 @@ public class ConversationServiceImpl implements ConversationService {
 
         return ConversationMapper.toDto(conversation, lastMessage, unreadCount);
     }
-    
-    /**
-     * Map without userId context (backward compatibility)
-     */
-    private ConversationResponseDto mapToResponseDto(Conversation conversation) {
-        // Get last message
-        List<Message> lastMessages = messageRepository
-                .findLastMessageByConversationId(conversation.getId(), PageRequest.of(0, 1));
-        Message lastMessage = lastMessages.isEmpty() ? null : lastMessages.get(0);
-
-        // Default to customer's unread count for backward compatibility
-        Integer unreadCount = conversation.getUnreadCountCustomer();
-
-        return ConversationMapper.toDto(conversation, lastMessage, unreadCount);
-    }
 }

@@ -12,6 +12,7 @@ import com.example.qtifood.repositories.ConversationRepository;
 import com.example.qtifood.repositories.MessageRepository;
 import com.example.qtifood.repositories.UserRepository;
 import com.example.qtifood.services.MessageService;
+import com.example.qtifood.services.FcmService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,6 +38,7 @@ public class MessageServiceImpl implements MessageService {
     private final ConversationRepository conversationRepository;
     private final UserRepository userRepository;
     private final SimpMessagingTemplate messagingTemplate;
+    private final FcmService fcmService;
 
     @Override
     public MessageResponseDto sendMessage(String senderId, CreateMessageDto dto) {
@@ -91,6 +93,28 @@ public class MessageServiceImpl implements MessageService {
             
             logger.info("Message broadcasted via WebSocket: conversationId={}, messageId={}",
                        dto.getConversationId(), message.getId());
+
+            // Send FCM notification to receiver
+            String customerId = message.getConversation().getCustomer().getId();
+            String sellerId = message.getConversation().getSeller().getId();
+            String receiverId = senderId.equals(customerId) ? sellerId : customerId;
+
+            String title = "Tin nhắn mới";
+            String body = (sender.getFullName() != null ? sender.getFullName() : "")
+                    + ": " + message.getContent();
+
+            fcmService.sendNotification(
+                    receiverId,
+                    title,
+                    body,
+                    "CHAT",
+                    java.util.Map.of(
+                            "conversationId", String.valueOf(dto.getConversationId()),
+                            "messageId", String.valueOf(message.getId()),
+                            "senderId", senderId
+                    )
+            );
+            logger.info("FCM sent to receiverId={} for conversationId={}", receiverId, dto.getConversationId());
         } catch (Exception e) {
             logger.error("Failed to broadcast message via WebSocket: {}", e.getMessage(), e);
             // Continue even if broadcast fails - message is already saved

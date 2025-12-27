@@ -1,3 +1,5 @@
+    // Lấy danh sách cửa hàng gần user, sắp xếp theo khoảng cách tăng dần (km)
+    
 package com.example.qtifood.services;
 
 import java.util.List;
@@ -23,4 +25,6 @@ public interface StoreService {
 
     // Increment view count
     StoreResponseDto incrementView(Long id);
+
+    List<NearbyStoreDto> getNearbyStores(double userLat, double userLng);
 }

@@ -234,6 +234,10 @@ public class OrderServiceImpl implements OrderService {
             .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
         
         try {
+            if (order.getOrderStatus() == OrderStatus.CANCELLED) {
+                throw new IllegalStateException("Cannot update a cancelled order");
+            }
+
             OrderStatus orderStatus = OrderStatus.valueOf(status.toUpperCase());
             order.setOrderStatus(orderStatus);
             

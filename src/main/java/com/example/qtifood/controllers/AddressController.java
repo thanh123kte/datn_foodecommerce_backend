@@ -39,9 +39,20 @@ public class AddressController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/{id}/soft-delete")
+    public ResponseEntity<Void> softDelete(@PathVariable Long id) {
+        addressService.softDeleteAddress(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping
     public ResponseEntity<List<AddressResponseDto>> getAll() {
         return ResponseEntity.ok(addressService.getAllAddresses());
+    }
+
+    @GetMapping("/isnot_deleted")
+    public ResponseEntity<List<AddressResponseDto>> getAllNotDeleted() {
+        return ResponseEntity.ok(addressService.getAllAddressesNotDeleted());
     }
 
     @GetMapping("/{id}")
@@ -52,6 +63,11 @@ public class AddressController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<AddressResponseDto>> getByUserId(@PathVariable String userId) {
         return ResponseEntity.ok(addressService.getAddressesByUserId(userId));
+    }
+
+    @GetMapping("/user/{userId}/isnot_deleted")
+    public ResponseEntity<List<AddressResponseDto>> getByUserIdNotDeleted(@PathVariable String userId) {
+        return ResponseEntity.ok(addressService.getAddressesByUserIdNotDeleted(userId));
     }
 
     @PutMapping("/{id}/set-default")
