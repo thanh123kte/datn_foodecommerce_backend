@@ -19,11 +19,13 @@ import com.example.qtifood.entities.Delivery;
 import com.example.qtifood.enums.DriverStatus;
 import com.example.qtifood.enums.OrderStatus;
 import com.example.qtifood.enums.PaymentMethod;
+import com.example.qtifood.enums.PaymentStatus;
 import com.example.qtifood.enums.TransactionType;
 import com.example.qtifood.mappers.OrderMapper;
 import com.example.qtifood.enums.DeliveryStatus;
 import com.example.qtifood.repositories.DriverRepository;
 import com.example.qtifood.repositories.OrderRepository;
+import com.example.qtifood.repositories.UserRepository;
 import com.example.qtifood.repositories.WalletRepository;
 import com.example.qtifood.services.DriverAssignmentService;
 import com.example.qtifood.services.FcmService;
@@ -51,12 +53,14 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
     
     private final OrderRepository orderRepository;
     private final DriverRepository driverRepository;
+    private final UserRepository userRepository;
     private final WalletRepository walletRepository;
     private final DeliveryRepository deliveryRepository;
     private final OrderMapper orderMapper;
     private final FcmService fcmService;
     private final WalletService walletService;
     private final ShippingService shippingService;
+    private static final double DELIVERY_RADIUS_KM = 0.3; // 300m
     
     @Override
     @Transactional
@@ -281,6 +285,38 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
             log.error("[DriverAssignment] Failed to save tracking data to Firebase: {}", e.getMessage(), e);
         }
     }
+
+    @Override
+    @Transactional
+    public OrderResponseDto verifyDriverLocationAndComplete(Long orderId, double driverLat, double driverLng) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new RuntimeException("Order not found with id: " + orderId));
+
+        if (order.getShippingAddress() == null || order.getShippingAddress().getLatitude() == null
+                || order.getShippingAddress().getLongitude() == null) {
+            throw new RuntimeException("Shipping address location is not available for this order");
+        }
+
+        double distanceKm = calculateDistance(
+                order.getShippingAddress().getLatitude(),
+                order.getShippingAddress().getLongitude(),
+                BigDecimal.valueOf(driverLat),
+                BigDecimal.valueOf(driverLng)
+        );
+
+        if (distanceKm > DELIVERY_RADIUS_KM) {
+            throw new RuntimeException("Tài xế chưa đến đúng vị trí giao hàng (vui lòng đến gần hơn 300m)");
+        }
+
+        order.setOrderStatus(OrderStatus.DELIVERED);
+        order.setPaymentStatus(PaymentStatus.SUCCESS);
+        orderRepository.save(order);
+
+        processDeliveryPayment(orderId);
+
+        log.info("[DriverAssignment] Driver location verified within {} km, order marked delivered: orderId={}", DELIVERY_RADIUS_KM, orderId);
+        return orderMapper.toDto(order);
+    }
     
     /**
      * Gửi thông báo cho tài xế
@@ -426,8 +462,13 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
             log.info("[DriverAssignment] Payment processed by method={}", order.getPaymentMethod());
             
             // 5. Cộng phí sàn cho admin wallet
+            String adminUserId = userRepository.findAdminUsers()
+                    .stream()
+                    .findFirst()
+                    .orElseThrow(() -> new RuntimeException("Admin user not found"))
+                    .getId();
             walletService.recordTransaction(
-                    "admin",
+                    adminUserId,
                     TransactionType.EARN,
                     adminTotalFee,
                     String.format("Phí sàn đơn hàng #%d (shop: %.0f + driver: %.0f)", orderId, shopPlatformFee, driverPlatformFee),

@@ -228,6 +228,53 @@ public class OrderController {
     }
 
     /**
+     * API tài xế xác nhận vị trí giao hàng (sai số <= 300m) rồi hoàn tất đơn
+     */
+    @PostMapping("/{orderId}/driver-location-confirm")
+    public ResponseEntity<OrderResponseDto> confirmDriverLocation(
+            @PathVariable Long orderId,
+            @RequestParam double lat,
+            @RequestParam double lng) {
+        log.info("[OrderController] Driver location confirm: orderId={}, lat={}, lng={}", orderId, lat, lng);
+        OrderResponseDto order = driverAssignmentService.verifyDriverLocationAndComplete(orderId, lat, lng);
+        
+        // Send notifications
+        try {
+            // Customer notification
+            String titleCustomer = "Đơn hàng đã giao";
+            String bodyCustomer = "Đơn hàng #" + orderId + " của bạn đã được giao thành công";
+            fcmService.sendNotification(order.getCustomerId(), titleCustomer, bodyCustomer, "ORDER_DELIVERED",
+                    Map.of("orderId", String.valueOf(orderId), "status", OrderStatus.DELIVERED.name()));
+
+            // Seller notification
+            String titleSeller = "Đơn hàng đã giao thành công";
+            String bodySeller = "Đơn hàng #" + orderId + " đã giao, doanh thu đã được cộng";
+            String sellerId = null;
+            try {
+                sellerId = storeService.getStoreById(order.getStoreId()).getOwnerId();
+            } catch (Exception e) {
+                log.error("[OrderController] Không lấy được ownerId của storeId={}: {}", order.getStoreId(), e.getMessage());
+            }
+            if (sellerId != null) {
+                fcmService.sendNotification(sellerId, titleSeller, bodySeller, "ORDER_DELIVERED",
+                        Map.of("orderId", String.valueOf(orderId)));
+            }
+
+            // Driver notification
+            if (order.getDriverId() != null) {
+                String titleDriver = "Đã ghi nhận giao hàng";
+                String bodyDriver = "Đơn #" + orderId + ": phí giao hàng đã cộng và trạng thái về ONLINE";
+                fcmService.sendNotification(order.getDriverId(), titleDriver, bodyDriver, "DELIVERY_CONFIRMED",
+                        Map.of("orderId", String.valueOf(orderId)));
+            }
+        } catch (Exception e) {
+            log.error("[OrderController] Failed to send delivery notifications for orderId={}: {}", orderId, e.getMessage());
+        }
+        
+        return ResponseEntity.ok(order);
+    }
+
+    /**
      * Thêm order items vào đơn hàng đã tồn tại
      * 
      * @param orderId ID đơn hàng cần thêm items
