@@ -13,7 +13,9 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     
     List<Product> findByStoreId(Long storeId);
     List<Product> findByIsDeletedFalse();
+    List<Product> findByIsDeletedFalseAndStatus(ProductStatus status);
     List<Product> findByStoreIdAndIsDeletedFalse(Long storeId);
+    List<Product> findByStoreIdAndIsDeletedFalseAndStatus(Long storeId, ProductStatus status);
     
     @Query("SELECT p FROM Product p WHERE p.storeCategory.category.id = :categoryId")
     List<Product> findByCategoryId(@Param("categoryId") Long categoryId);

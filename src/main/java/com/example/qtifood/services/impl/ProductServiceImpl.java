@@ -176,7 +176,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public List<ProductResponseDto> getAllProductsNotDeleted() {
-        return productRepository.findByIsDeletedFalse()
+        return productRepository.findByIsDeletedFalseAndStatus(ProductStatus.AVAILABLE)
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
@@ -185,7 +185,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional(readOnly = true)
     public List<ProductResponseDto> getProductsByStoreNotDeleted(Long storeId) {
-        return productRepository.findByStoreIdAndIsDeletedFalse(storeId)
+        return productRepository.findByStoreIdAndIsDeletedFalseAndStatus(storeId, ProductStatus.AVAILABLE)
                 .stream()
                 .map(this::toDto)
                 .collect(Collectors.toList());
