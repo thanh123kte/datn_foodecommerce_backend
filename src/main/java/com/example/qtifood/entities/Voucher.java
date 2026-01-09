@@ -62,10 +62,10 @@ public class Voucher {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = true)
     @JoinColumn(
-        name = "seller_id",
+        name = "store_id",
         foreignKey = @ForeignKey(
             name = "fk_voucher_store",
-            foreignKeyDefinition = "FOREIGN KEY (seller_id) REFERENCES stores(id) ON DELETE SET NULL"
+            foreignKeyDefinition = "FOREIGN KEY (store_id) REFERENCES stores(id) ON DELETE SET NULL"
         )
     )
     private Store store;

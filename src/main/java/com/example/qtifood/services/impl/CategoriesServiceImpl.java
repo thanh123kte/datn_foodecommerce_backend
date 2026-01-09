@@ -78,6 +78,14 @@ public class CategoriesServiceImpl implements CategoriesService {
     }
 
     @Override
+    public void softDelete(Long id) {
+        Categories category = categoriesRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Category not found: " + id));
+        category.setIsDeleted(true);
+        categoriesRepository.save(category);
+    }
+
+    @Override
     public CategoryResponseDto uploadImage(Long id, MultipartFile imageFile) {
         Categories category = categoriesRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Category not found: " + id));

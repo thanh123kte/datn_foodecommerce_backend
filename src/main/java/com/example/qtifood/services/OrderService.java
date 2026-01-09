@@ -5,6 +5,7 @@ import com.example.qtifood.dtos.Orders.UpdateOrderDto;
 import com.example.qtifood.dtos.Orders.OrderResponseDto;
 import com.example.qtifood.dtos.Orders.SalesStatsDto;
 import com.example.qtifood.dtos.Orders.TopProductDto;
+import java.time.LocalDate;
 import java.util.List;
 
 public interface OrderService {
@@ -27,4 +28,9 @@ public interface OrderService {
 
     // Seller stats
     SalesStatsDto getStoreSalesStats(Long storeId, String period);
+    SalesStatsDto getStoreSalesStatsByDateRange(Long storeId, LocalDate startDate, LocalDate endDate);
+    
+    // Admin platform stats
+    SalesStatsDto getPlatformSalesStats(String period);
+    SalesStatsDto getPlatformSalesStatsByDateRange(LocalDate startDate, LocalDate endDate);
 }

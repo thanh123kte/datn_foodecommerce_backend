@@ -17,7 +17,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -114,6 +116,30 @@ public class OrderController {
             @PathVariable Long storeId,
             @RequestParam(defaultValue = "daily") String period) {
         return ResponseEntity.ok(orderService.getStoreSalesStats(storeId, period));
+    }
+
+    // Thống kê số đơn và doanh thu cho seller theo khoảng thời gian tùy chỉnh
+    @GetMapping("/store/{storeId}/sales-stats/custom")
+    public ResponseEntity<SalesStatsDto> getStoreSalesStatsByDateRange(
+            @PathVariable Long storeId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        return ResponseEntity.ok(orderService.getStoreSalesStatsByDateRange(storeId, startDate, endDate));
+    }
+
+    // Thống kê doanh thu toàn sàn cho admin theo ngày/tuần/tháng
+    @GetMapping("/platform/sales-stats")
+    public ResponseEntity<SalesStatsDto> getPlatformSalesStats(
+            @RequestParam(defaultValue = "daily") String period) {
+        return ResponseEntity.ok(orderService.getPlatformSalesStats(period));
+    }
+
+    // Thống kê doanh thu toàn sàn cho admin theo khoảng thời gian tùy chỉnh
+    @GetMapping("/platform/sales-stats/custom")
+    public ResponseEntity<SalesStatsDto> getPlatformSalesStatsByDateRange(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        return ResponseEntity.ok(orderService.getPlatformSalesStatsByDateRange(startDate, endDate));
     }
 
     // Top sản phẩm bán chạy toàn hệ thống (mặc định 5)

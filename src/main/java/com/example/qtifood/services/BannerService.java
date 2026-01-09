@@ -29,6 +29,9 @@ public interface BannerService {
     // Xóa banner
     void deleteBanner(Long id);
 
+    // Xóa mềm banner
+    void softDelete(Long id);
+
     // Upload image
     BannerResponseDto uploadImage(Long id, MultipartFile imageFile);
 

@@ -22,4 +22,10 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             @Param("statuses") List<OrderStatus> statuses,
             @Param("start") LocalDateTime start,
             @Param("end") LocalDateTime end);
+
+    @Query("SELECT o FROM Order o WHERE o.orderStatus IN :statuses AND o.createdAt BETWEEN :start AND :end")
+    List<Order> findByOrderStatusInAndCreatedAtBetween(
+            @Param("statuses") List<OrderStatus> statuses,
+            @Param("start") LocalDateTime start,
+            @Param("end") LocalDateTime end);
 }

@@ -33,6 +33,10 @@ public class Banner {
     @Column(nullable = false)
     private BannerStatus status = BannerStatus.ACTIVE;
 
+    @Builder.Default
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = false;
+
     @Column(name = "start_date")
     private LocalDateTime startDate;
 

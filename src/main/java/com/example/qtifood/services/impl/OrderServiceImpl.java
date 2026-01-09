@@ -320,6 +320,63 @@ public class OrderServiceImpl implements OrderService {
             .points(points)
             .build();
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SalesStatsDto getStoreSalesStatsByDateRange(Long storeId, LocalDate startDate, LocalDate endDate) {
+        // Validate dates
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("Start date must be before or equal to end date");
+        }
+
+        // Convert to LocalDateTime
+        LocalDateTime start = startDate.atStartOfDay();
+        LocalDateTime end = endDate.atTime(LocalTime.MAX);
+
+        // Lấy thông tin store để trả về viewCount
+        com.example.qtifood.entities.Store store = storeRepository.findById(storeId)
+            .orElseThrow(() -> new ResourceNotFoundException("Store not found: " + storeId));
+
+        List<Order> orders = orderRepository.findByStoreIdAndOrderStatusInAndCreatedAtBetween(
+            storeId, List.of(OrderStatus.DELIVERED, OrderStatus.REVIEWED), start, end
+        );
+
+        long totalOrders = orders.size();
+
+        Map<LocalDate, SalesPointAggregate> aggregates = new TreeMap<>();
+        BigDecimal totalRevenue = BigDecimal.ZERO;
+
+        for (Order o : orders) {
+            BigDecimal netRevenue = calculateNetRevenue(o);
+            totalRevenue = totalRevenue.add(netRevenue);
+
+            LocalDate dateKey = resolveOrderDate(o);
+            SalesPointAggregate agg = aggregates.computeIfAbsent(dateKey, d -> new SalesPointAggregate());
+            agg.orders = agg.orders + 1;
+            agg.revenue = agg.revenue.add(netRevenue);
+        }
+
+        List<SalesDataPointDto> points = aggregates.entrySet().stream()
+            .map(entry -> SalesDataPointDto.builder()
+                .label(entry.getKey().toString())
+                .revenue(entry.getValue().revenue)
+                .orders(entry.getValue().orders)
+                .build())
+            .collect(Collectors.toList());
+
+        Long likeCount = wishlistRepository.countByStoreId(storeId);
+
+        return SalesStatsDto.builder()
+            .period("custom")
+            .startDate(start)
+            .endDate(end)
+            .totalOrders(totalOrders)
+            .totalRevenue(totalRevenue)
+            .storeViewCount(store.getViewCount())
+            .storeLikeCount(likeCount)
+            .points(points)
+            .build();
+    }
     
     private BigDecimal calculateNetRevenue(Order order) {
         BigDecimal total = order.getTotalAmount() != null ? order.getTotalAmount() : BigDecimal.ZERO;
@@ -384,5 +441,123 @@ public class OrderServiceImpl implements OrderService {
             .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
         order.setPaymentStatus(status);
         orderRepository.save(order);
+    }
+
+    // ========== ADMIN PLATFORM STATS ==========
+
+    @Override
+    @Transactional(readOnly = true)
+    public SalesStatsDto getPlatformSalesStats(String period) {
+        // Determine time range
+        LocalDateTime start;
+        LocalDateTime end = LocalDateTime.now();
+        switch (period.toLowerCase()) {
+            case "daily":
+                start = LocalDate.now().atStartOfDay();
+                end = LocalDate.now().atTime(LocalTime.MAX);
+                break;
+            case "weekly":
+                LocalDate startOfWeek = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
+                start = startOfWeek.atStartOfDay();
+                break;
+            case "monthly":
+                start = LocalDate.now().withDayOfMonth(1).atStartOfDay();
+                break;
+            default:
+                throw new IllegalArgumentException("Invalid period. Use daily, weekly, or monthly");
+        }
+
+        // Get all completed orders in the time range (platform-wide)
+        List<Order> orders = orderRepository.findByOrderStatusInAndCreatedAtBetween(
+            List.of(OrderStatus.DELIVERED, OrderStatus.REVIEWED), start, end
+        );
+
+        long totalOrders = orders.size();
+
+        Map<LocalDate, SalesPointAggregate> aggregates = new TreeMap<>();
+        BigDecimal totalRevenue = BigDecimal.ZERO;
+
+        for (Order o : orders) {
+            // For platform stats, use full totalAmount (not net revenue)
+            BigDecimal revenue = o.getTotalAmount() != null ? o.getTotalAmount() : BigDecimal.ZERO;
+            totalRevenue = totalRevenue.add(revenue);
+
+            LocalDate dateKey = resolveOrderDate(o);
+            SalesPointAggregate agg = aggregates.computeIfAbsent(dateKey, d -> new SalesPointAggregate());
+            agg.orders = agg.orders + 1;
+            agg.revenue = agg.revenue.add(revenue);
+        }
+
+        List<SalesDataPointDto> points = aggregates.entrySet().stream()
+            .map(entry -> SalesDataPointDto.builder()
+                .label(entry.getKey().toString())
+                .revenue(entry.getValue().revenue)
+                .orders(entry.getValue().orders)
+                .build())
+            .collect(Collectors.toList());
+
+        return SalesStatsDto.builder()
+            .period(period)
+            .startDate(start)
+            .endDate(end)
+            .totalOrders(totalOrders)
+            .totalRevenue(totalRevenue)
+            .storeViewCount(0L) // Not applicable for platform stats
+            .storeLikeCount(0L) // Not applicable for platform stats
+            .points(points)
+            .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public SalesStatsDto getPlatformSalesStatsByDateRange(LocalDate startDate, LocalDate endDate) {
+        // Validate dates
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException("Start date must be before or equal to end date");
+        }
+
+        // Convert to LocalDateTime
+        LocalDateTime start = startDate.atStartOfDay();
+        LocalDateTime end = endDate.atTime(LocalTime.MAX);
+
+        // Get all completed orders in the time range (platform-wide)
+        List<Order> orders = orderRepository.findByOrderStatusInAndCreatedAtBetween(
+            List.of(OrderStatus.DELIVERED, OrderStatus.REVIEWED), start, end
+        );
+
+        long totalOrders = orders.size();
+
+        Map<LocalDate, SalesPointAggregate> aggregates = new TreeMap<>();
+        BigDecimal totalRevenue = BigDecimal.ZERO;
+
+        for (Order o : orders) {
+            // For platform stats, use full totalAmount (not net revenue)
+            BigDecimal revenue = o.getTotalAmount() != null ? o.getTotalAmount() : BigDecimal.ZERO;
+            totalRevenue = totalRevenue.add(revenue);
+
+            LocalDate dateKey = resolveOrderDate(o);
+            SalesPointAggregate agg = aggregates.computeIfAbsent(dateKey, d -> new SalesPointAggregate());
+            agg.orders = agg.orders + 1;
+            agg.revenue = agg.revenue.add(revenue);
+        }
+
+        List<SalesDataPointDto> points = aggregates.entrySet().stream()
+            .map(entry -> SalesDataPointDto.builder()
+                .label(entry.getKey().toString())
+                .revenue(entry.getValue().revenue)
+                .orders(entry.getValue().orders)
+                .build())
+            .collect(Collectors.toList());
+
+        return SalesStatsDto.builder()
+            .period("custom")
+            .startDate(start)
+            .endDate(end)
+            .totalOrders(totalOrders)
+            .totalRevenue(totalRevenue)
+            .storeViewCount(0L) // Not applicable for platform stats
+            .storeLikeCount(0L) // Not applicable for platform stats
+            .points(points)
+            .build();
     }
 }

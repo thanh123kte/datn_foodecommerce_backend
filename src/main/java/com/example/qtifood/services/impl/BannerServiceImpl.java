@@ -114,6 +114,14 @@ public class BannerServiceImpl implements BannerService {
     }
 
     @Override
+    public void softDelete(Long id) {
+        Banner banner = bannerRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Banner not found: " + id));
+        banner.setIsDeleted(true);
+        bannerRepository.save(banner);
+    }
+
+    @Override
     public BannerResponseDto uploadImage(Long id, MultipartFile imageFile) {
         Banner banner = bannerRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Banner not found: " + id));

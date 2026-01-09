@@ -23,6 +23,9 @@ public interface CategoriesService {
     // Xoá
     void deleteCategory(Long id);
 
+    // Xoá mềm
+    void softDelete(Long id);
+
     // Upload image
     CategoryResponseDto uploadImage(Long id, org.springframework.web.multipart.MultipartFile imageFile);
 

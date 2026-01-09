@@ -59,6 +59,12 @@ public class CategoriesController {
         return ResponseEntity.ok("Category " + id + " deleted successfully.");
     }
 
+    @PutMapping("/{id}/soft-delete")
+    public ResponseEntity<Void> softDelete(@PathVariable Long id) {
+        categoriesService.softDelete(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @PostMapping(value = "/{id}/image", consumes = "multipart/form-data")
     public ResponseEntity<CategoryResponseDto> uploadImage(
             @PathVariable Long id,

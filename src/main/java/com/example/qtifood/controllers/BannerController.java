@@ -90,6 +90,16 @@ public class BannerController {
     }
 
     /**
+     * Xóa mềm banner
+     * PUT /api/banners/{id}/soft-delete
+     */
+    @PutMapping("/{id}/soft-delete")
+    public ResponseEntity<Void> softDelete(@PathVariable Long id) {
+        bannerService.softDelete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
      * Upload ảnh cho banner
      * POST /api/banners/{id}/image
      */
