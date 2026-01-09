@@ -42,9 +42,6 @@ out/
 ### Uploads ###
 uploads/
 
-### db ###
-db/
-
 # Google / Firebase service account
 src/main/resources/serviceAccountKey.json
 **/serviceAccountKey.json
