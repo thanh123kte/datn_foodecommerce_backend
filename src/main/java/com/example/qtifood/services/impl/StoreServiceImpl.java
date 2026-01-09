@@ -159,7 +159,7 @@ public class StoreServiceImpl implements StoreService {
     public List<NearbyStoreDto> getNearbyStores(double userLat, double userLng) {
         List<Store> stores = storeRepository.findAll();
         return stores.stream()
-            .filter(s -> s.getLatitude() != null && s.getLongitude() != null)
+            .filter(s -> s.getLatitude() != null && s.getLongitude() != null && s.getStatus() == StoreStatus.ACTIVE)
             .map(s -> {
                 double lat = s.getLatitude().doubleValue();
                 double lng = s.getLongitude().doubleValue();

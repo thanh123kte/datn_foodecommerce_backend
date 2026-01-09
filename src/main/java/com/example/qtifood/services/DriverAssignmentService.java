@@ -20,4 +20,9 @@ public interface DriverAssignmentService {
      * @param orderId ID đơn hàng đã giao thành công
      */
     void processDeliveryPayment(Long orderId);
+
+    /**
+     * Tài xế xác nhận vị trí giao hàng (sai số <= 300m) và hoàn tất đơn
+     */
+    OrderResponseDto verifyDriverLocationAndComplete(Long orderId, double driverLat, double driverLng);
 }
