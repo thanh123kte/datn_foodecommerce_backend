@@ -6,10 +6,12 @@ import com.example.qtifood.dtos.Categories.CategoryResponseDto;
 import com.example.qtifood.entities.Categories;
 import com.example.qtifood.repositories.CategoriesRepository;
 import com.example.qtifood.services.CategoriesService;
+import com.example.qtifood.services.FileUploadService;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,6 +23,7 @@ import java.util.stream.Collectors;
 public class CategoriesServiceImpl implements CategoriesService {
 
     private final CategoriesRepository categoriesRepository;
+    private final FileUploadService fileUploadService;
 
     @Override
     public CategoryResponseDto createCategories(CreateCategoriesDto dto) {
@@ -72,6 +75,54 @@ public class CategoriesServiceImpl implements CategoriesService {
             throw new IllegalArgumentException("Category not found: " + id);
         }
         categoriesRepository.deleteById(id);
+    }
+
+    @Override
+    public CategoryResponseDto uploadImage(Long id, MultipartFile imageFile) {
+        Categories category = categoriesRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Category not found: " + id));
+
+        // Validate file type
+        if (!fileUploadService.isImageFile(imageFile)) {
+            throw new IllegalArgumentException("Only image files are allowed");
+        }
+
+        // Delete old image if exists
+        if (category.getImageUrl() != null && !category.getImageUrl().isEmpty()) {
+            try {
+                fileUploadService.deleteFile(category.getImageUrl());
+            } catch (Exception e) {
+                // Log warning but continue with upload
+                System.err.println("Failed to delete old image: " + e.getMessage());
+            }
+        }
+
+        // Upload new image
+        String imageUrl = fileUploadService.uploadFile(imageFile, "categories", id.toString());
+        category.setImageUrl(imageUrl);
+        category.setUpdatedAt(LocalDateTime.now());
+
+        return toDto(categoriesRepository.save(category));
+    }
+
+    @Override
+    public CategoryResponseDto deleteImage(Long id) {
+        Categories category = categoriesRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Category not found: " + id));
+
+        if (category.getImageUrl() != null && !category.getImageUrl().isEmpty()) {
+            try {
+                fileUploadService.deleteFile(category.getImageUrl());
+            } catch (Exception e) {
+                // Log warning but continue
+                System.err.println("Failed to delete image: " + e.getMessage());
+            }
+        }
+
+        category.setImageUrl(null);
+        category.setUpdatedAt(LocalDateTime.now());
+
+        return toDto(categoriesRepository.save(category));
     }
 
     private CategoryResponseDto toDto(Categories c) {

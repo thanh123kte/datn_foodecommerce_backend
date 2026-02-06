@@ -1,6 +1,8 @@
 // src/main/java/com/example/qtifood/entities/Role.java
 package com.example.qtifood.entities;
 
+import com.example.qtifood.enums.RoleType;
+
 import jakarta.persistence.*;
 import lombok.*;
 

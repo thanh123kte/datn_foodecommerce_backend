@@ -1,9 +1,11 @@
+    // Lấy danh sách cửa hàng gần user, sắp xếp theo khoảng cách tăng dần (km)
+    
 package com.example.qtifood.services;
 
 import java.util.List;
 
 import com.example.qtifood.dtos.Stores.*;
-import com.example.qtifood.entities.StoreStatus;
+import com.example.qtifood.enums.StoreStatus;
 
 public interface StoreService {
     StoreResponseDto createStore(CreateStoreDto dto);
@@ -11,9 +13,18 @@ public interface StoreService {
     void deleteStore(Long id);
 
     List<StoreResponseDto> getAllStores();
-    List<StoreResponseDto> getStoresByOwner(Long ownerId);
+    List<StoreResponseDto> getStoresByOwner(String ownerId);
+    StoreResponseDto getStoreById(Long id);
     List<StoreResponseDto> searchByName(String q);
     List<StoreResponseDto> getStoresByStatus(StoreStatus status);
 
     StoreResponseDto setStatus(Long id, StoreStatus status);
+    
+    StoreResponseDto uploadImage(Long id, org.springframework.web.multipart.MultipartFile imageFile);
+    StoreResponseDto deleteImage(Long id);
+
+    // Increment view count
+    StoreResponseDto incrementView(Long id);
+
+    List<NearbyStoreDto> getNearbyStores(double userLat, double userLng);
 }

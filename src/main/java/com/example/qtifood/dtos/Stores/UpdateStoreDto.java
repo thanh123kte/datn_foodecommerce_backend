@@ -2,7 +2,8 @@ package com.example.qtifood.dtos.Stores;
 
 import java.time.LocalTime;
 
-import com.example.qtifood.entities.StoreStatus;
+import com.example.qtifood.enums.StoreStatus;
+
 import lombok.Data;
 
 @Data

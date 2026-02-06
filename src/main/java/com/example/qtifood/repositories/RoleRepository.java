@@ -2,7 +2,8 @@
 package com.example.qtifood.repositories;
 
 import com.example.qtifood.entities.Role;
-import com.example.qtifood.entities.RoleType;
+import com.example.qtifood.enums.RoleType;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

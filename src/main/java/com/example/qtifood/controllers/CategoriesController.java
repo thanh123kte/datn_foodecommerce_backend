@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.qtifood.dtos.Categories.CategoryResponseDto;
@@ -56,6 +57,25 @@ public class CategoriesController {
     public ResponseEntity<String> deleteCategory(@PathVariable Long id) {
         categoriesService.deleteCategory(id);
         return ResponseEntity.ok("Category " + id + " deleted successfully.");
+    }
+
+    @PostMapping(value = "/{id}/image", consumes = "multipart/form-data")
+    public ResponseEntity<CategoryResponseDto> uploadImage(
+            @PathVariable Long id,
+            @RequestParam("image") org.springframework.web.multipart.MultipartFile imageFile) {
+        
+        if (imageFile.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        
+        CategoryResponseDto updatedCategory = categoriesService.uploadImage(id, imageFile);
+        return ResponseEntity.ok(updatedCategory);
+    }
+
+    @DeleteMapping("/{id}/image")
+    public ResponseEntity<CategoryResponseDto> deleteImage(@PathVariable Long id) {
+        CategoryResponseDto updatedCategory = categoriesService.deleteImage(id);
+        return ResponseEntity.ok(updatedCategory);
     }
 
 }

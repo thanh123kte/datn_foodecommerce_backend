@@ -2,7 +2,7 @@
 package com.example.qtifood.services.impl;
 
 import com.example.qtifood.entities.Role;
-import com.example.qtifood.entities.RoleType;
+import com.example.qtifood.enums.RoleType;
 import com.example.qtifood.repositories.RoleRepository;
 import com.example.qtifood.services.RoleService;
 import lombok.RequiredArgsConstructor;

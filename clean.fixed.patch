@@ -1,0 +1,2346 @@
+diff --git a/src/main/java/com/example/qtifood/controllers/DeliveryController.java b/src/main/java/com/example/qtifood/controllers/DeliveryController.java
+index f480169..841c412 100644
+--- a/src/main/java/com/example/qtifood/controllers/DeliveryController.java
++++ b/src/main/java/com/example/qtifood/controllers/DeliveryController.java
+@@ -3,6 +3,7 @@ package com.example.qtifood.controllers;
+ import com.example.qtifood.dtos.Deliveries.CreateDeliveryDto;
+ import com.example.qtifood.dtos.Deliveries.UpdateDeliveryDto;
+ import com.example.qtifood.dtos.Deliveries.DeliveryResponseDto;
++import com.example.qtifood.dtos.Deliveries.DriverIncomeStatsDto;
+ import com.example.qtifood.enums.DeliveryStatus;
+ import com.example.qtifood.services.DeliveryService;
+ import lombok.RequiredArgsConstructor;
+@@ -66,4 +67,23 @@ public class DeliveryController {
+     public ResponseEntity<DeliveryResponseDto> updateDeliveryStatus(@PathVariable Long id, @RequestParam DeliveryStatus status) {
+         return ResponseEntity.ok(deliveryService.updateDeliveryStatus(id, status));
+     }
++    
++    /**
++     * Thống kê thu nhập của tài xế
++     * @param driverId ID của tài xế
++     * @param period Chu kỳ thống kê: "daily" (hôm nay), "weekly" (tuần này), "monthly" (tháng này)
++     * @return Thống kê chi tiết bao gồm:
++     *   - Tổng số đơn giao
++     *   - Tổng thu nhập
++     *   - Tổng phí ship
++     *   - Tổng quãng đường
++     *   - Thu nhập trung bình/đơn
++     *   - Quãng đường trung bình/đơn
++     */
++    @GetMapping("/driver/{driverId}/income-stats")
++    public ResponseEntity<DriverIncomeStatsDto> getDriverIncomeStats(
++            @PathVariable String driverId,
++            @RequestParam(defaultValue = "daily") String period) {
++        return ResponseEntity.ok(deliveryService.getDriverIncomeStats(driverId, period));
++    }
+ }
+\ No newline at end of file
+diff --git a/src/main/java/com/example/qtifood/controllers/OrderController.java b/src/main/java/com/example/qtifood/controllers/OrderController.java
+index f7241d6..77201c7 100644
+--- a/src/main/java/com/example/qtifood/controllers/OrderController.java
++++ b/src/main/java/com/example/qtifood/controllers/OrderController.java
+@@ -3,8 +3,12 @@ package com.example.qtifood.controllers;
+ import com.example.qtifood.dtos.Orders.CreateOrderDto;
+ import com.example.qtifood.dtos.Orders.UpdateOrderDto;
+ import com.example.qtifood.dtos.Orders.OrderResponseDto;
++import com.example.qtifood.dtos.Orders.SalesStatsDto;
++import com.example.qtifood.dtos.OrderItems.CreateOrderItemDto;
++import com.example.qtifood.dtos.OrderItems.OrderItemResponseDto;
+ import com.example.qtifood.services.DriverAssignmentService;
+ import com.example.qtifood.services.OrderService;
++import com.example.qtifood.services.OrderItemService;
+ import com.example.qtifood.services.FcmService;
+ import com.example.qtifood.enums.OrderStatus;
+ import com.example.qtifood.services.StoreService;
+@@ -13,7 +17,6 @@ import org.springframework.http.ResponseEntity;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ import org.springframework.web.bind.annotation.*;
+-import jakarta.validation.Valid;
+ import java.util.List;
+ import java.util.Map;
+ 
+@@ -23,6 +26,7 @@ import java.util.Map;
+ public class OrderController {
+     private static final Logger log = LoggerFactory.getLogger(OrderController.class);
+     private final OrderService orderService;
++    private final OrderItemService orderItemService;
+     private final FcmService fcmService;
+     private final StoreService storeService;
+     private final DriverAssignmentService driverAssignmentService;
+@@ -102,6 +106,14 @@ public class OrderController {
+         fcmService.sendNotification(order.getCustomerId(), title, body, "ORDER_STATUS", Map.of("orderId", String.valueOf(order.getId()), "status", status.name()));
+         return ResponseEntity.ok(order);
+     }
++
++    // Thống kê số đơn và doanh thu cho seller theo ngày/tuần/tháng
++    @GetMapping("/store/{storeId}/sales-stats")
++    public ResponseEntity<SalesStatsDto> getStoreSalesStats(
++            @PathVariable Long storeId,
++            @RequestParam(defaultValue = "daily") String period) {
++        return ResponseEntity.ok(orderService.getStoreSalesStats(storeId, period));
++    }
+     
+     /**
+      * API tự động gán tài xế cho đơn hàng khi chuyển sang PREPARED
+@@ -141,4 +153,79 @@ public class OrderController {
+                 "orderId", String.valueOf(orderId)
+         ));
+     }
++
++    /**
++     * API dành cho tài xế: xác nhận đã giao hàng
++     * - Cập nhật trạng thái đơn về DELIVERED
++     * - Xử lý thanh toán: cộng tiền cho seller và driver, set driver ONLINE
++     * - Gửi thông báo cho customer, seller, driver
++     */
++    @PostMapping("/{orderId}/driver-delivered")
++    public ResponseEntity<Map<String, String>> driverDelivered(@PathVariable Long orderId) {
++        log.info("[OrderController] Driver confirms delivery: orderId={}", orderId);
++
++        // 1) Update order status to DELIVERED
++        OrderResponseDto order = orderService.updateOrderStatus(orderId, OrderStatus.DELIVERED.name());
++        log.info("[OrderController] Order marked DELIVERED: orderId={}", orderId);
++
++        // 2) Process delivery payment (credit wallets, driver ONLINE)
++        driverAssignmentService.processDeliveryPayment(orderId);
++        log.info("[OrderController] Delivery payment processed: orderId={}", orderId);
++
++        // 3) Send notifications
++        try {
++            // Customer notification
++            String titleCustomer = "Đơn hàng đã giao";
++            String bodyCustomer = "Đơn hàng #" + orderId + " của bạn đã được giao thành công";
++            fcmService.sendNotification(order.getCustomerId(), titleCustomer, bodyCustomer, "ORDER_DELIVERED",
++                    Map.of("orderId", String.valueOf(orderId), "status", OrderStatus.DELIVERED.name()));
++
++            // Seller notification
++            String titleSeller = "Đơn hàng đã giao thành công";
++            String bodySeller = "Đơn hàng #" + orderId + " đã giao, doanh thu đã được cộng";
++            String sellerId = null;
++            try {
++                sellerId = storeService.getStoreById(order.getStoreId()).getOwnerId();
++            } catch (Exception e) {
++                log.error("[OrderController] Không lấy được ownerId của storeId={}: {}", order.getStoreId(), e.getMessage());
++            }
++            if (sellerId != null) {
++                fcmService.sendNotification(sellerId, titleSeller, bodySeller, "ORDER_DELIVERED",
++                        Map.of("orderId", String.valueOf(orderId)));
++            }
++
++            // Driver notification
++            if (order.getDriverId() != null) {
++                String titleDriver = "Đã ghi nhận giao hàng";
++                String bodyDriver = "Đơn #" + orderId + ": phí giao hàng đã cộng và trạng thái về ONLINE";
++                fcmService.sendNotification(order.getDriverId(), titleDriver, bodyDriver, "DELIVERY_CONFIRMED",
++                        Map.of("orderId", String.valueOf(orderId)));
++            }
++        } catch (Exception e) {
++            log.error("[OrderController] Failed to send delivery notifications for orderId={}: {}", orderId, e.getMessage());
++        }
++
++        return ResponseEntity.ok(Map.of(
++                "status", "success",
++                "message", "Order delivered and payments processed",
++                "orderId", String.valueOf(orderId)
++        ));
++    }
++
++    /**
++     * Thêm order items vào đơn hàng đã tồn tại
++     * 
++     * @param orderId ID đơn hàng cần thêm items
++     * @param items Danh sách items cần thêm
++     * @return Danh sách order items đã được tạo
++     */
++    @PostMapping("/{orderId}/items")
++    public ResponseEntity<List<OrderItemResponseDto>> addItemsToOrder(
++            @PathVariable Long orderId,
++            @RequestBody List<CreateOrderItemDto> items) {
++        log.info("[OrderController] Nhận yêu cầu thêm items vào order: orderId={}, itemsCount={}", orderId, items.size());
++        List<OrderItemResponseDto> result = orderItemService.addItemsToOrder(orderId, items);
++        log.info("[OrderController] Đã thêm {} items vào order: orderId={}", result.size(), orderId);
++        return ResponseEntity.ok(result);
++    }
+ }
+diff --git a/src/main/java/com/example/qtifood/controllers/OrderItemController.java b/src/main/java/com/example/qtifood/controllers/OrderItemController.java
+index ef48c4e..bfb9bed 100644
+--- a/src/main/java/com/example/qtifood/controllers/OrderItemController.java
++++ b/src/main/java/com/example/qtifood/controllers/OrderItemController.java
+@@ -20,6 +20,11 @@ public class OrderItemController {
+         return ResponseEntity.ok(orderItemService.createOrderItem(dto));
+     }
+ 
++    @PostMapping("/bulk")
++    public ResponseEntity<List<OrderItemResponseDto>> createOrderItems(@RequestBody List<CreateOrderItemDto> dtos) {
++        return ResponseEntity.ok(orderItemService.createOrderItems(dtos));
++    }
++
+     @PutMapping("/{id}")
+     public ResponseEntity<OrderItemResponseDto> updateOrderItem(@PathVariable Long id, @RequestBody UpdateOrderItemDto dto) {
+         return ResponseEntity.ok(orderItemService.updateOrderItem(id, dto));
+diff --git a/src/main/java/com/example/qtifood/controllers/ShippingController.java b/src/main/java/com/example/qtifood/controllers/ShippingController.java
+new file mode 100644
+index 0000000..c6284d5
+--- /dev/null
++++ b/src/main/java/com/example/qtifood/controllers/ShippingController.java
+@@ -0,0 +1,54 @@
++package com.example.qtifood.controllers;
++
++import com.example.qtifood.dtos.Shipping.ShippingFeeRequestDto;
++import com.example.qtifood.dtos.Shipping.ShippingFeeResponseDto;
++import com.example.qtifood.services.ShippingService;
++import lombok.RequiredArgsConstructor;
++import org.springframework.http.ResponseEntity;
++import org.springframework.web.bind.annotation.*;
++
++@RestController
++@RequestMapping("/api/shipping")
++@RequiredArgsConstructor
++public class ShippingController {
++    
++    
++    private final ShippingService shippingService;
++    
++    /**
++     * Tính phí ship dựa vào tọa độ quán và địa chỉ nhận
++     * 
++     * @param request chứa:
++     *   - storeLatitude: vĩ độ quán
++     *   - storeLongitude: kinh độ quán
++     *   - recipientLatitude: vĩ độ địa chỉ nhận
++     *   - recipientLongitude: kinh độ địa chỉ nhận
++     * @return phí ship chi tiết gồm:
++     *   - distanceKm: khoảng cách
++     *   - baseFee: phí cơ bản (15k)
++     *   - additionalFee: phí bổ sung dựa vào khoảng cách
++     *   - totalFee: tổng phí
++     *   - description: mô tả chi tiết cách tính
++     */
++    @PostMapping("/calculate-fee")
++    public ResponseEntity<ShippingFeeResponseDto> calculateShippingFee(
++            @RequestBody ShippingFeeRequestDto request) {
++        
++        ShippingFeeResponseDto response = shippingService.calculateShippingFee(request);
++        return ResponseEntity.ok(response);
++    }
++    
++    /**
++     * Tính khoảng cách giữa 2 điểm (cho debug)
++     */
++    @GetMapping("/distance")
++    public ResponseEntity<Double> getDistance(
++            @RequestParam Double lat1,
++            @RequestParam Double lon1,
++            @RequestParam Double lat2,
++            @RequestParam Double lon2) {
++        
++        double distance = shippingService.calculateDistance(lat1, lon1, lat2, lon2);
++        return ResponseEntity.ok(distance);
++    }
++}
+diff --git a/src/main/java/com/example/qtifood/controllers/StoreController.java b/src/main/java/com/example/qtifood/controllers/StoreController.java
+index 6577773..c09ab7b 100644
+--- a/src/main/java/com/example/qtifood/controllers/StoreController.java
++++ b/src/main/java/com/example/qtifood/controllers/StoreController.java
+@@ -92,4 +92,12 @@ public class StoreController {
+         StoreResponseDto updatedStore = storeService.deleteImage(id);
+         return ResponseEntity.ok(updatedStore);
+     }
++
++    /**
++     * Tăng lượt xem store khi user mở chi tiết
++     */
++    @PostMapping("/{id}/view")
++    public ResponseEntity<StoreResponseDto> incrementView(@PathVariable Long id) {
++        return ResponseEntity.ok(storeService.incrementView(id));
++    }
+ }
+diff --git a/src/main/java/com/example/qtifood/controllers/VoucherController.java b/src/main/java/com/example/qtifood/controllers/VoucherController.java
+index 33228ae..82c2f82 100644
+--- a/src/main/java/com/example/qtifood/controllers/VoucherController.java
++++ b/src/main/java/com/example/qtifood/controllers/VoucherController.java
+@@ -49,4 +49,44 @@ public class VoucherController {
+     public ResponseEntity<List<VoucherResponseDto>> getBySeller(@PathVariable Long sellerId) {
+         return ResponseEntity.ok(service.getBySeller(sellerId));
+     }
++
++    /**
++     * Validate voucher bằng code - Kiểm tra hợp lệ, hết hạn, usage
++     */
++    @GetMapping("/validate/{code}")
++    public ResponseEntity<VoucherResponseDto> validateVoucher(@PathVariable String code) {
++        return ResponseEntity.ok(service.validateVoucher(code));
++    }
++
++    /**
++     * Tăng lượt sử dụng - Gọi khi user apply voucher
++     */
++    @PostMapping("/{id}/increment-usage")
++    public ResponseEntity<VoucherResponseDto> incrementUsage(@PathVariable Long id) {
++        return ResponseEntity.ok(service.incrementUsage(id));
++    }
++
++    /**
++     * Giảm lượt sử dụng - Gọi khi user hủy đơn hoặc rollback
++     */
++    @PostMapping("/{id}/decrement-usage")
++    public ResponseEntity<VoucherResponseDto> decrementUsage(@PathVariable Long id) {
++        return ResponseEntity.ok(service.decrementUsage(id));
++    }
++
++    /**
++     * Kiểm tra voucher đã hết hạn chưa
++     */
++    @GetMapping("/{id}/is-expired")
++    public ResponseEntity<Boolean> isExpired(@PathVariable Long id) {
++        return ResponseEntity.ok(service.isVoucherExpired(id));
++    }
++
++    /**
++     * Kiểm tra voucher đã hết lượt sử dụng chưa
++     */
++    @GetMapping("/{id}/is-usage-limit-reached")
++    public ResponseEntity<Boolean> isUsageLimitReached(@PathVariable Long id) {
++        return ResponseEntity.ok(service.isVoucherUsageLimitReached(id));
++    }
+ }
+diff --git a/src/main/java/com/example/qtifood/controllers/WalletController.java b/src/main/java/com/example/qtifood/controllers/WalletController.java
+index 29ade4e..ad79ae5 100644
+--- a/src/main/java/com/example/qtifood/controllers/WalletController.java
++++ b/src/main/java/com/example/qtifood/controllers/WalletController.java
+@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
+ import com.example.qtifood.dtos.Wallets.*;
+ import com.example.qtifood.enums.TransactionType;
+ import com.example.qtifood.services.WalletService;
++import com.example.qtifood.entities.WalletTransaction;
+ 
+ 
+ import jakarta.validation.Valid;
+@@ -58,6 +59,55 @@ public class WalletController {
+                 request.getBankAccount(), request.getDescription());
+         return ResponseEntity.ok(wallet);
+     }
++
++    /**
++     * Admin duyệt rút tiền
++     */
++    @PostMapping("/admin/withdrawals/{transactionId}/approve")
++    public ResponseEntity<WalletTransactionResponseDto> approveWithdrawal(
++            @PathVariable Long transactionId) {
++        WalletTransaction tx = walletService.approveWithdrawal(transactionId);
++        WalletTransactionResponseDto dto = WalletTransactionResponseDto.builder()
++            .id(tx.getId())
++            .walletId(tx.getWallet().getId())
++            .userId(tx.getWallet().getUser().getId())
++            .transactionType(tx.getTransactionType())
++            .status(tx.getStatus())
++            .amount(tx.getAmount())
++            .balanceBefore(tx.getBalanceBefore())
++            .balanceAfter(tx.getBalanceAfter())
++            .description(tx.getDescription())
++            .referenceId(tx.getReferenceId())
++            .referenceType(tx.getReferenceType())
++            .createdAt(tx.getCreatedAt())
++            .build();
++        return ResponseEntity.ok(dto);
++    }
++
++    /**
++     * Admin từ chối rút tiền
++     */
++    @PostMapping("/admin/withdrawals/{transactionId}/reject")
++    public ResponseEntity<WalletTransactionResponseDto> rejectWithdrawal(
++            @PathVariable Long transactionId,
++            @RequestParam String reason) {
++        WalletTransaction tx = walletService.rejectWithdrawal(transactionId, reason);
++        WalletTransactionResponseDto dto = WalletTransactionResponseDto.builder()
++            .id(tx.getId())
++            .walletId(tx.getWallet().getId())
++            .userId(tx.getWallet().getUser().getId())
++            .transactionType(tx.getTransactionType())
++            .status(tx.getStatus())
++            .amount(tx.getAmount())
++            .balanceBefore(tx.getBalanceBefore())
++            .balanceAfter(tx.getBalanceAfter())
++            .description(tx.getDescription())
++            .referenceId(tx.getReferenceId())
++            .referenceType(tx.getReferenceType())
++            .createdAt(tx.getCreatedAt())
++            .build();
++        return ResponseEntity.ok(dto);
++    }
+     
+     /**
+      * Get transaction history for a user (all transactions)
+diff --git a/src/main/java/com/example/qtifood/dtos/Deliveries/CreateDeliveryDto.java b/src/main/java/com/example/qtifood/dtos/Deliveries/CreateDeliveryDto.java
+index 64f7636..094d43c 100644
+--- a/src/main/java/com/example/qtifood/dtos/Deliveries/CreateDeliveryDto.java
++++ b/src/main/java/com/example/qtifood/dtos/Deliveries/CreateDeliveryDto.java
+@@ -7,9 +7,12 @@ import java.math.BigDecimal;
+ public class CreateDeliveryDto {
+     private Long orderId;
+     private String driverId;
+-    private Double pickupLat;
+-    private Double pickupLng;
+-    private Double dropoffLat;
+-    private Double dropoffLng;
+     private BigDecimal distanceKm;
++    private BigDecimal goodsAmount;
++    private BigDecimal shippingFee;
++    private BigDecimal driverIncome;
++    private com.example.qtifood.enums.PaymentMethod paymentMethod;
++    private String storeName;
++    private String shippingAddress;
++    private String customerName;
+ }
+\ No newline at end of file
+diff --git a/src/main/java/com/example/qtifood/dtos/Deliveries/DeliveryResponseDto.java b/src/main/java/com/example/qtifood/dtos/Deliveries/DeliveryResponseDto.java
+index a84be88..48d35cb 100644
+--- a/src/main/java/com/example/qtifood/dtos/Deliveries/DeliveryResponseDto.java
++++ b/src/main/java/com/example/qtifood/dtos/Deliveries/DeliveryResponseDto.java
+@@ -11,11 +11,14 @@ public class DeliveryResponseDto {
+     private Long orderId;
+     private String driverId;
+     private String driverName;
+-    private Double pickupLat;
+-    private Double pickupLng;
+-    private Double dropoffLat;
+-    private Double dropoffLng;
+     private BigDecimal distanceKm;
++    private BigDecimal goodsAmount;
++    private BigDecimal shippingFee;
++    private BigDecimal driverIncome;
++    private com.example.qtifood.enums.PaymentMethod paymentMethod;
++    private String storeName;
++    private String shippingAddress;
++    private String customerName;
+     private DeliveryStatus status;
+     private LocalDateTime startedAt;
+     private LocalDateTime completedAt;
+diff --git a/src/main/java/com/example/qtifood/dtos/Deliveries/DriverIncomeStatsDto.java b/src/main/java/com/example/qtifood/dtos/Deliveries/DriverIncomeStatsDto.java
+new file mode 100644
+index 0000000..572fa25
+--- /dev/null
++++ b/src/main/java/com/example/qtifood/dtos/Deliveries/DriverIncomeStatsDto.java
+@@ -0,0 +1,25 @@
++package com.example.qtifood.dtos.Deliveries;
++
++import lombok.AllArgsConstructor;
++import lombok.Builder;
++import lombok.Data;
++import lombok.NoArgsConstructor;
++
++import java.math.BigDecimal;
++import java.time.LocalDateTime;
++
++@Data
++@Builder
++@NoArgsConstructor
++@AllArgsConstructor
++public class DriverIncomeStatsDto {
++    private String period; // "daily", "weekly", "monthly"
++    private LocalDateTime startDate;
++    private LocalDateTime endDate;
++    private Integer totalDeliveries;
++    private BigDecimal totalIncome;
++    private BigDecimal totalShippingFee;
++    private BigDecimal totalDistance;
++    private BigDecimal averageIncomePerDelivery;
++    private BigDecimal averageDistancePerDelivery;
++}
+diff --git a/src/main/java/com/example/qtifood/dtos/Deliveries/UpdateDeliveryDto.java b/src/main/java/com/example/qtifood/dtos/Deliveries/UpdateDeliveryDto.java
+index 7ce54f1..0e271f5 100644
+--- a/src/main/java/com/example/qtifood/dtos/Deliveries/UpdateDeliveryDto.java
++++ b/src/main/java/com/example/qtifood/dtos/Deliveries/UpdateDeliveryDto.java
+@@ -8,11 +8,14 @@ import com.example.qtifood.enums.DeliveryStatus;
+ @Data
+ public class UpdateDeliveryDto {
+     private String driverId;
+-    private Double pickupLat;
+-    private Double pickupLng;
+-    private Double dropoffLat;
+-    private Double dropoffLng;
+     private BigDecimal distanceKm;
++    private BigDecimal goodsAmount;
++    private BigDecimal shippingFee;
++    private BigDecimal driverIncome;
++    private com.example.qtifood.enums.PaymentMethod paymentMethod;
++    private String storeName;
++    private String shippingAddress;
++    private String customerName;
+     private DeliveryStatus status;
+     private LocalDateTime startedAt;
+     private LocalDateTime completedAt;
+diff --git a/src/main/java/com/example/qtifood/dtos/OrderItems/CreateOrderItemDto.java b/src/main/java/com/example/qtifood/dtos/OrderItems/CreateOrderItemDto.java
+index 65e9555..a4d1ddc 100644
+--- a/src/main/java/com/example/qtifood/dtos/OrderItems/CreateOrderItemDto.java
++++ b/src/main/java/com/example/qtifood/dtos/OrderItems/CreateOrderItemDto.java
+@@ -3,16 +3,21 @@ package com.example.qtifood.dtos.OrderItems;
+ import lombok.Data;
+ import jakarta.validation.constraints.NotNull;
+ import jakarta.validation.constraints.Positive;
++import java.math.BigDecimal;
+ 
+ @Data
+ public class CreateOrderItemDto {
+-    // orderId will be set by server when creating order items
++    @NotNull(message = "Order ID is required")
++    private Long orderId;
++
+     @NotNull(message = "Product ID is required")
+     private Long productId;
+-    
++
+     @NotNull(message = "Quantity is required")
+     @Positive(message = "Quantity must be positive")
+     private Integer quantity;
+-    
+-    // price will be fetched from product by server to prevent manipulation
++
++    @NotNull(message = "Price is required")
++    @Positive(message = "Price must be positive")
++    private BigDecimal price;
+ }
+\ No newline at end of file
+diff --git a/src/main/java/com/example/qtifood/dtos/Orders/CreateOrderDto.java b/src/main/java/com/example/qtifood/dtos/Orders/CreateOrderDto.java
+index 5bacdb6..2b93f74 100644
+--- a/src/main/java/com/example/qtifood/dtos/Orders/CreateOrderDto.java
++++ b/src/main/java/com/example/qtifood/dtos/Orders/CreateOrderDto.java
+@@ -27,7 +27,4 @@ public class CreateOrderDto {
+     
+     private String note;
+     
+-    @NotEmpty(message = "Order must have at least one item")
+-    @Valid
+-    private List<CreateOrderItemDto> items; 
+ }
+diff --git a/src/main/java/com/example/qtifood/dtos/Orders/SalesStatsDto.java b/src/main/java/com/example/qtifood/dtos/Orders/SalesStatsDto.java
+new file mode 100644
+index 0000000..3708aa6
+--- /dev/null
++++ b/src/main/java/com/example/qtifood/dtos/Orders/SalesStatsDto.java
+@@ -0,0 +1,23 @@
++package com.example.qtifood.dtos.Orders;
++
++import lombok.AllArgsConstructor;
++import lombok.Builder;
++import lombok.Data;
++import lombok.NoArgsConstructor;
++
++import java.math.BigDecimal;
++import java.time.LocalDateTime;
++
++@Data
++@Builder
++@NoArgsConstructor
++@AllArgsConstructor
++public class SalesStatsDto {
++    private String period;           // daily | weekly | monthly
++    private LocalDateTime startDate;
++    private LocalDateTime endDate;
++    private Long totalOrders;
++    private BigDecimal totalRevenue;
++    private Long storeViewCount;
++    private Long storeLikeCount;
++}
+diff --git a/src/main/java/com/example/qtifood/dtos/Shipping/ShippingFeeRequestDto.java b/src/main/java/com/example/qtifood/dtos/Shipping/ShippingFeeRequestDto.java
+new file mode 100644
+index 0000000..472e025
+--- /dev/null
++++ b/src/main/java/com/example/qtifood/dtos/Shipping/ShippingFeeRequestDto.java
+@@ -0,0 +1,10 @@
++package com.example.qtifood.dtos.Shipping;
++
++import java.math.BigDecimal;
++
++public record ShippingFeeRequestDto(
++        BigDecimal storeLatitude,
++        BigDecimal storeLongitude,
++        BigDecimal recipientLatitude,
++        BigDecimal recipientLongitude
++) {}
+diff --git a/src/main/java/com/example/qtifood/dtos/Shipping/ShippingFeeResponseDto.java b/src/main/java/com/example/qtifood/dtos/Shipping/ShippingFeeResponseDto.java
+new file mode 100644
+index 0000000..1aaec9f
+--- /dev/null
++++ b/src/main/java/com/example/qtifood/dtos/Shipping/ShippingFeeResponseDto.java
+@@ -0,0 +1,11 @@
++package com.example.qtifood.dtos.Shipping;
++
++import java.math.BigDecimal;
++
++public record ShippingFeeResponseDto(
++        Double distanceKm,
++        BigDecimal baseFee,
++        BigDecimal additionalFee,
++        BigDecimal totalFee,
++        String description
++) {}
+diff --git a/src/main/java/com/example/qtifood/dtos/Stores/StoreResponseDto.java b/src/main/java/com/example/qtifood/dtos/Stores/StoreResponseDto.java
+index 7435562..6034c36 100644
+--- a/src/main/java/com/example/qtifood/dtos/Stores/StoreResponseDto.java
++++ b/src/main/java/com/example/qtifood/dtos/Stores/StoreResponseDto.java
+@@ -26,6 +26,7 @@ public class StoreResponseDto {
+     private OpenStatus opStatus;
+     private LocalTime openTime;
+     private LocalTime closeTime;
++    private Long viewCount;
+     private LocalDateTime createdAt;
+     private LocalDateTime updatedAt;
+ }
+diff --git a/src/main/java/com/example/qtifood/dtos/Voucher/VoucherResponseDto.java b/src/main/java/com/example/qtifood/dtos/Voucher/VoucherResponseDto.java
+index 7114249..32eefe9 100644
+--- a/src/main/java/com/example/qtifood/dtos/Voucher/VoucherResponseDto.java
++++ b/src/main/java/com/example/qtifood/dtos/Voucher/VoucherResponseDto.java
+@@ -19,6 +19,7 @@ public record VoucherResponseDto(
+         LocalDateTime startDate,
+         LocalDateTime endDate,
+         Integer usageLimit,
++        Integer usageCount,
+         Long sellerId,
+         String sellerName,
+         DiscountStatus status,
+diff --git a/src/main/java/com/example/qtifood/dtos/Wallets/WalletTransactionResponseDto.java b/src/main/java/com/example/qtifood/dtos/Wallets/WalletTransactionResponseDto.java
+index 6339104..10cf8cd 100644
+--- a/src/main/java/com/example/qtifood/dtos/Wallets/WalletTransactionResponseDto.java
++++ b/src/main/java/com/example/qtifood/dtos/Wallets/WalletTransactionResponseDto.java
+@@ -2,6 +2,7 @@ package com.example.qtifood.dtos.Wallets;
+ 
+ import java.math.BigDecimal;
+ import java.time.LocalDateTime;
++import com.example.qtifood.enums.TransactionStatus;
+ 
+ import com.example.qtifood.enums.TransactionType;
+ 
+@@ -19,6 +20,7 @@ public class WalletTransactionResponseDto {
+     private Long walletId;
+     private String userId;
+     private TransactionType transactionType;
++    private TransactionStatus status;
+     private BigDecimal amount;
+     private BigDecimal balanceBefore;
+     private BigDecimal balanceAfter;
+diff --git a/src/main/java/com/example/qtifood/entities/Delivery.java b/src/main/java/com/example/qtifood/entities/Delivery.java
+index 969d480..f8c9359 100644
+--- a/src/main/java/com/example/qtifood/entities/Delivery.java
++++ b/src/main/java/com/example/qtifood/entities/Delivery.java
+@@ -35,20 +35,32 @@ public class Delivery {
+     )
+     private Driver driver;
+ 
+-    @Column(name = "pickup_lat")
+-    private Double pickupLat;
++    @Column(name = "distance_km", precision = 6, scale = 2)
++    private BigDecimal distanceKm;
+ 
+-    @Column(name = "pickup_lng")
+-    private Double pickupLng;
++    // Snapshot thông tin đơn để driver xem lịch sử
++    @Column(name = "goods_amount", precision = 12, scale = 2)
++    private BigDecimal goodsAmount;
+ 
+-    @Column(name = "dropoff_lat")
+-    private Double dropoffLat;
++    @Column(name = "shipping_fee", precision = 12, scale = 2)
++    private BigDecimal shippingFee;
+ 
+-    @Column(name = "dropoff_lng")
+-    private Double dropoffLng;
++    @Column(name = "driver_income", precision = 12, scale = 2)
++    private BigDecimal driverIncome;
++
++    @Enumerated(EnumType.STRING)
++    @Column(name = "payment_method")
++    private com.example.qtifood.enums.PaymentMethod paymentMethod;
++
++    @Column(name = "store_name")
++    private String storeName;
++
++    @Column(name = "shipping_address", columnDefinition = "TEXT")
++    private String shippingAddress;
++
++    @Column(name = "customer_name")
++    private String customerName;
+ 
+-    @Column(name = "distance_km", precision = 6, scale = 2)
+-    private BigDecimal distanceKm;
+ 
+     @Enumerated(EnumType.STRING)
+     @Column(name = "status", nullable = false)
+diff --git a/src/main/java/com/example/qtifood/entities/Product.java b/src/main/java/com/example/qtifood/entities/Product.java
+index 4f7d7f8..e2c3ee1 100644
+--- a/src/main/java/com/example/qtifood/entities/Product.java
++++ b/src/main/java/com/example/qtifood/entities/Product.java
+@@ -19,7 +19,7 @@ import lombok.*;
+     name = "products",
+     indexes = {
+         @Index(name = "idx_products_store_id", columnList = "store_id"),
+-        @Index(name = "idx_products_category_id", columnList = "category_id"),
++        @Index(name = "idx_products_store_category_id", columnList = "store_category_id"),
+         @Index(name = "idx_products_status", columnList = "status")
+     }
+ )
+diff --git a/src/main/java/com/example/qtifood/entities/Store.java b/src/main/java/com/example/qtifood/entities/Store.java
+index f634d1f..79a97dc 100644
+--- a/src/main/java/com/example/qtifood/entities/Store.java
++++ b/src/main/java/com/example/qtifood/entities/Store.java
+@@ -80,6 +80,10 @@ public class Store {
+     @Column(name = "close_time")
+     private LocalTime closeTime;
+ 
++    @Column(name = "view_count", nullable = false)
++    @Builder.Default
++    private Long viewCount = 0L;
++
+     @CreationTimestamp
+     @Column(name = "created_at", updatable = false)
+     private LocalDateTime createdAt;
+diff --git a/src/main/java/com/example/qtifood/entities/Voucher.java b/src/main/java/com/example/qtifood/entities/Voucher.java
+index cda4860..821821d 100644
+--- a/src/main/java/com/example/qtifood/entities/Voucher.java
++++ b/src/main/java/com/example/qtifood/entities/Voucher.java
+@@ -56,6 +56,10 @@ public class Voucher {
+     @Column(name = "usage_limit")
+     private Integer usageLimit;
+ 
++    @Column(name = "usage_count")
++    @Builder.Default
++    private Integer usageCount = 0;
++
+     @ManyToOne(fetch = FetchType.LAZY, optional = true)
+     @JoinColumn(
+         name = "seller_id",
+diff --git a/src/main/java/com/example/qtifood/entities/WalletTransaction.java b/src/main/java/com/example/qtifood/entities/WalletTransaction.java
+index e56e94a..4006e3c 100644
+--- a/src/main/java/com/example/qtifood/entities/WalletTransaction.java
++++ b/src/main/java/com/example/qtifood/entities/WalletTransaction.java
+@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
+ import org.hibernate.annotations.CreationTimestamp;
+ 
+ import com.example.qtifood.enums.TransactionType;
++import com.example.qtifood.enums.TransactionStatus;
+ 
+ import jakarta.persistence.*;
+ import lombok.*;
+@@ -32,6 +33,10 @@ public class WalletTransaction {
+     @Enumerated(EnumType.STRING)
+     @Column(nullable = false)
+     private TransactionType transactionType;
++
++    @Enumerated(EnumType.STRING)
++    @Column(name = "status", nullable = false)
++    private TransactionStatus status;
+     
+     @Column(nullable = false, precision = 15, scale = 2)
+     private BigDecimal amount;
+diff --git a/src/main/java/com/example/qtifood/enums/TransactionStatus.java b/src/main/java/com/example/qtifood/enums/TransactionStatus.java
+new file mode 100644
+index 0000000..38a318e
+--- /dev/null
++++ b/src/main/java/com/example/qtifood/enums/TransactionStatus.java
+@@ -0,0 +1,8 @@
++package com.example.qtifood.enums;
++
++public enum TransactionStatus {
++    PENDING,
++    APPROVED,
++    SUCCESSFUL,
++    REJECTED
++}
+diff --git a/src/main/java/com/example/qtifood/enums/TransactionType.java b/src/main/java/com/example/qtifood/enums/TransactionType.java
+index b404cc8..799ad38 100644
+--- a/src/main/java/com/example/qtifood/enums/TransactionType.java
++++ b/src/main/java/com/example/qtifood/enums/TransactionType.java
+@@ -1,9 +1,10 @@
+ package com.example.qtifood.enums;
+ 
+ public enum TransactionType {
+-    DEPOSIT,   // Nạp tiền
+-    WITHDRAW,  // Rút tiền
+-    EARN,      // Thu nhập
+-    REFUND,    // Hoàn tiền
+-    PAYMENT    // Thanh toán
++    DEPOSIT,        // Nạp tiền
++    WITHDRAW,       // Rút tiền
++    EARN,           // Thu nhập (từ hệ thống tự động)
++    MANUAL_INCOME,  // Thu nhập thủ công (COD, tiền mặt)
++    REFUND,         // Hoàn tiền
++    PAYMENT         // Thanh toán
+ }
+\ No newline at end of file
+diff --git a/src/main/java/com/example/qtifood/mappers/DeliveryMapper.java b/src/main/java/com/example/qtifood/mappers/DeliveryMapper.java
+index 2a91487..7b1fd23 100644
+--- a/src/main/java/com/example/qtifood/mappers/DeliveryMapper.java
++++ b/src/main/java/com/example/qtifood/mappers/DeliveryMapper.java
+@@ -11,11 +11,14 @@ public class DeliveryMapper {
+     
+     public Delivery toEntity(CreateDeliveryDto dto) {
+         Delivery delivery = new Delivery();
+-        delivery.setPickupLat(dto.getPickupLat());
+-        delivery.setPickupLng(dto.getPickupLng());
+-        delivery.setDropoffLat(dto.getDropoffLat());
+-        delivery.setDropoffLng(dto.getDropoffLng());
+         delivery.setDistanceKm(dto.getDistanceKm());
++        delivery.setGoodsAmount(dto.getGoodsAmount());
++        delivery.setShippingFee(dto.getShippingFee());
++        delivery.setDriverIncome(dto.getDriverIncome());
++        delivery.setPaymentMethod(dto.getPaymentMethod());
++        delivery.setStoreName(dto.getStoreName());
++        delivery.setShippingAddress(dto.getShippingAddress());
++        delivery.setCustomerName(dto.getCustomerName());
+         return delivery;
+     }
+     
+@@ -25,11 +28,14 @@ public class DeliveryMapper {
+         dto.setOrderId(delivery.getOrder() != null ? delivery.getOrder().getId() : null);
+         dto.setDriverId(delivery.getDriver() != null ? delivery.getDriver().getId() : null);
+         dto.setDriverName(delivery.getDriver() != null ? delivery.getDriver().getFullName() : null);
+-        dto.setPickupLat(delivery.getPickupLat());
+-        dto.setPickupLng(delivery.getPickupLng());
+-        dto.setDropoffLat(delivery.getDropoffLat());
+-        dto.setDropoffLng(delivery.getDropoffLng());
+         dto.setDistanceKm(delivery.getDistanceKm());
++        dto.setGoodsAmount(delivery.getGoodsAmount());
++        dto.setShippingFee(delivery.getShippingFee());
++        dto.setDriverIncome(delivery.getDriverIncome());
++        dto.setPaymentMethod(delivery.getPaymentMethod());
++        dto.setStoreName(delivery.getStoreName());
++        dto.setShippingAddress(delivery.getShippingAddress());
++        dto.setCustomerName(delivery.getCustomerName());
+         dto.setStatus(delivery.getStatus());
+         dto.setStartedAt(delivery.getStartedAt());
+         dto.setCompletedAt(delivery.getCompletedAt());
+@@ -37,11 +43,14 @@ public class DeliveryMapper {
+     }
+     
+     public void updateDeliveryFromDto(UpdateDeliveryDto dto, Delivery delivery) {
+-        if (dto.getPickupLat() != null) delivery.setPickupLat(dto.getPickupLat());
+-        if (dto.getPickupLng() != null) delivery.setPickupLng(dto.getPickupLng());
+-        if (dto.getDropoffLat() != null) delivery.setDropoffLat(dto.getDropoffLat());
+-        if (dto.getDropoffLng() != null) delivery.setDropoffLng(dto.getDropoffLng());
+         if (dto.getDistanceKm() != null) delivery.setDistanceKm(dto.getDistanceKm());
++        if (dto.getGoodsAmount() != null) delivery.setGoodsAmount(dto.getGoodsAmount());
++        if (dto.getShippingFee() != null) delivery.setShippingFee(dto.getShippingFee());
++        if (dto.getDriverIncome() != null) delivery.setDriverIncome(dto.getDriverIncome());
++        if (dto.getPaymentMethod() != null) delivery.setPaymentMethod(dto.getPaymentMethod());
++        if (dto.getStoreName() != null) delivery.setStoreName(dto.getStoreName());
++        if (dto.getShippingAddress() != null) delivery.setShippingAddress(dto.getShippingAddress());
++        if (dto.getCustomerName() != null) delivery.setCustomerName(dto.getCustomerName());
+         if (dto.getStatus() != null) delivery.setStatus(dto.getStatus());
+         if (dto.getStartedAt() != null) delivery.setStartedAt(dto.getStartedAt());
+         if (dto.getCompletedAt() != null) delivery.setCompletedAt(dto.getCompletedAt());
+diff --git a/src/main/java/com/example/qtifood/mappers/OrderItemMapper.java b/src/main/java/com/example/qtifood/mappers/OrderItemMapper.java
+index c774be1..d8fc779 100644
+--- a/src/main/java/com/example/qtifood/mappers/OrderItemMapper.java
++++ b/src/main/java/com/example/qtifood/mappers/OrderItemMapper.java
+@@ -15,7 +15,7 @@ public class OrderItemMapper {
+     public OrderItem toEntity(CreateOrderItemDto dto) {
+         OrderItem orderItem = new OrderItem();
+         orderItem.setQuantity(dto.getQuantity());
+-        // price will be set from product entity in service layer
++        orderItem.setPrice(dto.getPrice());
+         return orderItem;
+     }
+     
+diff --git a/src/main/java/com/example/qtifood/mappers/OrderMapper.java b/src/main/java/com/example/qtifood/mappers/OrderMapper.java
+index 1176425..c0ad937 100644
+--- a/src/main/java/com/example/qtifood/mappers/OrderMapper.java
++++ b/src/main/java/com/example/qtifood/mappers/OrderMapper.java
+@@ -17,7 +17,9 @@ public class OrderMapper {
+     
+     public Order toEntity(CreateOrderDto dto) {
+         Order order = new Order();
+-        // totalAmount, shippingFee, expectedDeliveryTime will be calculated by service
++        // Map totalAmount and shippingFee from DTO (calculated by frontend)
++        order.setTotalAmount(dto.getTotalAmount());
++        order.setShippingFee(dto.getShippingFee());
+         order.setAdminVoucherId(dto.getAdminVoucherId());
+         order.setSellerVoucherId(dto.getSellerVoucherId());
+         order.setPaymentMethod(dto.getPaymentMethod());
+diff --git a/src/main/java/com/example/qtifood/mappers/StoreMapper.java b/src/main/java/com/example/qtifood/mappers/StoreMapper.java
+index 58f603f..e508ad5 100644
+--- a/src/main/java/com/example/qtifood/mappers/StoreMapper.java
++++ b/src/main/java/com/example/qtifood/mappers/StoreMapper.java
+@@ -23,6 +23,7 @@ public class StoreMapper {
+             .opStatus(s.getOpStatus())
+             .openTime(s.getOpenTime())  
+             .closeTime(s.getCloseTime())
++                .viewCount(s.getViewCount())
+             .createdAt(s.getCreatedAt())
+             .updatedAt(s.getUpdatedAt())
+             .build();
+diff --git a/src/main/java/com/example/qtifood/repositories/OrderRepository.java b/src/main/java/com/example/qtifood/repositories/OrderRepository.java
+index 2a0754e..4349b21 100644
+--- a/src/main/java/com/example/qtifood/repositories/OrderRepository.java
++++ b/src/main/java/com/example/qtifood/repositories/OrderRepository.java
+@@ -1,6 +1,7 @@
+ package com.example.qtifood.repositories;
+ 
+ import java.util.List;
++import java.time.LocalDateTime;
+ import org.springframework.data.jpa.repository.JpaRepository;
+ import com.example.qtifood.entities.Order;
+ import com.example.qtifood.enums.OrderStatus;
+@@ -10,4 +11,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
+     List<Order> findByStoreId(Long storeId);
+     List<Order> findByDriverId(String driverId);
+     List<Order> findByOrderStatus(OrderStatus status);
++    List<Order> findByStoreIdAndOrderStatusAndUpdatedAtBetween(Long storeId, OrderStatus status, LocalDateTime start, LocalDateTime end);
+ }
+diff --git a/src/main/java/com/example/qtifood/repositories/ProductRepository.java b/src/main/java/com/example/qtifood/repositories/ProductRepository.java
+index 3f9694f..f4c1038 100644
+--- a/src/main/java/com/example/qtifood/repositories/ProductRepository.java
++++ b/src/main/java/com/example/qtifood/repositories/ProductRepository.java
+@@ -20,10 +20,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
+     
+     List<Product> findByNameContainingIgnoreCase(String name);
+     
+-    @Query("SELECT DISTINCT p FROM Product p " +
+-           "WHERE LOWER(p.name) LIKE LOWER(CONCAT('%', :keyword, '%')) " +
+-           "OR LOWER(p.storeCategory.category.name) LIKE LOWER(CONCAT('%', :keyword, '%'))")
+-    List<Product> findByNameOrCategoryNameContainingIgnoreCase(@Param("keyword") String keyword);
++            @Query("SELECT DISTINCT p FROM Product p " +
++                "WHERE CAST(function('unaccent', LOWER(p.name)) AS string) LIKE CONCAT('%', CAST(function('unaccent', LOWER(:keyword)) AS string), '%') " +
++                "OR CAST(function('unaccent', LOWER(p.storeCategory.category.name)) AS string) LIKE CONCAT('%', CAST(function('unaccent', LOWER(:keyword)) AS string), '%')")
++            List<Product> findByNameOrCategoryNameContainingIgnoreCase(@Param("keyword") String keyword);
+     
+     List<Product> findByStoreIdAndStatus(Long storeId, ProductStatus status);
+     
+diff --git a/src/main/java/com/example/qtifood/repositories/WishlistRepository.java b/src/main/java/com/example/qtifood/repositories/WishlistRepository.java
+index 01c3833..87a422c 100644
+--- a/src/main/java/com/example/qtifood/repositories/WishlistRepository.java
++++ b/src/main/java/com/example/qtifood/repositories/WishlistRepository.java
+@@ -41,6 +41,10 @@ public interface WishlistRepository extends JpaRepository<Wishlist, Long> {
+     // Lấy danh sách customer ids đã thêm store vào wishlist
+     @Query("SELECT DISTINCT w.customer.id FROM Wishlist w WHERE w.store.id = :storeId")
+     List<String> findCustomerIdsByStoreId(@Param("storeId") Long storeId);
++
++       // Đếm số lượt thích (wishlist) của store
++       @Query("SELECT COUNT(w) FROM Wishlist w WHERE w.store.id = :storeId")
++       Long countByStoreId(@Param("storeId") Long storeId);
+     
+     // Xóa wishlist theo customer và store
+     @Modifying
+diff --git a/src/main/java/com/example/qtifood/services/DeliveryService.java b/src/main/java/com/example/qtifood/services/DeliveryService.java
+index 046a5fb..373f95e 100644
+--- a/src/main/java/com/example/qtifood/services/DeliveryService.java
++++ b/src/main/java/com/example/qtifood/services/DeliveryService.java
+@@ -3,6 +3,7 @@ package com.example.qtifood.services;
+ import com.example.qtifood.dtos.Deliveries.CreateDeliveryDto;
+ import com.example.qtifood.dtos.Deliveries.UpdateDeliveryDto;
+ import com.example.qtifood.dtos.Deliveries.DeliveryResponseDto;
++import com.example.qtifood.dtos.Deliveries.DriverIncomeStatsDto;
+ import com.example.qtifood.enums.DeliveryStatus;
+ import java.util.List;
+ 
+@@ -17,4 +18,7 @@ public interface DeliveryService {
+     List<DeliveryResponseDto> getDeliveriesByStatus(DeliveryStatus status);
+     List<DeliveryResponseDto> getDeliveriesByDriverAndStatus(String driverId, DeliveryStatus status);
+     DeliveryResponseDto updateDeliveryStatus(Long id, DeliveryStatus status);
++    
++    // Thống kê thu nhập tài xế
++    DriverIncomeStatsDto getDriverIncomeStats(String driverId, String period);
+ }
+\ No newline at end of file
+diff --git a/src/main/java/com/example/qtifood/services/OrderItemService.java b/src/main/java/com/example/qtifood/services/OrderItemService.java
+index 5696179..7862751 100644
+--- a/src/main/java/com/example/qtifood/services/OrderItemService.java
++++ b/src/main/java/com/example/qtifood/services/OrderItemService.java
+@@ -7,6 +7,7 @@ import java.util.List;
+ 
+ public interface OrderItemService {
+     OrderItemResponseDto createOrderItem(CreateOrderItemDto dto);
++    List<OrderItemResponseDto> createOrderItems(List<CreateOrderItemDto> dtos);
+     OrderItemResponseDto updateOrderItem(Long id, UpdateOrderItemDto dto);
+     void deleteOrderItem(Long id);
+     OrderItemResponseDto getOrderItemById(Long id);
+@@ -14,4 +15,12 @@ public interface OrderItemService {
+     List<OrderItemResponseDto> getOrderItemsByOrderId(Long orderId);
+     List<OrderItemResponseDto> getOrderItemsByProductId(Long productId);
+     void deleteOrderItemsByOrderId(Long orderId);
++    
++    /**
++     * Thêm nhiều items vào order một lúc
++     * @param orderId ID của order
++     * @param items Danh sách items cần thêm
++     * @return Danh sách OrderItemResponseDto đã được tạo
++     */
++    List<OrderItemResponseDto> addItemsToOrder(Long orderId, List<CreateOrderItemDto> items);
+ }
+\ No newline at end of file
+diff --git a/src/main/java/com/example/qtifood/services/OrderService.java b/src/main/java/com/example/qtifood/services/OrderService.java
+index 1d54e81..2310383 100644
+--- a/src/main/java/com/example/qtifood/services/OrderService.java
++++ b/src/main/java/com/example/qtifood/services/OrderService.java
+@@ -3,6 +3,7 @@ package com.example.qtifood.services;
+ import com.example.qtifood.dtos.Orders.CreateOrderDto;
+ import com.example.qtifood.dtos.Orders.UpdateOrderDto;
+ import com.example.qtifood.dtos.Orders.OrderResponseDto;
++import com.example.qtifood.dtos.Orders.SalesStatsDto;
+ import java.util.List;
+ 
+ public interface OrderService {
+@@ -20,4 +21,7 @@ public interface OrderService {
+      * Update only payment status of an order (used by payment gateway callbacks)
+      */
+     void updatePaymentStatus(Long orderId, com.example.qtifood.enums.PaymentStatus status);
++
++    // Seller stats
++    SalesStatsDto getStoreSalesStats(Long storeId, String period);
+ }
+diff --git a/src/main/java/com/example/qtifood/services/ShippingService.java b/src/main/java/com/example/qtifood/services/ShippingService.java
+new file mode 100644
+index 0000000..8d0b1a5
+--- /dev/null
++++ b/src/main/java/com/example/qtifood/services/ShippingService.java
+@@ -0,0 +1,18 @@
++package com.example.qtifood.services;
++
++import com.example.qtifood.dtos.Shipping.ShippingFeeRequestDto;
++import com.example.qtifood.dtos.Shipping.ShippingFeeResponseDto;
++
++public interface ShippingService {
++    /**
++     * Tính phí ship dựa vào khoảng cách
++     * @param request chứa tọa độ quán và địa chỉ nhận
++     * @return phí ship chi tiết
++     */
++    ShippingFeeResponseDto calculateShippingFee(ShippingFeeRequestDto request);
++    
++    /**
++     * Tính khoảng cách Haversine giữa 2 điểm (km)
++     */
++    double calculateDistance(double lat1, double lon1, double lat2, double lon2);
++}
+diff --git a/src/main/java/com/example/qtifood/services/StoreService.java b/src/main/java/com/example/qtifood/services/StoreService.java
+index 9d13212..a09e85b 100644
+--- a/src/main/java/com/example/qtifood/services/StoreService.java
++++ b/src/main/java/com/example/qtifood/services/StoreService.java
+@@ -20,4 +20,7 @@ public interface StoreService {
+     
+     StoreResponseDto uploadImage(Long id, org.springframework.web.multipart.MultipartFile imageFile);
+     StoreResponseDto deleteImage(Long id);
++
++    // Increment view count
++    StoreResponseDto incrementView(Long id);
+ }
+diff --git a/src/main/java/com/example/qtifood/services/VoucherService.java b/src/main/java/com/example/qtifood/services/VoucherService.java
+index 5b90b95..548c1dd 100644
+--- a/src/main/java/com/example/qtifood/services/VoucherService.java
++++ b/src/main/java/com/example/qtifood/services/VoucherService.java
+@@ -10,4 +10,13 @@ public interface VoucherService {
+     VoucherResponseDto update(Long id, UpdateVoucherDto dto);
+     void delete(Long id);
+     List<VoucherResponseDto> getBySeller(Long sellerId);
++    
++    // Quản lý usage
++    VoucherResponseDto incrementUsage(Long voucherId);
++    VoucherResponseDto decrementUsage(Long voucherId);
++    
++    // Kiểm tra và validate voucher
++    VoucherResponseDto validateVoucher(String code);
++    boolean isVoucherExpired(Long voucherId);
++    boolean isVoucherUsageLimitReached(Long voucherId);
+ }
+diff --git a/src/main/java/com/example/qtifood/services/WalletService.java b/src/main/java/com/example/qtifood/services/WalletService.java
+index 994a79d..46bdffa 100644
+--- a/src/main/java/com/example/qtifood/services/WalletService.java
++++ b/src/main/java/com/example/qtifood/services/WalletService.java
+@@ -21,6 +21,10 @@ public interface WalletService {
+     // Withdrawal
+     WalletResponseDto withdraw(String userId, BigDecimal amount, String bankAccount, String description);
+     
++    // Admin approval/rejection for withdrawals
++    com.example.qtifood.entities.WalletTransaction approveWithdrawal(Long transactionId);
++    com.example.qtifood.entities.WalletTransaction rejectWithdrawal(Long transactionId, String reason);
++    
+     // Transaction history
+     List<WalletTransactionResponseDto> getTransactionHistory(String userId);
+     Page<WalletTransactionResponseDto> getTransactionHistoryPaginated(String userId, Pageable pageable);
+diff --git a/src/main/java/com/example/qtifood/services/impl/DeliveryServiceImpl.java b/src/main/java/com/example/qtifood/services/impl/DeliveryServiceImpl.java
+index d7a087e..ccf611b 100644
+--- a/src/main/java/com/example/qtifood/services/impl/DeliveryServiceImpl.java
++++ b/src/main/java/com/example/qtifood/services/impl/DeliveryServiceImpl.java
+@@ -3,6 +3,7 @@ package com.example.qtifood.services.impl;
+ import com.example.qtifood.dtos.Deliveries.CreateDeliveryDto;
+ import com.example.qtifood.dtos.Deliveries.UpdateDeliveryDto;
+ import com.example.qtifood.dtos.Deliveries.DeliveryResponseDto;
++import com.example.qtifood.dtos.Deliveries.DriverIncomeStatsDto;
+ import com.example.qtifood.entities.Delivery;
+ import com.example.qtifood.entities.Order;
+ import com.example.qtifood.entities.Driver;
+@@ -16,7 +17,13 @@ import com.example.qtifood.services.DeliveryService;
+ import lombok.RequiredArgsConstructor;
+ import org.springframework.stereotype.Service;
+ import org.springframework.transaction.annotation.Transactional;
++import java.math.BigDecimal;
++import java.math.RoundingMode;
++import java.time.LocalDate;
+ import java.time.LocalDateTime;
++import java.time.LocalTime;
++import java.time.DayOfWeek;
++import java.time.temporal.TemporalAdjusters;
+ import java.util.List;
+ import java.util.stream.Collectors;
+ 
+@@ -140,4 +147,75 @@ public class DeliveryServiceImpl implements DeliveryService {
+         
+         return deliveryMapper.toDto(deliveryRepository.save(delivery));
+     }
++    
++    @Override
++    @Transactional(readOnly = true)
++    public DriverIncomeStatsDto getDriverIncomeStats(String driverId, String period) {
++        // Kiểm tra driver tồn tại
++        driverRepository.findById(driverId)
++            .orElseThrow(() -> new ResourceNotFoundException("Driver not found"));
++        
++        LocalDateTime startDate;
++        final LocalDateTime endDate = LocalDateTime.now();
++        
++        // Xác định khoảng thời gian dựa trên period
++        switch (period.toLowerCase()) {
++            case "daily":
++                startDate = LocalDate.now().atStartOfDay();
++                // endDate = LocalDate.now().atTime(LocalTime.MAX); // endDate đã được thiết lập ở trên
++                break;
++            case "weekly":
++                // Tuần bắt đầu từ thứ 2
++                LocalDate startOfWeek = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
++                startDate = startOfWeek.atStartOfDay();
++                break;
++            case "monthly":
++                startDate = LocalDate.now().withDayOfMonth(1).atStartOfDay();
++                break;
++            default:
++                throw new IllegalArgumentException("Invalid period. Use 'daily', 'weekly', or 'monthly'");
++        }
++        
++        // Lấy danh sách deliveries đã hoàn thành trong khoảng thời gian
++        List<Delivery> deliveries = deliveryRepository.findByDriverIdAndStatus(driverId, DeliveryStatus.COMPLETED)
++            .stream()
++            .filter(d -> d.getCompletedAt() != null 
++                && !d.getCompletedAt().isBefore(startDate) 
++                && !d.getCompletedAt().isAfter(endDate))
++            .collect(Collectors.toList());
++        
++        // Tính toán thống kê
++        int totalDeliveries = deliveries.size();
++        BigDecimal totalIncome = deliveries.stream()
++            .map(d -> d.getDriverIncome() != null ? d.getDriverIncome() : BigDecimal.ZERO)
++            .reduce(BigDecimal.ZERO, BigDecimal::add);
++        
++        BigDecimal totalShippingFee = deliveries.stream()
++            .map(d -> d.getShippingFee() != null ? d.getShippingFee() : BigDecimal.ZERO)
++            .reduce(BigDecimal.ZERO, BigDecimal::add);
++        
++        BigDecimal totalDistance = deliveries.stream()
++            .map(d -> d.getDistanceKm() != null ? d.getDistanceKm() : BigDecimal.ZERO)
++            .reduce(BigDecimal.ZERO, BigDecimal::add);
++        
++        BigDecimal averageIncomePerDelivery = totalDeliveries > 0 
++            ? totalIncome.divide(BigDecimal.valueOf(totalDeliveries), 2, RoundingMode.HALF_UP)
++            : BigDecimal.ZERO;
++        
++        BigDecimal averageDistancePerDelivery = totalDeliveries > 0
++            ? totalDistance.divide(BigDecimal.valueOf(totalDeliveries), 2, RoundingMode.HALF_UP)
++            : BigDecimal.ZERO;
++        
++        return DriverIncomeStatsDto.builder()
++            .period(period)
++            .startDate(startDate)
++            .endDate(endDate)
++            .totalDeliveries(totalDeliveries)
++            .totalIncome(totalIncome)
++            .totalShippingFee(totalShippingFee)
++            .totalDistance(totalDistance)
++            .averageIncomePerDelivery(averageIncomePerDelivery)
++            .averageDistancePerDelivery(averageDistancePerDelivery)
++            .build();
++    }
+ }
+\ No newline at end of file
+diff --git a/src/main/java/com/example/qtifood/services/impl/DriverAssignmentServiceImpl.java b/src/main/java/com/example/qtifood/services/impl/DriverAssignmentServiceImpl.java
+index 368658b..1996c8d 100644
+--- a/src/main/java/com/example/qtifood/services/impl/DriverAssignmentServiceImpl.java
++++ b/src/main/java/com/example/qtifood/services/impl/DriverAssignmentServiceImpl.java
+@@ -15,16 +15,21 @@ import com.example.qtifood.dtos.Orders.OrderResponseDto;
+ import com.example.qtifood.entities.Driver;
+ import com.example.qtifood.entities.Order;
+ import com.example.qtifood.entities.Wallet;
++import com.example.qtifood.entities.Delivery;
+ import com.example.qtifood.enums.DriverStatus;
+ import com.example.qtifood.enums.OrderStatus;
++import com.example.qtifood.enums.PaymentMethod;
+ import com.example.qtifood.enums.TransactionType;
+ import com.example.qtifood.mappers.OrderMapper;
++import com.example.qtifood.enums.DeliveryStatus;
+ import com.example.qtifood.repositories.DriverRepository;
+ import com.example.qtifood.repositories.OrderRepository;
+ import com.example.qtifood.repositories.WalletRepository;
+ import com.example.qtifood.services.DriverAssignmentService;
+ import com.example.qtifood.services.FcmService;
+ import com.example.qtifood.services.WalletService;
++import com.example.qtifood.services.ShippingService;
++import com.example.qtifood.repositories.DeliveryRepository;
+ import com.google.firebase.database.DatabaseReference;
+ import com.google.firebase.database.FirebaseDatabase;
+ 
+@@ -47,9 +52,11 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
+     private final OrderRepository orderRepository;
+     private final DriverRepository driverRepository;
+     private final WalletRepository walletRepository;
++    private final DeliveryRepository deliveryRepository;
+     private final OrderMapper orderMapper;
+     private final FcmService fcmService;
+     private final WalletService walletService;
++    private final ShippingService shippingService;
+     
+     @Override
+     @Transactional
+@@ -79,8 +86,8 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
+         }
+         
+         // 5. Lọc tài xế có đủ tiền trong ví để gán trước cho đơn hàng
+-        BigDecimal shippingFee = order.getShippingFee() != null ? order.getShippingFee() : BigDecimal.ZERO;
+-        BigDecimal requiredDeposit = shippingFee; // Tài xế cần có ít nhất bằng phí ship
++        BigDecimal totalAmount = order.getTotalAmount() != null ? order.getTotalAmount() : BigDecimal.ZERO;
++        BigDecimal requiredDeposit = totalAmount; // Tài xế cần ứng tiền toàn bộ đơn hàng
+         
+         List<Driver> eligibleDrivers = onlineDrivers.stream()
+                 .filter(driver -> {
+@@ -124,10 +131,27 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
+         // 9. Lưu đơn hàng
+         Order savedOrder = orderRepository.save(order);
+         
+-        // 10. Lưu thông tin tracking vào Firebase Realtime Database
++        // 10. Ứng tiền đơn hàng cho tài xế (deduct from driver wallet)
++        try {
++            String driverId = selectedDriver.getId();
++            walletService.recordTransaction(
++                driverId,
++                TransactionType.PAYMENT,
++                totalAmount,
++                String.format("Ứng tiền đơn hàng #%d (sẽ hoàn sau khi giao thành công)", savedOrder.getId()),
++                String.valueOf(savedOrder.getId()),
++                "ORDER_ADVANCE"
++            );
++            log.info("[DriverAssignment] Driver advance deducted: driverId={}, amount={}, orderId={}", driverId, totalAmount, savedOrder.getId());
++        } catch (Exception e) {
++            log.error("[DriverAssignment] Failed to deduct driver advance for order={}: {}", savedOrder.getId(), e.getMessage());
++            throw new RuntimeException("Failed to deduct driver advance: " + e.getMessage(), e);
++        }
++        
++        // 11. Lưu thông tin tracking vào Firebase Realtime Database
+         saveTrackingToFirebase(savedOrder);
+         
+-        // 11. Gửi thông báo cho tài xế
++        // 12. Gửi thông báo cho tài xế
+         sendNotificationToDriver(selectedDriver, savedOrder);
+         
+         log.info("[DriverAssignment] Successfully assigned driver={} to order={}, status changed to SHIPPING", 
+@@ -210,10 +234,38 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
+             trackingData.put("storeAddress", order.getStore().getAddress());
+             trackingData.put("shippingAddress", order.getShippingAddress().getAddress());
+             
++            // Tính distance từ seller -> customer
++            double distance = 0.0;
++            try {
++                if (order.getStore().getLatitude() != null && order.getStore().getLongitude() != null
++                        && order.getShippingAddress().getLatitude() != null 
++                        && order.getShippingAddress().getLongitude() != null) {
++                    distance = shippingService.calculateDistance(
++                        order.getStore().getLatitude().doubleValue(),
++                        order.getStore().getLongitude().doubleValue(),
++                        order.getShippingAddress().getLatitude().doubleValue(),
++                        order.getShippingAddress().getLongitude().doubleValue()
++                    );
++                }
++            } catch (Exception e) {
++                log.warn("[DriverAssignment] Failed to calculate distance for order={}: {}", order.getId(), e.getMessage());
++            }
++            trackingData.put("distance", distance);
++            
+             // Thông tin địa chỉ giao hàng chi tiết
+             trackingData.put("addressId", order.getShippingAddress().getId());
+             trackingData.put("recipientName", order.getShippingAddress().getAddress());
+             trackingData.put("recipientPhone", order.getShippingAddress().getPhone());
++
++                // Tọa độ giao hàng (phục vụ tracking bản đồ)
++                Double shippingLat = order.getShippingAddress().getLatitude() != null
++                    ? order.getShippingAddress().getLatitude().doubleValue()
++                    : null;
++                Double shippingLng = order.getShippingAddress().getLongitude() != null
++                    ? order.getShippingAddress().getLongitude().doubleValue()
++                    : null;
++                trackingData.put("shippingLatitude", shippingLat);
++                trackingData.put("shippingLongitude", shippingLng);
+             
+             // Vị trí ban đầu (sẽ được cập nhật realtime từ app driver)
+             Map<String, Object> driverLocation = new HashMap<>();
+@@ -279,9 +331,10 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
+         BigDecimal totalAmount = order.getTotalAmount() != null ? order.getTotalAmount() : BigDecimal.ZERO;
+         BigDecimal shippingFee = order.getShippingFee() != null ? order.getShippingFee() : BigDecimal.ZERO;
+         
+-        // 1. Tính phí sàn cho shop (12% tổng giá trị đơn hàng)
+-        BigDecimal shopPlatformFee = totalAmount.multiply(PLATFORM_FEE_SHOP);
+-        BigDecimal shopReceiveAmount = totalAmount.subtract(shopPlatformFee);
++        // 1. Tính tiền hàng (totalAmount - shipping_fee) rồi trừ 12% phí sàn cho shop
++        BigDecimal goodsAmount = totalAmount.subtract(shippingFee);
++        BigDecimal shopPlatformFee = goodsAmount.multiply(PLATFORM_FEE_SHOP);
++        BigDecimal shopReceiveAmount = goodsAmount.subtract(shopPlatformFee);
+         
+         // 2. Tính phí sàn cho driver (động theo phí ship)
+         BigDecimal driverPlatformFee = calculateDriverPlatformFee(shippingFee);
+@@ -290,41 +343,107 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
+         // 3. Tổng phí sàn admin nhận được
+         BigDecimal adminTotalFee = shopPlatformFee.add(driverPlatformFee);
+         
+-        log.info("[DriverAssignment] Payment breakdown - Order={}, TotalAmount={}, ShippingFee={}, ShopFee={}%, DriverFee={}, ShopReceive={}, DriverReceive={}, AdminReceive={}", 
+-                orderId, totalAmount, shippingFee, PLATFORM_FEE_SHOP.multiply(new BigDecimal("100")), 
++        log.info("[DriverAssignment] Payment breakdown - Order={}, TotalAmount={}, GoodsAmount={}, ShippingFee={}, ShopFee={}%, DriverFee={}, ShopReceive={}, DriverReceive={}, AdminReceive={}", 
++                orderId, totalAmount, goodsAmount, shippingFee, PLATFORM_FEE_SHOP.multiply(new BigDecimal("100")), 
+                 driverPlatformFee, shopReceiveAmount, driverReceiveAmount, adminTotalFee);
+         
+         try {
+-            // 4. Cộng tiền cho shop
++            // 4. Xử lý thanh toán dựa vào payment method
+             String sellerId = order.getStore().getOwner().getId();
+-            walletService.recordTransaction(
+-                    sellerId,
+-                    TransactionType.EARN,
+-                    shopReceiveAmount,
+-                    String.format("Doanh thu đơn hàng #%d (đã trừ phí sàn %.0f%%)", orderId, PLATFORM_FEE_SHOP.multiply(new BigDecimal("100")).doubleValue()),
+-                    String.valueOf(orderId),
+-                    "ORDER_INCOME"
+-            );
+-            log.info("[DriverAssignment] Credited shop wallet: sellerId={}, amount={}", sellerId, shopReceiveAmount);
+-            
+-            // 5. Cộng tiền giao hàng cho driver
+             String driverId = order.getDriver().getId();
++            
++            if (order.getPaymentMethod() == PaymentMethod.QTIWALLET) {
++                // QTIWALLET: Hoàn tiền hàng + cộng tiền ship
++                // Hoàn ứng tiền cho driver
++                walletService.recordTransaction(
++                        driverId,
++                        TransactionType.REFUND,
++                        totalAmount,
++                        String.format("Hoàn ứng tiền đơn hàng #%d (QTIWALLET)", orderId),
++                        String.valueOf(orderId),
++                        "ORDER_ADVANCE_REFUND"
++                );
++                log.info("[DriverAssignment] Refunded driver advance: driverId={}, amount={}", driverId, totalAmount);
++                
++                // Cộng tiền hàng cho shop
++                walletService.recordTransaction(
++                        sellerId,
++                        TransactionType.EARN,
++                        shopReceiveAmount,
++                        String.format("Doanh thu đơn hàng #%d (QTIWALLET, đã trừ phí sàn %.0f%%)", orderId, PLATFORM_FEE_SHOP.multiply(new BigDecimal("100")).doubleValue()),
++                        String.valueOf(orderId),
++                        "ORDER_INCOME"
++                );
++                log.info("[DriverAssignment] Credited shop wallet: sellerId={}, amount={}, method=QTIWALLET", sellerId, shopReceiveAmount);
++                
++                // Cộng tiền giao hàng cho driver
++                walletService.recordTransaction(
++                        driverId,
++                        TransactionType.EARN,
++                        driverReceiveAmount,
++                        String.format("Phí giao hàng đơn #%d (QTIWALLET, đã trừ phí sàn)", orderId),
++                        String.valueOf(orderId),
++                        "DELIVERY_INCOME"
++                );
++                log.info("[DriverAssignment] Credited driver shipping fee: driverId={}, amount={}", driverId, driverReceiveAmount);
++                
++            } else {
++                // COD (Cash/Bank Transfer): Khách trả tiền mặt cho driver
++                // Hoàn ứng tiền cho driver (vì khách đã trả tiền mặt)
++                walletService.recordTransaction(
++                        driverId,
++                        TransactionType.REFUND,
++                        totalAmount,
++                        String.format("Hoàn ứng tiền đơn hàng #%d (COD - khách trả mặt/chuyển khoản)", orderId),
++                        String.valueOf(orderId),
++                        "ORDER_ADVANCE_REFUND"
++                );
++                log.info("[DriverAssignment] Refunded driver advance (COD): driverId={}, amount={}", driverId, totalAmount);
++                
++                // Cộng tiền hàng cho shop (seller nhận tiền từ driver chuyển khoản sau)
++                walletService.recordTransaction(
++                        sellerId,
++                        TransactionType.EARN,
++                        shopReceiveAmount,
++                        String.format("Doanh thu đơn hàng #%d (COD, đã trừ phí sàn %.0f%%)", orderId, PLATFORM_FEE_SHOP.multiply(new BigDecimal("100")).doubleValue()),
++                        String.valueOf(orderId),
++                        "ORDER_INCOME"
++                );
++                log.info("[DriverAssignment] Credited shop wallet (COD): sellerId={}, amount={}", sellerId, shopReceiveAmount);
++                
++                // Ghi nhận thu nhập phí ship COD cho driver
++                walletService.recordTransaction(
++                        driverId,
++                        TransactionType.MANUAL_INCOME,
++                        driverReceiveAmount,
++                        String.format("Phí giao hàng COD đơn #%d (đã trừ phí sàn)", orderId),
++                        String.valueOf(orderId),
++                        "COD_SHIPPING_INCOME"
++                );
++                log.info("[DriverAssignment] Recorded COD shipping income: driverId={}, amount={}, orderId={}", driverId, driverReceiveAmount, orderId);
++            }
++            
++            log.info("[DriverAssignment] Payment processed by method={}", order.getPaymentMethod());
++            
++            // 5. Cộng phí sàn cho admin wallet
+             walletService.recordTransaction(
+-                    driverId,
++                    "admin",
+                     TransactionType.EARN,
+-                    driverReceiveAmount,
+-                    String.format("Phí giao hàng đơn #%d (đã trừ phí sàn)", orderId),
++                    adminTotalFee,
++                    String.format("Phí sàn đơn hàng #%d (shop: %.0f + driver: %.0f)", orderId, shopPlatformFee, driverPlatformFee),
+                     String.valueOf(orderId),
+-                    "DELIVERY_INCOME"
++                    "PLATFORM_FEE"
+             );
+-            log.info("[DriverAssignment] Credited driver wallet: driverId={}, amount={}", driverId, driverReceiveAmount);
+-            
+-            // 6. Ghi nhận phí sàn cho admin (có thể lưu vào bảng riêng hoặc wallet admin)
+-            // TODO: Tạo wallet cho admin hoặc bảng platform_revenue
+-            log.info("[DriverAssignment] Platform fee collected: amount={} (shop: {}, driver: {})", 
++            log.info("[DriverAssignment] Platform fee credited to admin: amount={} (shop: {}, driver: {})", 
+                     adminTotalFee, shopPlatformFee, driverPlatformFee);
+             
+-            // 7. Cập nhật trạng thái driver về ONLINE
++                // 6. Lưu lịch sử giao hàng vào deliveries
++                saveDeliverySnapshot(order, goodsAmount, shippingFee, driverReceiveAmount, shopReceiveAmount);
++
++                // 7. Xóa tracking realtime khi giao xong
++                clearTrackingFromFirebase(orderId);
++
++                // 8. Cập nhật trạng thái driver về ONLINE
+             Driver driver = order.getDriver();
+             driver.setStatus(DriverStatus.ONLINE);
+             driverRepository.save(driver);
+@@ -336,6 +455,72 @@ public class DriverAssignmentServiceImpl implements DriverAssignmentService {
+             throw new RuntimeException("Failed to process delivery payment: " + e.getMessage(), e);
+         }
+     }
++
++    /**
++     * Lưu snapshot vào bảng deliveries để driver xem lịch sử
++     */
++    private void saveDeliverySnapshot(Order order, BigDecimal goodsAmount, BigDecimal shippingFee,
++                                      BigDecimal driverIncome, BigDecimal shopIncome) {
++        try {
++            Delivery delivery = deliveryRepository.findByOrderId(order.getId()).orElse(new Delivery());
++            delivery.setOrder(order);
++            delivery.setDriver(order.getDriver());
++            delivery.setStatus(DeliveryStatus.COMPLETED);
++            delivery.setCompletedAt(delivery.getCompletedAt() != null ? delivery.getCompletedAt() : LocalDateTime.now());
++            // startedAt: lấy thời điểm gán tài xế (nếu chưa có), fallback createdAt của đơn
++            if (delivery.getStartedAt() == null) {
++                delivery.setStartedAt(order.getUpdatedAt() != null ? order.getUpdatedAt() : order.getCreatedAt());
++            }
++
++            // Snapshot dữ liệu
++            delivery.setGoodsAmount(goodsAmount);
++            delivery.setShippingFee(shippingFee);
++            delivery.setDriverIncome(driverIncome);
++            // Không lưu shopIncome theo yêu cầu
++            delivery.setPaymentMethod(order.getPaymentMethod());
++            delivery.setStoreName(order.getStore() != null ? order.getStore().getName() : null);
++            delivery.setShippingAddress(order.getShippingAddress() != null ? order.getShippingAddress().getAddress() : null);
++            delivery.setCustomerName(order.getCustomer() != null ? order.getCustomer().getFullName() : null);
++            // Không lưu customerPhone, pickup/dropoff theo yêu cầu
++            
++            // Tính và lưu distance_km
++            if (order.getStore().getLatitude() != null && order.getStore().getLongitude() != null
++                    && order.getShippingAddress().getLatitude() != null 
++                    && order.getShippingAddress().getLongitude() != null) {
++                try {
++                    double distanceKm = shippingService.calculateDistance(
++                        order.getStore().getLatitude().doubleValue(),
++                        order.getStore().getLongitude().doubleValue(),
++                        order.getShippingAddress().getLatitude().doubleValue(),
++                        order.getShippingAddress().getLongitude().doubleValue()
++                    );
++                    delivery.setDistanceKm(BigDecimal.valueOf(distanceKm));
++                } catch (Exception e) {
++                    log.warn("[DriverAssignment] Failed to calculate distance for order={}: {}", order.getId(), e.getMessage());
++                }
++            }
++
++            deliveryRepository.save(delivery);
++            log.info("[DriverAssignment] Saved delivery snapshot for order={}", order.getId());
++        } catch (Exception e) {
++            log.error("[DriverAssignment] Failed to save delivery snapshot for order={}: {}", order.getId(), e.getMessage());
++        }
++    }
++
++    /**
++     * Xóa tracking trên Firebase Realtime DB sau khi giao xong
++     */
++    private void clearTrackingFromFirebase(Long orderId) {
++        try {
++            DatabaseReference trackingRef = FirebaseDatabase.getInstance()
++                    .getReference("order_tracking")
++                    .child(String.valueOf(orderId));
++            trackingRef.removeValueAsync();
++            log.info("[DriverAssignment] Cleared realtime tracking for order={}", orderId);
++        } catch (Exception e) {
++            log.error("[DriverAssignment] Failed to clear realtime tracking for order={}: {}", orderId, e.getMessage());
++        }
++    }
+     
+     /**
+      * Tính phí sàn cho driver theo phí ship
+diff --git a/src/main/java/com/example/qtifood/services/impl/FileUploadServiceImpl.java b/src/main/java/com/example/qtifood/services/impl/FileUploadServiceImpl.java
+index a13cc9c..3091c68 100644
+--- a/src/main/java/com/example/qtifood/services/impl/FileUploadServiceImpl.java
++++ b/src/main/java/com/example/qtifood/services/impl/FileUploadServiceImpl.java
+@@ -53,8 +53,8 @@ public class FileUploadServiceImpl implements FileUploadService {
+             Path filePath = uploadPath.resolve(uniqueFileName);
+             Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+ 
+-            // Trả về đường dẫn relative
+-            return entityType + "/" + uniqueFileName;
++            // Trả về đường dẫn relative (bao gồm thư mục gốc)
++            return "uploads/" + entityType + "/" + uniqueFileName;
+ 
+         } catch (IOException e) {
+             log.error("Failed to upload file: {}", e.getMessage());
+diff --git a/src/main/java/com/example/qtifood/services/impl/OrderItemServiceImpl.java b/src/main/java/com/example/qtifood/services/impl/OrderItemServiceImpl.java
+index f37fa8a..2cda779 100644
+--- a/src/main/java/com/example/qtifood/services/impl/OrderItemServiceImpl.java
++++ b/src/main/java/com/example/qtifood/services/impl/OrderItemServiceImpl.java
+@@ -13,15 +13,19 @@ import com.example.qtifood.repositories.OrderRepository;
+ import com.example.qtifood.repositories.ProductRepository;
+ import com.example.qtifood.services.OrderItemService;
+ import lombok.RequiredArgsConstructor;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
+ import org.springframework.stereotype.Service;
+ import org.springframework.transaction.annotation.Transactional;
+ import java.math.BigDecimal;
++import java.util.ArrayList;
+ import java.util.List;
+ import java.util.stream.Collectors;
+ 
+ @Service
+ @RequiredArgsConstructor
+ public class OrderItemServiceImpl implements OrderItemService {
++    private static final Logger log = LoggerFactory.getLogger(OrderItemServiceImpl.class);
+     private final OrderItemRepository orderItemRepository;
+     private final OrderRepository orderRepository;
+     private final ProductRepository productRepository;
+@@ -30,26 +34,44 @@ public class OrderItemServiceImpl implements OrderItemService {
+     @Override
+     @Transactional
+     public OrderItemResponseDto createOrderItem(CreateOrderItemDto dto) {
+-        // Note: This method is for adding items to existing orders
+-        // For creating new orders with items, use OrderService.createOrder() instead
+-        // which handles the entire order creation in a single transaction
+-        
+-        OrderItem orderItem = orderItemMapper.toEntity(dto);
+-        
+-        // Set product and get current price
++        Order order = orderRepository.findById(dto.getOrderId())
++            .orElseThrow(() -> new ResourceNotFoundException("Order not found"));
++
+         Product product = productRepository.findById(dto.getProductId())
+             .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
++
++        OrderItem orderItem = orderItemMapper.toEntity(dto);
++        orderItem.setOrder(order);
+         orderItem.setProduct(product);
+-        
+-        // Set current price from product (use discount price if available)
+-        BigDecimal currentPrice = product.getDiscountPrice() != null ? 
+-                                 product.getDiscountPrice() : 
+-                                 product.getPrice();
+-        orderItem.setPrice(currentPrice);
+-        
++
+         return orderItemMapper.toDto(orderItemRepository.save(orderItem));
+     }
+ 
++    @Override
++    @Transactional
++    public List<OrderItemResponseDto> createOrderItems(List<CreateOrderItemDto> dtos) {
++        if (dtos == null || dtos.isEmpty()) {
++            throw new IllegalArgumentException("Items list cannot be empty");
++        }
++
++        List<OrderItemResponseDto> results = new ArrayList<>();
++        for (CreateOrderItemDto dto : dtos) {
++            Order order = orderRepository.findById(dto.getOrderId())
++                .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + dto.getOrderId()));
++
++            Product product = productRepository.findById(dto.getProductId())
++                .orElseThrow(() -> new ResourceNotFoundException("Product not found: " + dto.getProductId()));
++
++            OrderItem orderItem = orderItemMapper.toEntity(dto);
++            orderItem.setOrder(order);
++            orderItem.setProduct(product);
++
++            OrderItem saved = orderItemRepository.save(orderItem);
++            results.add(orderItemMapper.toDto(saved));
++        }
++        return results;
++    }
++
+     @Override
+     @Transactional
+     public OrderItemResponseDto updateOrderItem(Long id, UpdateOrderItemDto dto) {
+@@ -105,4 +127,56 @@ public class OrderItemServiceImpl implements OrderItemService {
+     public void deleteOrderItemsByOrderId(Long orderId) {
+         orderItemRepository.deleteByOrderId(orderId);
+     }
++
++    @Override
++    @Transactional
++    public List<OrderItemResponseDto> addItemsToOrder(Long orderId, List<CreateOrderItemDto> items) {
++        // Validate order exists
++        Order order = orderRepository.findById(orderId)
++                .orElseThrow(() -> new ResourceNotFoundException("Order not found: " + orderId));
++        
++        if (items == null || items.isEmpty()) {
++            throw new IllegalArgumentException("Items list cannot be empty");
++        }
++        
++        List<OrderItemResponseDto> createdItems = new ArrayList<>();
++        
++        // Create each order item
++        for (CreateOrderItemDto itemDto : items) {
++            // Load product
++            Product product = productRepository.findById(itemDto.getProductId())
++                    .orElseThrow(() -> new ResourceNotFoundException("Product not found: " + itemDto.getProductId()));
++            
++            // Create OrderItem
++            OrderItem orderItem = new OrderItem();
++            orderItem.setOrder(order);
++            orderItem.setProduct(product);
++            orderItem.setQuantity(itemDto.getQuantity());
++                orderItem.setPrice(itemDto.getPrice());
++            
++            // Save order item
++            OrderItem savedItem = orderItemRepository.save(orderItem);
++            createdItems.add(orderItemMapper.toDto(savedItem));
++            
++                log.info("[OrderItemService] Added item to order: order={}, product={}, quantity={}, price={}", 
++                    orderId, product.getId(), itemDto.getQuantity(), itemDto.getPrice());
++        }
++        
++        // Update order total amount (recalculate all items)
++        List<OrderItem> allItems = orderItemRepository.findByOrderId(orderId);
++        BigDecimal newItemsTotal = allItems.stream()
++            .map(item -> item.getPrice() != null && item.getQuantity() != null
++                ? item.getPrice().multiply(BigDecimal.valueOf(item.getQuantity()))
++                : BigDecimal.ZERO)
++            .reduce(BigDecimal.ZERO, BigDecimal::add);
++        
++        BigDecimal shippingFee = order.getShippingFee() != null ? order.getShippingFee() : BigDecimal.ZERO;
++        order.setTotalAmount(newItemsTotal.add(shippingFee));
++        orderRepository.save(order);
++        
++        log.info("[OrderItemService] Updated order total: order={}, itemsTotal={}, shippingFee={}, newTotal={}", 
++                orderId, newItemsTotal, shippingFee, order.getTotalAmount());
++        
++        return createdItems;
++    }
+ }
+\ No newline at end of file
+diff --git a/src/main/java/com/example/qtifood/services/impl/OrderServiceImpl.java b/src/main/java/com/example/qtifood/services/impl/OrderServiceImpl.java
+index 3c525e7..8b6300f 100644
+--- a/src/main/java/com/example/qtifood/services/impl/OrderServiceImpl.java
++++ b/src/main/java/com/example/qtifood/services/impl/OrderServiceImpl.java
+@@ -3,10 +3,8 @@ package com.example.qtifood.services.impl;
+ import com.example.qtifood.dtos.Orders.CreateOrderDto;
+ import com.example.qtifood.dtos.Orders.UpdateOrderDto;
+ import com.example.qtifood.dtos.Orders.OrderResponseDto;
+-import com.example.qtifood.dtos.OrderItems.CreateOrderItemDto;
++import com.example.qtifood.dtos.Orders.SalesStatsDto;
+ import com.example.qtifood.entities.Order;
+-import com.example.qtifood.entities.OrderItem;
+-import com.example.qtifood.entities.Product;
+ import com.example.qtifood.entities.Store;
+ import com.example.qtifood.entities.Address;
+ import com.example.qtifood.enums.OrderStatus;
+@@ -15,22 +13,25 @@ import com.example.qtifood.enums.PaymentMethod;
+ import com.example.qtifood.enums.TransactionType;
+ import com.example.qtifood.exceptions.ResourceNotFoundException;
+ import com.example.qtifood.mappers.OrderMapper;
+-import com.example.qtifood.mappers.OrderItemMapper;
+ import com.example.qtifood.repositories.OrderRepository;
+-import com.example.qtifood.repositories.OrderItemRepository;
+-import com.example.qtifood.repositories.ProductRepository;
+ import com.example.qtifood.repositories.UserRepository;
+ import com.example.qtifood.repositories.StoreRepository;
+ import com.example.qtifood.repositories.DriverRepository;
+ import com.example.qtifood.repositories.AddressRepository;
++import com.example.qtifood.repositories.WishlistRepository;
+ import com.example.qtifood.services.OrderService;
+ import com.example.qtifood.services.WalletService;
+ import com.example.qtifood.services.FcmService;
++import com.example.qtifood.services.ShippingService;
+ import lombok.RequiredArgsConstructor;
+ import org.springframework.stereotype.Service;
+ import org.springframework.transaction.annotation.Transactional;
+-import java.math.BigDecimal;
+ import java.time.LocalDateTime;
++import java.time.LocalDate;
++import java.time.LocalTime;
++import java.time.DayOfWeek;
++import java.time.temporal.TemporalAdjusters;
++import java.math.BigDecimal;
+ import org.slf4j.Logger;
+ import org.slf4j.LoggerFactory;
+ import java.util.List;
+@@ -42,24 +43,22 @@ import java.util.stream.Collectors;
+ public class OrderServiceImpl implements OrderService {
+     private static final Logger log = LoggerFactory.getLogger(OrderServiceImpl.class);
+     private final OrderRepository orderRepository;
+-    private final OrderItemRepository orderItemRepository;
+-    private final ProductRepository productRepository;
++
+     private final UserRepository userRepository;
+     private final StoreRepository storeRepository;
+     private final DriverRepository driverRepository;
+     private final AddressRepository addressRepository;
+     private final OrderMapper orderMapper;
+-    private final OrderItemMapper orderItemMapper;
+     private final WalletService walletService;
+     private final FcmService fcmService;
++    private final ShippingService shippingService;
++    private final WishlistRepository wishlistRepository;
+ 
+     @Override
+     @Transactional
+     public OrderResponseDto createOrder(CreateOrderDto dto) {
+-        // Validate required fields
+-        if (dto.getItems() == null || dto.getItems().isEmpty()) {
+-            throw new IllegalArgumentException("Order must have at least one item");
+-        }
++        // Items can now be added later via POST /api/order-items/bulk
++        // No validation for items required
+         
+         Order order = orderMapper.toEntity(dto);
+         
+@@ -82,6 +81,9 @@ public class OrderServiceImpl implements OrderService {
+             order.setShippingAddress(addressRepository.findById(dto.getShippingAddressId())
+                 .orElseThrow(() -> new ResourceNotFoundException("Address not found")));
+         }
++
++        // Set expected delivery time (ETA)
++        order.setExpectedDeliveryTime(calculateExpectedDeliveryTime(order.getStore(), order.getShippingAddress()));
+         
+         // Set initial status
+         order.setOrderStatus(OrderStatus.PENDING);
+@@ -219,94 +221,84 @@ public class OrderServiceImpl implements OrderService {
+             throw new IllegalArgumentException("Invalid order status: " + status);
+         }
+     }
+-    
+-    // ========== HELPER METHODS FOR ORDER CALCULATION ==========
+-    
+-    /**
+-     * Calculate total amount from order items
+-     * Gets current price from product entities to prevent manipulation
+-     */
+-    private BigDecimal calculateTotalAmount(List<CreateOrderItemDto> items) {
+-        BigDecimal total = BigDecimal.ZERO;
+-        
+-        for (CreateOrderItemDto item : items) {
+-            Product product = productRepository.findById(item.getProductId())
+-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + item.getProductId()));
+-            
+-            // Use discount price if available, otherwise use regular price
+-            BigDecimal itemPrice = product.getDiscountPrice() != null ? 
+-                                  product.getDiscountPrice() : 
+-                                  product.getPrice();
+-            
+-            BigDecimal itemTotal = itemPrice.multiply(BigDecimal.valueOf(item.getQuantity()));
+-            total = total.add(itemTotal);
++
++    @Override
++    @Transactional(readOnly = true)
++    public SalesStatsDto getStoreSalesStats(Long storeId, String period) {
++        // Determine time range
++        LocalDateTime start;
++        LocalDateTime end = LocalDateTime.now();
++        switch (period.toLowerCase()) {
++            case "daily":
++                start = LocalDate.now().atStartOfDay();
++                end = LocalDate.now().atTime(LocalTime.MAX);
++                break;
++            case "weekly":
++                LocalDate startOfWeek = LocalDate.now().with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
++                start = startOfWeek.atStartOfDay();
++                break;
++            case "monthly":
++                start = LocalDate.now().withDayOfMonth(1).atStartOfDay();
++                break;
++            default:
++                throw new IllegalArgumentException("Invalid period. Use daily, weekly, or monthly");
+         }
+-        
+-        return total;
++
++        // Lấy thông tin store để trả về viewCount
++        com.example.qtifood.entities.Store store = storeRepository.findById(storeId)
++            .orElseThrow(() -> new ResourceNotFoundException("Store not found: " + storeId));
++
++        List<Order> orders = orderRepository.findByStoreIdAndOrderStatusAndUpdatedAtBetween(
++            storeId, OrderStatus.DELIVERED, start, end
++        );
++
++        long totalOrders = orders.size();
++        BigDecimal totalRevenue = orders.stream()
++            .map(o -> o.getTotalAmount() != null ? o.getTotalAmount() : BigDecimal.ZERO)
++            .reduce(BigDecimal.ZERO, BigDecimal::add);
++
++        Long likeCount = wishlistRepository.countByStoreId(storeId);
++
++        return SalesStatsDto.builder()
++            .period(period)
++            .startDate(start)
++            .endDate(end)
++            .totalOrders(totalOrders)
++            .totalRevenue(totalRevenue)
++            .storeViewCount(store.getViewCount())
++            .storeLikeCount(likeCount)
++            .build();
+     }
+     
+-    /**
+-     * Calculate shipping fee based on store and delivery address
+-     * For now, simple logic - can be enhanced with actual distance calculation
+-     */
+-    private BigDecimal calculateShippingFee(Store store, Address shippingAddress) {
+-        // Default shipping fee - can be enhanced with:
+-        // - Distance calculation between store and address
+-        // - Store specific delivery fees
+-        // - Time-based pricing (rush hours)
+-        // - Minimum order amount for free shipping
+-        
+-        if (shippingAddress == null) {
+-            return BigDecimal.ZERO; // Pickup order
+-        }
++    // ========== HELPER METHODS FOR ORDER CALCULATION ==========
++ 
++    private LocalDateTime calculateExpectedDeliveryTime(Store store, Address address) {
++        LocalDateTime now = LocalDateTime.now();
+         
+-        // Simple logic: base fee + distance-based fee
+-        BigDecimal baseFee = new BigDecimal("15000"); // 15,000 VND base fee
++        // Base preparation time (minutes): default 30
++        int prepMinutes = 30;
+         
+-        // TODO: Implement actual distance calculation
+-        // For now, return base fee
+-        return baseFee;
+-    }
+-    
+-    /**
+-     * Calculate expected delivery time based on store preparation time
+-     */
+-    private LocalDateTime calculateExpectedDeliveryTime(Store store) {
+-        LocalDateTime now = LocalDateTime.now();
++        // Travel time estimation using distance and average speed
++        int travelMinutes = 20; // default fallback
++        try {
++            if (store != null && address != null 
++                && store.getLatitude() != null && store.getLongitude() != null
++                && address.getLatitude() != null && address.getLongitude() != null) {
++                double distanceKm = shippingService.calculateDistance(
++                        store.getLatitude().doubleValue(),
++                        store.getLongitude().doubleValue(),
++                        address.getLatitude().doubleValue(),
++                        address.getLongitude().doubleValue());
++                // Assume average speed 25 km/h, min 10 minutes
++                double minutes = (distanceKm / 25.0) * 60.0;
++                travelMinutes = (int) Math.ceil(Math.max(10.0, minutes));
++            }
++        } catch (Exception ignore) {
++        }
+         
+-        // Default: current time + 30 minutes (store prep time) + 20 minutes (delivery time)
+-        // Can be enhanced with:
+-        // - Store-specific preparation times
+-        // - Current order load of the store
+-        // - Distance to delivery address
+-        // - Driver availability
++        return now.plusMinutes(prepMinutes + travelMinutes);
+         
+-        return now.plusMinutes(50); // 30 min prep + 20 min delivery
+     }
+-    
+-    /**
+-     * Create order items in the same transaction
+-     */
+-    private void createOrderItems(Order order, List<CreateOrderItemDto> itemDtos) {
+-        for (CreateOrderItemDto itemDto : itemDtos) {
+-            // Get product to set current price
+-            Product product = productRepository.findById(itemDto.getProductId())
+-                .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + itemDto.getProductId()));
+-            
+-            // Create order item
+-            OrderItem orderItem = orderItemMapper.toEntity(itemDto);
+-            orderItem.setOrder(order);
+-            orderItem.setProduct(product);
+-            
+-            // Set current price from product (use discount price if available)
+-            BigDecimal currentPrice = product.getDiscountPrice() != null ? 
+-                                     product.getDiscountPrice() : 
+-                                     product.getPrice();
+-            orderItem.setPrice(currentPrice);
+-            
+-            orderItemRepository.save(orderItem);
+-        }
+-        }
+ 
+     @Override
+     @Transactional
+diff --git a/src/main/java/com/example/qtifood/services/impl/ProductServiceImpl.java b/src/main/java/com/example/qtifood/services/impl/ProductServiceImpl.java
+index a98dbe3..6d2e9aa 100644
+--- a/src/main/java/com/example/qtifood/services/impl/ProductServiceImpl.java
++++ b/src/main/java/com/example/qtifood/services/impl/ProductServiceImpl.java
+@@ -14,13 +14,11 @@ import com.example.qtifood.entities.Store;
+ import com.example.qtifood.entities.StoreCategory;
+ import com.example.qtifood.enums.AdminStatus;
+ import com.example.qtifood.enums.ProductStatus;
+-import com.example.qtifood.entities.Categories;
+ import com.example.qtifood.exceptions.BadRequestException;
+ import com.example.qtifood.exceptions.ResourceNotFoundException;
+ import com.example.qtifood.exceptions.EntityDuplicateException;
+ import com.example.qtifood.repositories.ProductRepository;
+ import com.example.qtifood.repositories.StoreRepository;
+-import com.example.qtifood.repositories.CategoriesRepository;
+ import com.example.qtifood.repositories.StoreCategoryRepository;
+ import com.example.qtifood.services.ProductService;
+ import com.example.qtifood.services.ProductImageService;
+@@ -34,7 +32,6 @@ public class ProductServiceImpl implements ProductService {
+ 
+     private final ProductRepository productRepository;
+     private final StoreRepository storeRepository;
+-    private final CategoriesRepository categoriesRepository;
+     private final StoreCategoryRepository storeCategoryRepository;
+     private final ProductImageService productImageService;
+ 
+diff --git a/src/main/java/com/example/qtifood/services/impl/ShippingServiceImpl.java b/src/main/java/com/example/qtifood/services/impl/ShippingServiceImpl.java
+new file mode 100644
+index 0000000..59eb0cb
+--- /dev/null
++++ b/src/main/java/com/example/qtifood/services/impl/ShippingServiceImpl.java
+@@ -0,0 +1,104 @@
++package com.example.qtifood.services.impl;
++
++import com.example.qtifood.dtos.Shipping.ShippingFeeRequestDto;
++import com.example.qtifood.dtos.Shipping.ShippingFeeResponseDto;
++import com.example.qtifood.services.ShippingService;
++import lombok.extern.slf4j.Slf4j;
++import org.springframework.stereotype.Service;
++
++import java.math.BigDecimal;
++import java.math.RoundingMode;
++
++@Service
++@Slf4j
++public class ShippingServiceImpl implements ShippingService {
++    
++    // Hằng số tính phí
++    private static final BigDecimal BASE_FEE = BigDecimal.valueOf(15000);           // 15k cố định
++    private static final BigDecimal FEE_3_5KM = BigDecimal.valueOf(4000);          // 4k/km
++    private static final BigDecimal FEE_5_10KM = BigDecimal.valueOf(3000);         // 3k/km
++    private static final BigDecimal FEE_ABOVE_10KM = BigDecimal.valueOf(2000);     // 2k/km
++
++    @Override
++    public ShippingFeeResponseDto calculateShippingFee(ShippingFeeRequestDto request) {
++        // Tính khoảng cách Haversine
++        double distance = calculateDistance(
++                request.storeLatitude().doubleValue(),
++                request.storeLongitude().doubleValue(),
++                request.recipientLatitude().doubleValue(),
++                request.recipientLongitude().doubleValue()
++        );
++        
++        log.info("[ShippingService] Calculating fee for distance: {:.2f} km", distance);
++        
++        // Tính phí dựa vào khoảng cách
++        BigDecimal baseFee = BASE_FEE;
++        BigDecimal additionalFee = BigDecimal.ZERO;
++        String description;
++        
++        if (distance <= 3.0) {
++            // 0 - 3 km: 15k cố định
++            additionalFee = BigDecimal.ZERO;
++            description = String.format("Khoảng cách %.2f km (0-3km): Phí cố định 15.000đ", distance);
++        } else if (distance <= 5.0) {
++            // 3 - 5 km: + 4k/km cho khoảng cách vượt 3km
++            double extraDistance = distance - 3.0;
++            additionalFee = BigDecimal.valueOf(extraDistance).multiply(FEE_3_5KM)
++                    .setScale(0, RoundingMode.HALF_UP);
++            description = String.format("Khoảng cách %.2f km (3-5km): 15.000đ + %.2f km × 4.000đ = %s đ", 
++                    distance, extraDistance, additionalFee.add(baseFee));
++        } else if (distance <= 10.0) {
++            // 5 - 10 km: 15k + 4k×2 (cho 3-5km) + 3k/km (cho phần vượt 5km)
++            double distanceAfter5km = distance - 5.0;
++            
++            BigDecimal fee3to5 = BigDecimal.valueOf(2.0).multiply(FEE_3_5KM); // 2km × 4k
++            BigDecimal feeAbove5 = BigDecimal.valueOf(distanceAfter5km).multiply(FEE_5_10KM)
++                    .setScale(0, RoundingMode.HALF_UP);
++            
++            additionalFee = fee3to5.add(feeAbove5);
++            description = String.format("Khoảng cách %.2f km (5-10km): 15.000đ + 8.000đ + %.2f km × 3.000đ = %s đ", 
++                    distance, distanceAfter5km, additionalFee.add(baseFee));
++        } else {
++            // > 10 km: 15k + 8k (3-5km) + 15k (5-10km) + 2k/km (vượt 10km)
++            double distanceAbove10 = distance - 10.0;
++            
++            BigDecimal fee3to5 = BigDecimal.valueOf(2.0).multiply(FEE_3_5KM);      // 2km × 4k = 8k
++            BigDecimal fee5to10 = BigDecimal.valueOf(5.0).multiply(FEE_5_10KM);    // 5km × 3k = 15k
++            BigDecimal feeAbove10 = BigDecimal.valueOf(distanceAbove10).multiply(FEE_ABOVE_10KM)
++                    .setScale(0, RoundingMode.HALF_UP);
++            
++            additionalFee = fee3to5.add(fee5to10).add(feeAbove10);
++            description = String.format("Khoảng cách %.2f km (>10km): 15.000đ + 8.000đ + 15.000đ + %.2f km × 2.000đ = %s đ", 
++                    distance, distanceAbove10, additionalFee.add(baseFee));
++        }
++        
++        BigDecimal totalFee = baseFee.add(additionalFee);
++        
++        log.info("[ShippingService] Distance: {:.2f}km, Base: {}đ, Additional: {}đ, Total: {}đ", 
++                distance, baseFee, additionalFee, totalFee);
++        
++        return new ShippingFeeResponseDto(
++                distance,
++                baseFee,
++                additionalFee,
++                totalFee,
++                description
++        );
++    }
++
++    @Override
++    public double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
++        final int R = 6371; // Bán kính trái đất (km)
++        
++        double latDistance = Math.toRadians(lat2 - lat1);
++        double lonDistance = Math.toRadians(lon2 - lon1);
++        
++        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2)
++                + Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2))
++                * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
++        
++        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
++        
++        return R * c; // Distance in km
++    }
++}
+diff --git a/src/main/java/com/example/qtifood/services/impl/StoreServiceImpl.java b/src/main/java/com/example/qtifood/services/impl/StoreServiceImpl.java
+index 28a666a..3d27743 100644
+--- a/src/main/java/com/example/qtifood/services/impl/StoreServiceImpl.java
++++ b/src/main/java/com/example/qtifood/services/impl/StoreServiceImpl.java
+@@ -45,6 +45,7 @@ public class StoreServiceImpl implements StoreService {
+             .openTime(dto.getOpenTime())
+             .closeTime(dto.getCloseTime())
+             .status(StoreStatus.PENDING)
++            .viewCount(0L)
+             .build();
+ 
+         return StoreMapper.toDto(storeRepository.save(s));
+@@ -144,4 +145,12 @@ public class StoreServiceImpl implements StoreService {
+         store.setImageUrl(null);
+         return StoreMapper.toDto(storeRepository.save(store));
+     }
++
++    @Override
++    public StoreResponseDto incrementView(Long id) {
++        Store store = storeRepository.findById(id)
++            .orElseThrow(() -> new RuntimeException("Store not found: " + id));
++        store.setViewCount(store.getViewCount() + 1);
++        return StoreMapper.toDto(storeRepository.save(store));
++    }
+ }
+diff --git a/src/main/java/com/example/qtifood/services/impl/VoucherServiceImpl.java b/src/main/java/com/example/qtifood/services/impl/VoucherServiceImpl.java
+index 89ba554..f0a1c1e 100644
+--- a/src/main/java/com/example/qtifood/services/impl/VoucherServiceImpl.java
++++ b/src/main/java/com/example/qtifood/services/impl/VoucherServiceImpl.java
+@@ -7,9 +7,12 @@ import com.example.qtifood.repositories.StoreRepository;
+ import com.example.qtifood.repositories.VoucherRepository;
+ import com.example.qtifood.services.VoucherService;
+ import lombok.RequiredArgsConstructor;
++import org.slf4j.Logger;
++import org.slf4j.LoggerFactory;
+ import org.springframework.stereotype.Service;
+ import org.springframework.transaction.annotation.Transactional;
+ 
++import java.time.LocalDateTime;
+ import java.util.List;
+ 
+ @Service
+@@ -17,6 +20,7 @@ import java.util.List;
+ @Transactional
+ public class VoucherServiceImpl implements VoucherService {
+ 
++    private static final Logger log = LoggerFactory.getLogger(VoucherServiceImpl.class);
+     private final VoucherRepository repo;
+     private final StoreRepository storeRepo;
+ 
+@@ -33,6 +37,7 @@ public class VoucherServiceImpl implements VoucherService {
+                 v.getStartDate(),
+                 v.getEndDate(),
+                 v.getUsageLimit(),
++                v.getUsageCount(),
+                 v.getSeller() != null ? v.getSeller().getId() : null,
+                 v.getSeller() != null ? v.getSeller().getName() : null,
+                 v.getStatus(),
+@@ -118,4 +123,114 @@ public class VoucherServiceImpl implements VoucherService {
+     public List<VoucherResponseDto> getBySeller(Long sellerId) {
+         return repo.findAllBySeller_Id(sellerId).stream().map(this::toDto).toList();
+     }
++
++    @Override
++    public VoucherResponseDto incrementUsage(Long voucherId) {
++        Voucher voucher = repo.findById(voucherId)
++                .orElseThrow(() -> new IllegalArgumentException("Voucher not found: " + voucherId));
++        
++        // Kiểm tra đã hết hạn chưa
++        if (isVoucherExpired(voucherId)) {
++            throw new IllegalStateException("Voucher đã hết hạn");
++        }
++        
++        // Kiểm tra đã đạt limit chưa
++        if (isVoucherUsageLimitReached(voucherId)) {
++            throw new IllegalStateException("Voucher đã hết lượt sử dụng");
++        }
++        
++        Integer currentCount = voucher.getUsageCount() != null ? voucher.getUsageCount() : 0;
++        voucher.setUsageCount(currentCount + 1);
++        
++        log.info("[Voucher] Incremented usage for voucher={}, code={}, count={}", 
++                voucherId, voucher.getCode(), voucher.getUsageCount());
++        
++        return toDto(repo.save(voucher));
++    }
++
++    @Override
++    public VoucherResponseDto decrementUsage(Long voucherId) {
++        Voucher voucher = repo.findById(voucherId)
++                .orElseThrow(() -> new IllegalArgumentException("Voucher not found: " + voucherId));
++        
++        Integer currentCount = voucher.getUsageCount() != null ? voucher.getUsageCount() : 0;
++        if (currentCount > 0) {
++            voucher.setUsageCount(currentCount - 1);
++            log.info("[Voucher] Decremented usage for voucher={}, code={}, count={}", 
++                    voucherId, voucher.getCode(), voucher.getUsageCount());
++        } else {
++            log.warn("[Voucher] Cannot decrement usage for voucher={}, already at 0", voucherId);
++        }
++        
++        return toDto(repo.save(voucher));
++    }
++
++    @Override
++    @Transactional(readOnly = true)
++    public VoucherResponseDto validateVoucher(String code) {
++        Voucher voucher = repo.findByCode(code)
++                .orElseThrow(() -> new IllegalArgumentException("Voucher không tồn tại: " + code));
++        
++        // Kiểm tra active
++        if (voucher.getIsActive() == null || !voucher.getIsActive()) {
++            throw new IllegalStateException("Voucher không còn khả dụng");
++        }
++        
++        // Kiểm tra hết hạn
++        if (isVoucherExpired(voucher.getId())) {
++            throw new IllegalStateException("Voucher đã hết hạn");
++        }
++        
++        // Kiểm tra usage limit
++        if (isVoucherUsageLimitReached(voucher.getId())) {
++            throw new IllegalStateException("Voucher đã hết lượt sử dụng");
++        }
++        
++        log.info("[Voucher] Validated voucher code={}, valid=true", code);
++        return toDto(voucher);
++    }
++
++    @Override
++    @Transactional(readOnly = true)
++    public boolean isVoucherExpired(Long voucherId) {
++        Voucher voucher = repo.findById(voucherId)
++                .orElseThrow(() -> new IllegalArgumentException("Voucher not found: " + voucherId));
++        
++        LocalDateTime now = LocalDateTime.now();
++        
++        // Check start date
++        if (voucher.getStartDate() != null && now.isBefore(voucher.getStartDate())) {
++            log.debug("[Voucher] Voucher={} chưa đến thời gian sử dụng", voucherId);
++            return true; // Chưa tới thời gian
++        }
++        
++        // Check end date
++        if (voucher.getEndDate() != null && now.isAfter(voucher.getEndDate())) {
++            log.debug("[Voucher] Voucher={} đã hết hạn", voucherId);
++            return true; // Đã hết hạn
++        }
++        
++        return false;
++    }
++
++    @Override
++    @Transactional(readOnly = true)
++    public boolean isVoucherUsageLimitReached(Long voucherId) {
++        Voucher voucher = repo.findById(voucherId)
++                .orElseThrow(() -> new IllegalArgumentException("Voucher not found: " + voucherId));
++        
++        if (voucher.getUsageLimit() == null) {
++            return false; // Không giới hạn
++        }
++        
++        Integer currentCount = voucher.getUsageCount() != null ? voucher.getUsageCount() : 0;
++        boolean limitReached = currentCount >= voucher.getUsageLimit();
++        
++        if (limitReached) {
++            log.debug("[Voucher] Voucher={} đã đạt usage limit: {}/{}", 
++                    voucherId, currentCount, voucher.getUsageLimit());
++        }
++        
++        return limitReached;
++    }
+ }
+diff --git a/src/main/java/com/example/qtifood/services/impl/WalletServiceImpl.java b/src/main/java/com/example/qtifood/services/impl/WalletServiceImpl.java
+index 99c8f6f..9ee8601 100644
+--- a/src/main/java/com/example/qtifood/services/impl/WalletServiceImpl.java
++++ b/src/main/java/com/example/qtifood/services/impl/WalletServiceImpl.java
+@@ -14,6 +14,7 @@ import com.example.qtifood.entities.User;
+ import com.example.qtifood.entities.Wallet;
+ import com.example.qtifood.entities.WalletTransaction;
+ import com.example.qtifood.enums.TransactionType;
++import com.example.qtifood.enums.TransactionStatus;
+ import com.example.qtifood.exceptions.ResourceNotFoundException;
+ import com.example.qtifood.repositories.UserRepository;
+ import com.example.qtifood.repositories.WalletRepository;
+@@ -107,29 +108,35 @@ public class WalletServiceImpl implements WalletService {
+         Wallet wallet = walletRepository.findByUserId(userId)
+             .orElseThrow(() -> new ResourceNotFoundException("Wallet not found for user: " + userId));
+         
++        // Kiểm tra số dư
+         if (wallet.getBalance().compareTo(amount) < 0) {
+             throw new IllegalArgumentException("Insufficient balance. Current balance: " + wallet.getBalance());
+         }
+         
++        // Trừ tiền ngay lập tức (locked) nhưng giao dịch ở trạng thái PENDING chờ admin duyệt
+         BigDecimal oldBalance = wallet.getBalance();
+-        wallet.setBalance(wallet.getBalance().subtract(amount));
++        BigDecimal newBalance = oldBalance.subtract(amount);
++        wallet.setBalance(newBalance);
+         wallet.setTotalWithdrawn(wallet.getTotalWithdrawn().add(amount));
+-        
+         walletRepository.save(wallet);
+         
+-        // Record transaction
++        // Tạo giao dịch PENDING để admin duyệt hoàn tất hoặc từ chối (hoàn lại tiền)
+         String desc = description != null ? description : "Withdrawal to " + bankAccount;
+         WalletTransaction transaction = WalletTransaction.builder()
+             .wallet(wallet)
+             .transactionType(TransactionType.WITHDRAW)
+             .amount(amount)
+             .balanceBefore(oldBalance)
+-            .balanceAfter(wallet.getBalance())
++            .balanceAfter(newBalance)
+             .description(desc)
+             .referenceType("WITHDRAWAL")
++            .status(TransactionStatus.PENDING)
+             .build();
+         
+-        transactionRepository.save(transaction);
++        WalletTransaction savedTransaction = transactionRepository.save(transaction);
++        // Đặt reference_id là transaction ID để app có thể track
++        savedTransaction.setReferenceId(String.valueOf(savedTransaction.getId()));
++        transactionRepository.save(savedTransaction);
+         
+         return toDto(wallet);
+     }
+@@ -187,6 +194,7 @@ public class WalletServiceImpl implements WalletService {
+                 wallet.setTotalDeposited(wallet.getTotalDeposited().add(amount));
+                 break;
+             case WITHDRAW:
++                // recordTransaction chỉ dùng cho các giao dịch đã được phê duyệt
+                 if (oldBalance.compareTo(amount) < 0) {
+                     throw new IllegalArgumentException("Insufficient balance");
+                 }
+@@ -201,6 +209,7 @@ public class WalletServiceImpl implements WalletService {
+                 break;
+             case REFUND:
+             case EARN:
++            case MANUAL_INCOME:
+                 newBalance = oldBalance.add(amount);
+                 wallet.setTotalEarned(wallet.getTotalEarned().add(amount));
+                 break;
+@@ -221,6 +230,8 @@ public class WalletServiceImpl implements WalletService {
+             .description(description)
+             .referenceId(referenceId)
+             .referenceType(referenceType)
++            // Các dòng tiền do BE xử lý (nạp tiền, phí ship, tiền hàng, ứng tiền...) đặt SUCCESSFUL
++            .status(TransactionStatus.SUCCESSFUL)
+             .build();
+         
+         transactionRepository.save(transaction);
+@@ -245,6 +256,7 @@ public class WalletServiceImpl implements WalletService {
+             .walletId(transaction.getWallet().getId())
+             .userId(transaction.getWallet().getUser().getId())
+             .transactionType(transaction.getTransactionType())
++            .status(transaction.getStatus())
+             .amount(transaction.getAmount())
+             .balanceBefore(transaction.getBalanceBefore())
+             .balanceAfter(transaction.getBalanceAfter())
+@@ -254,4 +266,43 @@ public class WalletServiceImpl implements WalletService {
+             .createdAt(transaction.getCreatedAt())
+             .build();
+     }
++
++    // Admin duyệt rút tiền: tiền đã bị trừ rồi, chỉ cần chuyển trạng thái APPROVED
++    public WalletTransaction approveWithdrawal(Long transactionId) {
++        WalletTransaction transaction = transactionRepository.findById(transactionId)
++            .orElseThrow(() -> new ResourceNotFoundException("Transaction not found: " + transactionId));
++        if (transaction.getTransactionType() != TransactionType.WITHDRAW) {
++            throw new IllegalArgumentException("Transaction is not a withdraw");
++        }
++        if (transaction.getStatus() != TransactionStatus.PENDING) {
++            throw new IllegalStateException("Transaction is not pending");
++        }
++        // Tiền đã bị trừ rồi khi user gọi withdraw, chỉ cần chuyển trạng thái
++        transaction.setStatus(TransactionStatus.APPROVED);
++        return transactionRepository.save(transaction);
++    }
++    
++    // Admin từ chối rút tiền: hoàn lại số tiền vào ví
++    public WalletTransaction rejectWithdrawal(Long transactionId, String reason) {
++        WalletTransaction transaction = transactionRepository.findById(transactionId)
++            .orElseThrow(() -> new ResourceNotFoundException("Transaction not found: " + transactionId));
++        if (transaction.getTransactionType() != TransactionType.WITHDRAW) {
++            throw new IllegalArgumentException("Transaction is not a withdraw");
++        }
++        if (transaction.getStatus() != TransactionStatus.PENDING) {
++            throw new IllegalStateException("Transaction is not pending");
++        }
++        // Hoàn lại tiền vào ví
++        Wallet wallet = transaction.getWallet();
++        BigDecimal refundAmount = transaction.getAmount();
++        wallet.setBalance(wallet.getBalance().add(refundAmount));
++        wallet.setTotalWithdrawn(wallet.getTotalWithdrawn().subtract(refundAmount));
++        walletRepository.save(wallet);
++        
++        // Cập nhật giao dịch thành REJECTED
++        transaction.setStatus(TransactionStatus.REJECTED);
++        transaction.setBalanceAfter(wallet.getBalance());
++        transaction.setDescription((transaction.getDescription() != null ? transaction.getDescription() + " | " : "") + "Rejected: " + reason);
++        return transactionRepository.save(transaction);
++    }
+ }
